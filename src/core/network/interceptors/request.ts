@@ -11,7 +11,6 @@ export function addAccessToken(initialConfig: any) {
       Authorization: `Bearer ${token}`,
     });
   }
-  console.log('config', config);
 
   return config;
 }

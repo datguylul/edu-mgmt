@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { ProductDetail } from 'core/services/product';
-import { InfoCircleOutlined } from '@ant-design/icons';
+import { ProductUpdate, ProductDetail } from 'core/services/product';
 import Layout from 'Layouts';
 import withAuth from '@hocs/withAuth';
 import { Form, Input, Space, Cascader, Select, Row, Col, Checkbox, Button, AutoComplete } from 'antd';
@@ -33,11 +32,6 @@ function index() {
   const router = useRouter();
   const { slug } = router.query; // object destructuring
   const [form] = Form.useForm();
-  const [productData, setProductData] = useState<any>({});
-
-  const onFinish = (values: any) => {
-    console.log('Received values of form: ', values);
-  };
 
   useEffect(() => {
     LoadDetail();
@@ -48,8 +42,6 @@ function index() {
       .then((resp) => {
         const data = resp.data?.Data?.product;
         if (data) {
-          console.log('resp', resp.data?.Data.product);
-          setProductData(resp.data?.Data.product);
           fillForm(resp.data?.Data.product);
         }
       })
@@ -71,25 +63,24 @@ function index() {
     });
   };
 
+  const handleUpdateProduct = (values: any) => {
+    ProductUpdate(values)
+      .then((resp) => {
+        console.log(resp.data);
+      })
+      .catch((error) => {
+        console.log('error', error);
+      });
+  };
+
   return (
     <Layout title={'Product'}>
-      <Form
-        {...formItemLayout}
-        form={form}
-        name="register"
-        onFinish={onFinish}
-        initialValues={{
-          residence: ['zhejiang', 'hangzhou', 'xihu'],
-          prefix: '86',
-        }}
-        scrollToFirstError
-      >
-        <Form.Item name="ProductCode" label="Product Code">
-          <Input value={productData?.ProductCode} />
-          {/* <Input /> */}
+      <Form {...formItemLayout} form={form} name="register" onFinish={handleUpdateProduct} scrollToFirstError>
+        <Form.Item name="ProductCode" label="Product Code" preserve>
+          <Input disabled={true} />
         </Form.Item>
-        <Form.Item name="ProductId" label="ProductId">
-          <Input />
+        <Form.Item name="ProductId" label="ProductId" preserve>
+          <Input disabled={true} />
         </Form.Item>
         <Form.Item name="Title" label="Title">
           <Input />
@@ -106,8 +97,8 @@ function index() {
         <Form.Item name="Discount" label="Discount">
           <Input />
         </Form.Item>
-        <Form.Item name="CreateDate" label="CreateDate">
-          <Input />
+        <Form.Item name="CreateDate" label="CreateDate" preserve>
+          <Input disabled={true} />
         </Form.Item>
 
         <Form.Item {...tailFormItemLayout}>
