@@ -4,9 +4,7 @@ import { ProductDetail } from 'core/services/product';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import Layout from 'Layouts';
 import withAuth from '@hocs/withAuth';
-import { Form, Input, InputNumber, Cascader, Select, Row, Col, Checkbox, Button, AutoComplete } from 'antd';
-
-const { Option } = Select;
+import { Form, Input, Space, Cascader, Select, Row, Col, Checkbox, Button, AutoComplete } from 'antd';
 
 const formItemLayout = {
   labelCol: {
@@ -35,43 +33,11 @@ function index() {
   const router = useRouter();
   const { slug } = router.query; // object destructuring
   const [form] = Form.useForm();
-  const [productData, setProductData] = useState({});
+  const [productData, setProductData] = useState<any>({});
+
   const onFinish = (values: any) => {
     console.log('Received values of form: ', values);
   };
-
-  const prefixSelector = (
-    <Form.Item name="prefix" noStyle>
-      <Select style={{ width: 70 }}>
-        <Option value="86">+86</Option>
-        <Option value="87">+87</Option>
-      </Select>
-    </Form.Item>
-  );
-
-  const suffixSelector = (
-    <Form.Item name="suffix" noStyle>
-      <Select style={{ width: 70 }}>
-        <Option value="USD">$</Option>
-        <Option value="CNY">¥</Option>
-      </Select>
-    </Form.Item>
-  );
-
-  const [autoCompleteResult, setAutoCompleteResult] = useState<string[]>([]);
-
-  const onWebsiteChange = (value: string) => {
-    if (!value) {
-      setAutoCompleteResult([]);
-    } else {
-      setAutoCompleteResult(['.com', '.org', '.net'].map((domain) => `${value}${domain}`));
-    }
-  };
-
-  const websiteOptions = autoCompleteResult.map((website: any) => ({
-    label: website,
-    value: website,
-  }));
 
   useEffect(() => {
     LoadDetail();
@@ -80,11 +46,29 @@ function index() {
   const LoadDetail = () => {
     ProductDetail(slug!.toString())
       .then((resp) => {
-        setProductData(resp.data?.product);
+        const data = resp.data?.Data?.product;
+        if (data) {
+          console.log('resp', resp.data?.Data.product);
+          setProductData(resp.data?.Data.product);
+          fillForm(resp.data?.Data.product);
+        }
       })
       .catch((error) => {
         console.log(error);
       });
+  };
+
+  const fillForm = (data: any) => {
+    form.setFieldsValue({
+      ProductCode: data?.ProductCode,
+      ProductId: data?.ProductId,
+      Discount: data.Discount,
+      Price: data.Price,
+      CreateDate: data.CreateDate,
+      Quantity: data.Quantity,
+      Slug: data.Slug,
+      Title: data.Title,
+    });
   };
 
   return (
@@ -100,14 +84,41 @@ function index() {
         }}
         scrollToFirstError
       >
-        <Form.Item name="email" label="E-mail">
+        <Form.Item name="ProductCode" label="Product Code">
+          <Input value={productData?.ProductCode} />
+          {/* <Input /> */}
+        </Form.Item>
+        <Form.Item name="ProductId" label="ProductId">
+          <Input />
+        </Form.Item>
+        <Form.Item name="Title" label="Title">
+          <Input />
+        </Form.Item>
+        <Form.Item name="Price" label="Price">
+          <Input />
+        </Form.Item>
+        <Form.Item name="Quantity" label="Quantity">
+          <Input />
+        </Form.Item>
+        <Form.Item name="Slug" label="Slug">
+          <Input />
+        </Form.Item>
+        <Form.Item name="Discount" label="Discount">
+          <Input />
+        </Form.Item>
+        <Form.Item name="CreateDate" label="CreateDate">
           <Input />
         </Form.Item>
 
         <Form.Item {...tailFormItemLayout}>
-          <Button type="primary" htmlType="submit">
-            Update
-          </Button>
+          <Space>
+            <Button type="primary" htmlType="submit">
+              Update
+            </Button>
+            <Button htmlType="button" onClick={() => null}>
+              Delete
+            </Button>
+          </Space>
         </Form.Item>
       </Form>
     </Layout>
