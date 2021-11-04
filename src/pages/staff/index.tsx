@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import Layout from 'Layouts';
 import withAuth from '@hocs/withAuth';
-import { Table } from 'antd';
+import { Table, Modal, Space } from 'antd';
 import axios from 'axios';
 import Cookies from 'js-cookie';
-import { parse } from 'path/posix';
+import ModalEditStaffInfo from './ModalEditStaffInfo';
+import { getListStaff } from 'core/services/staff';
 
 function index() {
   const [role, setRole] = useState<any>();
-
+  const [listStaff, setListStaff] = useState<any>([]);
+  const [showEditProfileModal, setShowEditProfileModal] = React.useState<boolean>(false);
   useEffect(() => {
     let value = localStorage.getItem('roles') ?? '';
     setRole(JSON.parse(value));
@@ -16,72 +18,59 @@ function index() {
   }, []);
 
   const getStaffList = async () => {
-    const token = Cookies.get('accessToken');
-
-    axios
-      .get('https://ollivander-backn.herokuapp.com/admin/staff/list', {
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Content-type': 'Application/json',
-          Authorization: `Bearer ${token}`,
-        },
-      })
+    getListStaff()
       .then((resp) => {
-        console.log(resp.data);
+        console.log(`resp.data`, resp.data);
+        setListStaff(resp.data);
       })
       .catch((error) => {
         console.log('error', error);
       });
   };
-
+  console.log(`listStaff`, listStaff);
   const columns = [
     {
       title: 'Name',
-      dataIndex: 'name',
-    },
-    {
-      title: 'Age',
-      dataIndex: 'age',
+      dataIndex: 'DisplayName',
     },
     {
       title: 'Address',
-      dataIndex: 'address',
+      dataIndex: 'Address',
+    },
+    {
+      title: 'Last login',
+      dataIndex: 'LastLogin',
+    },
+    {
+      title: 'Action',
+      render: (record: any) => (
+        <Space size="middle">
+          <a onClick={() => setShowEditProfileModal(true)}>Detail </a>
+          <a>Delete</a>
+        </Space>
+      ),
     },
   ];
 
-  const data = [
-    {
-      key: '1',
-      name: 'John Brown',
-      age: 32,
-      address: 'New York No. 1 Lake Park',
-    },
-    {
-      key: '2',
-      name: 'Jim Green',
-      age: 42,
-      address: 'London No. 1 Lake Park',
-    },
-    {
-      key: '3',
-      name: 'Joe Black',
-      age: 32,
-      address: 'Sidney No. 1 Lake Park',
-    },
-    {
-      key: '4',
-      name: 'Jim Red',
-      age: 32,
-      address: 'London No. 2 Lake Park',
-    },
-  ];
-  console.log(`role`, role);
   return (
     <>
       {role && role[0] === 'ROLE_ADMIN' ? (
         <Layout title={'Staff'}>
           <div>
-            <Table columns={columns} dataSource={data} />
+            <Table columns={columns} dataSource={listStaff} />
+            <Modal
+              width={755}
+              bodyStyle={{ height: 'max-content' }}
+              title={'Detail of staff'}
+              visible={showEditProfileModal}
+              // onCancel={handleCancelEditProfileModal}
+              // onOk={handleOkEditProfileModal}
+              destroyOnClose
+              footer={null}
+              className="edit-profile-modal"
+            >
+              <ModalEditStaffInfo />
+            </Modal>
           </div>
         </Layout>
       ) : (
