@@ -4,12 +4,8 @@ import { useRouter } from 'next/router';
 import { Checkbox, Row, Col, Form, Input, Button, Space } from 'antd';
 import { getStaffDetail } from 'core/services/staff';
 
-interface IModal {
-  showModal?: boolean;
-  onCloseModal?: () => void;
-  onSubmitModal?: () => void;
-  isChange?: (value: any) => void;
-  userId?: string;
+interface IStaffInfo {
+  staffID?: string;
 }
 
 const formItemLayout = {
@@ -34,27 +30,37 @@ const tailFormItemLayout = {
     },
   },
 };
-const ModalEditStaffInfo: React.FC<IModal> = ({}) => {
-  const router = useRouter();
-  const { slug } = router.query; // object destructuring
+const ModalEditStaffInfo: React.FC<IStaffInfo> = ({ staffID }) => {
   const [form] = Form.useForm();
   const [staffData, setStaffData] = useState<any>({});
   const onFinish = (values: any) => {
     console.log('Received values of form: ', values);
   };
   const LoadDetail = () => {
-    getStaffDetail(slug!.toString())
+    getStaffDetail(staffID!.toString())
       .then((resp) => {
-        const data = resp.data?.Data?.product;
+        const data = resp.data.Data.account_info;
         if (data) {
-          console.log('resp', resp.data?.Data.product);
-          // setStaffData(resp.data?.Data.product);
-          // fillForm(resp.data?.Data.product);
+          console.log('resp', data);
+          setStaffData(data);
+          fillForm(data);
         }
       })
       .catch((error) => {
         console.log(error);
       });
+  };
+
+  const fillForm = (data: any) => {
+    form.setFieldsValue({
+      FirstName: data?.FirstName,
+      LastName: data?.LastName,
+      MidName: data.MidName,
+      Email: data.Email,
+      Country: data.Country,
+      Mobile: data.Mobile,
+      Intro: data.Intro,
+    });
   };
 
   useEffect(() => {
@@ -63,43 +69,48 @@ const ModalEditStaffInfo: React.FC<IModal> = ({}) => {
 
   return (
     <>
-      <Form
-        {...formItemLayout}
-        form={form}
-        name="register"
-        onFinish={onFinish}
-        initialValues={{
-          residence: ['zhejiang', 'hangzhou', 'xihu'],
-          prefix: '86',
-        }}
-        scrollToFirstError
-      >
-        <Form.Item name="ProductCode" label="Product Code">
-          <Input value={staffData?.ProductCode} />
+      <Form {...formItemLayout} form={form} name="register" onFinish={onFinish} scrollToFirstError>
+        <Form.Item name="FirstName" label="FirstName">
+          <Input />
           {/* <Input /> */}
         </Form.Item>
-        <Form.Item name="ProductId" label="ProductId">
+        <Form.Item name="MidName" label="MidName">
           <Input />
         </Form.Item>
-        <Form.Item name="Title" label="Title">
+        <Form.Item name="LastName" label="LastName">
           <Input />
         </Form.Item>
-        <Form.Item name="Price" label="Price">
+        <Form.Item name="Email" label="Email">
           <Input />
         </Form.Item>
-        <Form.Item name="Quantity" label="Quantity">
+        <Form.Item name="Mobile" label="Mobile">
           <Input />
         </Form.Item>
-        <Form.Item name="Slug" label="Slug">
+        <Form.Item name="Country" label="Country">
           <Input />
         </Form.Item>
-        <Form.Item name="Discount" label="Discount">
+        <Form.Item name="Intro" label="Intro">
           <Input />
         </Form.Item>
-        <Form.Item name="CreateDate" label="CreateDate">
-          <Input />
+        <Form.Item name="Right" label="Right">
+          <Row>
+            <Col xs={4}>
+              <Checkbox value="A">View</Checkbox>
+            </Col>
+            <Col xs={4}>
+              <Checkbox value="A">Add</Checkbox>
+            </Col>
+            <Col xs={4}>
+              <Checkbox value="A">Edit</Checkbox>
+            </Col>
+            <Col xs={4}>
+              <Checkbox value="A">Delete</Checkbox>
+            </Col>
+            <Col xs={4}>
+              <Checkbox value="A">All</Checkbox>
+            </Col>
+          </Row>
         </Form.Item>
-
         <Form.Item {...tailFormItemLayout}>
           <Space>
             <Button type="primary" htmlType="submit">
@@ -111,32 +122,6 @@ const ModalEditStaffInfo: React.FC<IModal> = ({}) => {
           </Space>
         </Form.Item>
       </Form>
-      <Row>
-        <Col xs={4}></Col>
-        <Col xs={4}>View</Col>
-        <Col xs={4}>Add</Col>
-        <Col xs={4}>Edit</Col>
-        <Col xs={4}>Delete</Col>
-        <Col xs={4}>All</Col>
-      </Row>
-      <Row>
-        <Col xs={4}></Col>
-        <Col xs={4}>
-          <Checkbox value="A" />
-        </Col>
-        <Col xs={4}>
-          <Checkbox value="A" />
-        </Col>
-        <Col xs={4}>
-          <Checkbox value="A" />
-        </Col>
-        <Col xs={4}>
-          <Checkbox value="A" />
-        </Col>
-        <Col xs={4}>
-          <Checkbox value="A" />
-        </Col>
-      </Row>
     </>
   );
 };

@@ -11,6 +11,7 @@ function index() {
   const [role, setRole] = useState<any>();
   const [listStaff, setListStaff] = useState<any>([]);
   const [showEditProfileModal, setShowEditProfileModal] = React.useState<boolean>(false);
+  const [staffID, setStaffID] = useState<string>('');
   useEffect(() => {
     let value = localStorage.getItem('roles') ?? '';
     setRole(JSON.parse(value));
@@ -27,7 +28,15 @@ function index() {
         console.log('error', error);
       });
   };
+
+  const openDetailModal = (record: any) => {
+    setShowEditProfileModal(true);
+    console.log('record', record);
+    setStaffID(record.AccountId);
+  };
+
   console.log(`listStaff`, listStaff);
+
   const columns = [
     {
       title: 'Name',
@@ -45,7 +54,7 @@ function index() {
       title: 'Action',
       render: (record: any) => (
         <Space size="middle">
-          <a onClick={() => setShowEditProfileModal(true)}>Detail </a>
+          <a onClick={() => openDetailModal(record)}>Detail </a>
           <a>Delete</a>
         </Space>
       ),
@@ -63,13 +72,13 @@ function index() {
               bodyStyle={{ height: 'max-content' }}
               title={'Detail of staff'}
               visible={showEditProfileModal}
-              // onCancel={handleCancelEditProfileModal}
+              onCancel={() => setShowEditProfileModal(false)}
               // onOk={handleOkEditProfileModal}
               destroyOnClose
               footer={null}
               className="edit-profile-modal"
             >
-              <ModalEditStaffInfo />
+              <ModalEditStaffInfo staffID={staffID} />
             </Modal>
           </div>
         </Layout>
