@@ -5,7 +5,7 @@ import { Cookies } from 'react-cookie';
 
 const cookies = new Cookies();
 const token = cookies.get('accessToken');
-const BASE_URL = 'https://ollivander-backn.herokuapp.com';
+const BASE_URL = 'https://salemodel.somee.com/';
 
 const getInstance = (baseUrl: string) => {
   const instance = axios.create({

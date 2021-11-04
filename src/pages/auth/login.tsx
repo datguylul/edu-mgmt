@@ -26,16 +26,13 @@ function Login() {
     e.preventDefault();
     try {
       const resp: any = await login(user);
-      const res = resp.data.responseData;
-      console.log(res);
+      const res = resp.data?.Data;
 
-      if (res.accessToken) {
+      if (res?.account) {
         setAuthenticated(true);
-        Cookie.set('accessToken', res.accessToken, { expires: 7 });
+        Cookie.set('accessToken', res?.account?.AccountId, { expires: 7 });
         localStorage.setItem('roles', JSON.stringify(res.roles));
-        localStorage.setItem('username', res.username);
-      }
-      if (res.roles[0] === 'ROLE_ADMIN') {
+        localStorage.setItem('username', res?.account?.Username);
       }
     } catch (err) {
       console.log('err', err);
