@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 
 import { Checkbox, Row, Col, Form, Input, Button, Space } from 'antd';
-import { getStaffDetail } from 'core/services/staff';
+import { getStaffDetail, editStaffDetail } from 'core/services/staff';
 
 interface IStaffInfo {
   staffID?: string;
@@ -32,7 +32,6 @@ const tailFormItemLayout = {
 };
 const ModalEditStaffInfo: React.FC<IStaffInfo> = ({ staffID }) => {
   const [form] = Form.useForm();
-  const [staffData, setStaffData] = useState<any>({});
   const onFinish = (values: any) => {
     console.log('Received values of form: ', values);
   };
@@ -42,8 +41,8 @@ const ModalEditStaffInfo: React.FC<IStaffInfo> = ({ staffID }) => {
         const data = resp.data.Data.account_info;
         if (data) {
           console.log('resp', data);
-          setStaffData(data);
           fillForm(data);
+          console.log(`data.FirstName`, data.AccountId);
         }
       })
       .catch((error) => {
@@ -53,6 +52,7 @@ const ModalEditStaffInfo: React.FC<IStaffInfo> = ({ staffID }) => {
 
   const fillForm = (data: any) => {
     form.setFieldsValue({
+      AccountId: data?.AccountId,
       FirstName: data?.FirstName,
       LastName: data?.LastName,
       MidName: data.MidName,
@@ -63,14 +63,24 @@ const ModalEditStaffInfo: React.FC<IStaffInfo> = ({ staffID }) => {
     });
   };
 
+  const handleEditProfile = (params: any) => {
+    editStaffDetail(params)
+      .then((resp) => {
+        console.log(resp.data);
+      })
+      .catch((error) => {
+        console.log('error', error);
+      });
+  };
+
   useEffect(() => {
     LoadDetail();
   }, []);
 
   return (
     <>
-      <Form {...formItemLayout} form={form} name="register" onFinish={onFinish} scrollToFirstError>
-        <Form.Item name="FirstName" label="FirstName">
+      <Form {...formItemLayout} form={form} name="register" onFinish={handleEditProfile} scrollToFirstError>
+        <Form.Item name="AccountId" label="AccountId">
           <Input />
           {/* <Input /> */}
         </Form.Item>

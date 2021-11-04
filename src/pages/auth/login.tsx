@@ -27,10 +27,10 @@ function Login() {
     try {
       const resp: any = await login(user);
       const res = resp.data?.Data;
-
       if (res?.account) {
         setAuthenticated(true);
-        Cookie.set('accessToken', res?.account?.AccountId, { expires: 7 });
+        console.log(`res`, res);
+        Cookie.set('accessToken', res?.token, { expires: 7 });
         localStorage.setItem('roles', JSON.stringify(res.roles));
         localStorage.setItem('username', res?.account?.Username);
       }

@@ -9,7 +9,7 @@ import { getListStaff } from 'core/services/staff';
 
 function index() {
   const [role, setRole] = useState<any>();
-  const [listStaff, setListStaff] = useState<any>([]);
+  const [listStaff, setListStaff] = useState<any>();
   const [showEditProfileModal, setShowEditProfileModal] = React.useState<boolean>(false);
   const [staffID, setStaffID] = useState<string>('');
   useEffect(() => {
@@ -21,8 +21,8 @@ function index() {
   const getStaffList = async () => {
     getListStaff()
       .then((resp) => {
-        console.log(`resp.data`, resp.data);
-        setListStaff(resp.data);
+        console.log(`resp`, resp);
+        setListStaff(resp?.data.Data);
       })
       .catch((error) => {
         console.log('error', error);
@@ -34,8 +34,6 @@ function index() {
     console.log('record', record);
     setStaffID(record.AccountId);
   };
-
-  console.log(`listStaff`, listStaff);
 
   const columns = [
     {
@@ -63,28 +61,24 @@ function index() {
 
   return (
     <>
-      {role && role[0] === 'ROLE_ADMIN' ? (
-        <Layout title={'Staff'}>
-          <div>
-            <Table columns={columns} dataSource={listStaff} />
-            <Modal
-              width={755}
-              bodyStyle={{ height: 'max-content' }}
-              title={'Detail of staff'}
-              visible={showEditProfileModal}
-              onCancel={() => setShowEditProfileModal(false)}
-              // onOk={handleOkEditProfileModal}
-              destroyOnClose
-              footer={null}
-              className="edit-profile-modal"
-            >
-              <ModalEditStaffInfo staffID={staffID} />
-            </Modal>
-          </div>
-        </Layout>
-      ) : (
-        <p style={{ textAlign: 'center' }}>You dont have permissions to view this page</p>
-      )}
+      <Layout title={'Staff'}>
+        <div>
+          <Table columns={columns} dataSource={listStaff} />
+          <Modal
+            width={755}
+            bodyStyle={{ height: 'max-content' }}
+            title={'Detail of staff'}
+            visible={showEditProfileModal}
+            onCancel={() => setShowEditProfileModal(false)}
+            // onOk={handleOkEditProfileModal}
+            destroyOnClose
+            footer={null}
+            className="edit-profile-modal"
+          >
+            <ModalEditStaffInfo staffID={staffID} />
+          </Modal>
+        </div>
+      </Layout>
     </>
   );
 }
