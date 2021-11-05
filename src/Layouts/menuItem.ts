@@ -16,6 +16,11 @@ const items: MenuItemType[] = [
     icon: { name: 'edit-2-outline' },
     link: { href: '/staff' },
   },
+  {
+    title: 'Log',
+    icon: { name: 'edit-2-outline' },
+    link: { href: '/log' },
+  },
   // {
   //   title: 'FEATURES',
   //   group: true,
