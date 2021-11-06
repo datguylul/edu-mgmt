@@ -15,15 +15,17 @@ export default withAuth(function Logout() {
         .then(async (resp) => {
           const response = await fetch('/api/logout');
           if (response.status === 200) {
-            Cookie.remove('accessToken');
-            localStorage.removeItem('roles');
-            localStorage.removeItem('username');
-            setAuthenticated(false);
           } else {
-            console.error('Failed to logout', response);
+            Cookie.remove('accessToken');
           }
         })
-        .catch((error) => {});
+        .catch((error) => {
+          console.log('error', error);
+        });
+
+      localStorage.removeItem('roles');
+      localStorage.removeItem('username');
+      setAuthenticated(false);
     }
     doLogout();
   }, [setAuthenticated]);
