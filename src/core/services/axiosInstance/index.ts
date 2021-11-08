@@ -6,6 +6,7 @@ import { Cookies } from 'react-cookie';
 const cookies = new Cookies();
 const token = cookies.get('accessToken');
 const BASE_URL = 'https://salemodel.somee.com/';
+// const BASE_URL_LOCAL = 'https://localhost:44335/';
 
 const getInstance = (baseUrl: string) => {
   const instance = axios.create({

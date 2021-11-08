@@ -31,6 +31,17 @@ function index() {
 
   const columns = [
     {
+      title: 'Image',
+      key: 'image',
+      render: (text: any, record: any) => (
+        <Space size="middle">
+          {/* <Link href={`product/${record.ProductId}`}>
+            <a>Detail</a>
+          </Link> */}
+        </Space>
+      ),
+    },
+    {
       title: 'ProductCode',
       dataIndex: 'ProductCode',
     },
