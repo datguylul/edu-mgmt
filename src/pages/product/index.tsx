@@ -7,6 +7,7 @@ import Cookies from 'js-cookie';
 import { parse } from 'path/posix';
 import Link from 'next/link';
 import { ProductList } from 'core/services/product';
+import Image from 'next/image';
 
 function index() {
   const [productData, setProductData] = useState<any>();
@@ -29,12 +30,16 @@ function index() {
       });
   };
 
+  const NoImage =
+    'https://st4.depositphotos.com/17828278/24401/v/600/depositphotos_244011872-stock-illustration-image-vector-symbol-missing-available.jpg';
+
   const columns = [
     {
       title: 'Image',
       key: 'image',
       render: (text: any, record: any) => (
         <Space size="middle">
+          <Image src={record?.MetaTitle ? record.MetaTitle : NoImage} width={90} height={60} alt={record.Title} />
           {/* <Link href={`product/${record.ProductId}`}>
             <a>Detail</a>
           </Link> */}

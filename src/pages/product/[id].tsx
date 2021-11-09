@@ -135,7 +135,7 @@ function index() {
     <Layout title={'Sản Phẩm'}>
       <Form {...formItemLayout} form={form} name="register" onFinish={handleUpdateProduct} scrollToFirstError>
         <Form.Item name="ProductCode" label="Mã Sản Phẩm" preserve>
-          <Input />
+          <Input disabled={true} />
         </Form.Item>
         <Form.Item name="Title" label="Tên">
           <Input onChange={handleTitleChange} />
@@ -182,9 +182,11 @@ function index() {
 
         <Form.Item {...tailFormItemLayout}>
           <Space>
-            <Button type="primary" htmlType="submit"></Button>
+            <Button type="primary" htmlType="submit">
+              Cập Nhật
+            </Button>
             <Button htmlType="button" onClick={() => null}>
-              Delete
+              Xóa
             </Button>
           </Space>
         </Form.Item>
