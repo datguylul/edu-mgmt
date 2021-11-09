@@ -2,24 +2,43 @@ import { MenuItemType } from '@paljs/ui/types';
 
 const items: MenuItemType[] = [
   {
-    title: 'Home Page',
+    title: 'Trang Chủ',
     icon: { name: 'home' },
     link: { href: '/dashboard' },
   },
   {
-    title: 'Product',
-    icon: { name: 'edit-2-outline' },
-    link: { href: '/product' },
+    title: 'Sản Phẩm',
+    icon: { name: 'shopping-bag-outline' },
+    children: [
+      {
+        title: 'Tạo mới',
+        link: { href: '/product/create' },
+      },
+      {
+        title: 'Danh sách',
+        link: { href: '/product' },
+      },
+    ],
   },
   {
-    title: 'Staff',
-    icon: { name: 'edit-2-outline' },
+    title: 'Order',
+    icon: { name: 'shopping-cart-outline' },
+    link: { href: '/order' },
+  },
+  {
+    title: 'Nhân Viên',
+    icon: { name: 'person-outline' },
     link: { href: '/staff' },
   },
   {
     title: 'Log',
-    icon: { name: 'edit-2-outline' },
+    icon: { name: 'file-text-outline' },
     link: { href: '/log' },
+  },
+  {
+    title: 'Logout',
+    icon: { name: 'log-out-outline' },
+    link: { href: '/logout' },
   },
   // {
   //   title: 'FEATURES',

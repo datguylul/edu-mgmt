@@ -23,6 +23,7 @@
       "*": ["src/*"],
       "@contexts/*": ["src/contexts/*"],
       "@hocs/*": ["src/hocs/*"],
+      "@utils/*": ["src/utils/*"],
     }
   },
   "exclude": ["node_modules"],

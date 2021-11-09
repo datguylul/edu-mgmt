@@ -4,6 +4,7 @@ import { ProductUpdate, ProductDetail } from 'core/services/product';
 import Layout from 'Layouts';
 import withAuth from '@hocs/withAuth';
 import { Form, Input, Space, Cascader, Select, Row, Col, Checkbox, Button, notification } from 'antd';
+import { string_to_slug } from '@utils/StringUtil';
 
 const formItemLayout = {
   labelCol: {
@@ -89,6 +90,7 @@ function index() {
       Title: data.Title,
       Content: data.Content,
       Summary: data.Summary,
+      MetaTitle: data.MetaTitle,
     });
   };
 
@@ -122,45 +124,52 @@ function index() {
     const item = Object.keys(params).filter((item) => item.includes('ProductImage-'));
   };
 
+  const handleTitleChange = ({ target }: any) => {
+    console.log(target.value);
+    form.setFieldsValue({
+      Slug: string_to_slug(target.value),
+    });
+  };
+
   return (
-    <Layout title={'Product'}>
+    <Layout title={'Sản Phẩm'}>
       <Form {...formItemLayout} form={form} name="register" onFinish={handleUpdateProduct} scrollToFirstError>
-        <Form.Item name="ProductId" label="ProductId" preserve>
+        <Form.Item name="ProductCode" label="Mã Sản Phẩm" preserve>
+          <Input />
+        </Form.Item>
+        <Form.Item name="Title" label="Tên">
+          <Input onChange={handleTitleChange} />
+        </Form.Item>
+        <Form.Item name="Price" label="Giá">
+          <Input />
+        </Form.Item>
+        <Form.Item name="Quantity" label="Số Lượng">
+          <Input />
+        </Form.Item>
+        <Form.Item name="Slug" label="Slug" preserve>
           <Input disabled={true} />
         </Form.Item>
-        <Form.Item name="ProductCode" label="Product Code" preserve>
+        <Form.Item name="Discount" label="Giảm Giá (%)">
           <Input />
         </Form.Item>
-        <Form.Item name="Title" label="Title">
+        <Form.Item name="MetaTitle" label="Ảnh Chính">
           <Input />
         </Form.Item>
-        <Form.Item name="Price" label="Price">
+        <Form.Item name="Content" label="Nội Dung">
           <Input />
         </Form.Item>
-        <Form.Item name="Quantity" label="Quantity">
+        <Form.Item name="Summary" label="Tóm Tắt">
           <Input />
         </Form.Item>
-        <Form.Item name="Slug" label="Slug">
-          <Input />
-        </Form.Item>
-        <Form.Item name="Discount" label="Discount">
-          <Input />
-        </Form.Item>
-        <Form.Item name="Content" label="Content">
-          <Input />
-        </Form.Item>
-        <Form.Item name="Summary" label="Summary">
-          <Input />
-        </Form.Item>
-        <Form.Item name="CreateDate" label="CreateDate" preserve>
+        <Form.Item name="CreateDate" label="Ngày Tạo" preserve>
           <Input disabled={true} />
         </Form.Item>
 
         <div>
           <h4>Ảnh</h4>
           {productMeta && productMeta.length > 0 ? (
-            productMeta.map((item, index) => (
-              <Form.Item name="ProductImage" label="Product Image">
+            productMeta.map((item: ProductMeta, index: number) => (
+              <Form.Item name="ProductImage" label="Product Image" key={index}>
                 <Input defaultValue={item.Url} />
               </Form.Item>
             ))
@@ -173,9 +182,7 @@ function index() {
 
         <Form.Item {...tailFormItemLayout}>
           <Space>
-            <Button type="primary" htmlType="submit">
-              Update
-            </Button>
+            <Button type="primary" htmlType="submit"></Button>
             <Button htmlType="button" onClick={() => null}>
               Delete
             </Button>
