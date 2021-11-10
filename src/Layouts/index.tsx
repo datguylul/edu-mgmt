@@ -13,6 +13,8 @@ import { Menu, MenuRefObject } from '@paljs/ui/Menu';
 import Link from 'next/link';
 import menuItems from './menuItem';
 import SEO, { SEOProps } from 'components/SEO';
+import { io } from 'socket.io-client';
+import { notification } from 'antd';
 
 const getDefaultTheme = (): DefaultTheme['name'] => {
   if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
@@ -31,6 +33,25 @@ const LayoutPage: React.FC<SEOProps> = ({ children, ...rest }) => {
   const [menuState, setMenuState] = useState(false);
   const menuRef = useRef<MenuRefObject>(null);
   const [seeHeader, setSeeHeader] = useState(true);
+  let socket: any = io('http://localhost:5000');
+
+  useEffect(() => {
+    if (socket) {
+      socket.on('order-placed-admin', (message: string) => {
+        // console.log('order-placed-admin', message)
+        openNotification('New Order Received', message);
+      });
+    }
+  }, []);
+
+  const openNotification = (Title: string, Content: string) => {
+    notification.open({
+      message: Title,
+      description: Content,
+      onClick: () => {},
+      placement: 'bottomRight',
+    });
+  };
 
   const getState = (state?: 'hidden' | 'visible' | 'compacted' | 'expanded') => {
     setSeeHeader(state !== 'compacted');
