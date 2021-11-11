@@ -11,6 +11,5 @@ export function getAPIHostName() {
 }
 
 export function setAPIHostName(url: string) {
-  localStorage.setItem('@cnw/host', url);
   return (APIHostName.URL = url);
 }

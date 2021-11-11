@@ -56,9 +56,11 @@ function index() {
     if (values.APIHost && values.APIHost.length > 0) {
       setAPIHostName(values.APIHost);
       setHostUrl(values.APIHost);
+      localStorage.setItem('@cnw/host', values.APIHost);
     } else {
       setAPIHostName(process.env.API_BASE_URL!);
       setHostUrl(process.env.API_BASE_URL!);
+      localStorage.removeItem('@cnw/host');
     }
   };
 
