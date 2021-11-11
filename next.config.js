@@ -3,8 +3,8 @@ module.exports = {
     domains: ['product.hstatic.net', 'st4.depositphotos.com'],
   },
   env: {
-    API_BASE_URL: "https://salemodel.somee.com/api/",
-    API_LOCAL: "https://localhost:44335/api/",
+    API_BASE_URL: "https://salemodel.somee.com/",
+    API_LOCAL: "https://localhost:5001/",
     REALTIME_LOCAL: "http://localhost:5000",
     REALTIME_BASE_URL: "https://cnw-realtime.herokuapp.com",
   },
