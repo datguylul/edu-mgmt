@@ -21,8 +21,10 @@ function index() {
   const getStaffList = async () => {
     getListStaff()
       .then((resp) => {
-        console.log(`resp`, resp);
-        setListStaff(resp?.data.Data);
+        const data = resp?.data.Data;
+        if (data) {
+          setListStaff(data!.Data);
+        }
       })
       .catch((error) => {
         console.log('error', error);

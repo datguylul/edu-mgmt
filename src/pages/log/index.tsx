@@ -21,8 +21,11 @@ function index() {
   const getProductList = async () => {
     LogList(currentPage - 1, pageSize)
       .then((resp) => {
-        setProductData(resp.data?.Data);
-        setTotalRecord(resp.data?.TotalRecord);
+        const data = resp.data?.Data;
+        if (data) {
+          setProductData(data!.Data);
+          setTotalRecord(data!.TotalRecord);
+        }
       })
       .catch((error) => {
         console.log('error', error);
@@ -65,7 +68,7 @@ function index() {
   };
 
   return (
-    <Layout title={'Product'}>
+    <Layout title={'Danh Sách Sản Phẩm'}>
       <div>
         <Table columns={columns} dataSource={productData} pagination={false} />
         <Pagination defaultCurrent={currentPage} onChange={onPagingChange} current={currentPage} total={totalRecord} />

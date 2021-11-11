@@ -12,7 +12,7 @@ const items: MenuItemType[] = [
     children: [
       {
         title: 'Tạo mới',
-        link: { href: '/product/create' },
+        link: { href: '/product/product-create' },
       },
       {
         title: 'Danh sách',

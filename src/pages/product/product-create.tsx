@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { ProductUpdate, ProductDetail } from 'core/services/product';
+import { ProductAdd } from 'core/services/product';
 import Layout from 'Layouts';
 import withAuth from '@hocs/withAuth';
 import { Form, Input, Space, Cascader, Select, Row, Col, Checkbox, Button, notification } from 'antd';
@@ -47,27 +47,10 @@ interface Product {
 
 function index() {
   const router = useRouter();
-  const { id } = router.query; // object destructuring
   const [form] = Form.useForm();
   const [productMeta, setProductMeta] = useState<Array<ProductMeta>>();
 
-  useEffect(() => {
-    LoadDetail();
-  }, []);
-
-  const LoadDetail = () => {
-    ProductDetail(id!.toString())
-      .then((resp) => {
-        const data = resp.data?.Data?.product;
-        if (data) {
-          setProductMeta(resp.data?.Data?.product_meta);
-          fillForm(resp.data?.Data.product);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
+  useEffect(() => {}, []);
 
   const openNotification = (Title: string, Content: string) => {
     notification.open({
@@ -78,55 +61,25 @@ function index() {
     });
   };
 
-  const fillForm = (data: any) => {
-    form.setFieldsValue({
-      ProductCode: data?.ProductCode,
-      ProductId: data?.ProductId,
-      Discount: data.Discount,
-      Price: data.Price,
-      CreateDate: data.CreateDate,
-      Quantity: data.Quantity,
-      Slug: data.Slug,
-      Title: data.Title,
-      Content: data.Content,
-      Summary: data.Summary,
-      ProductImage: data.ProductImage,
-    });
-  };
-
   const handleUpdateProduct = (values: any) => {
-    // if (values.ProductImage) {
-    //   values.ProductMetas = [
-    //     {
-    //       Url: values.ProductImage,
-    //       ProductId: id,
-    //       KeyMeta: '',
-    //       Content: '',
-    //       State: 2,
-    //     },
-    //   ];
-    // }
-
-    // console.log( handleProductImage(values));
     let params: object = {
       ...values,
-      ProductId: id,
     };
-    ProductUpdate(params)
+    ProductAdd(params)
       .then((resp) => {
         console.log(resp.data);
-        openNotification('Update Product', 'Success');
+        openNotification('Add Product', 'Success');
       })
       .catch((error) => {
         console.log('error', error);
-        openNotification('Update Product', 'Fail');
+        openNotification('Add Product', 'Fail');
       });
   };
 
-  const handleProductImage = (params: object[]) => {
-    console.log('params', Object.keys(params));
-    const item = Object.keys(params).filter((item) => item.includes('ProductImage-'));
-  };
+  //   const handleProductImage = (params: object[]) => {
+  //     console.log('params', Object.keys(params));
+  //     const item = Object.keys(params).filter((item) => item.includes('ProductImage-'));
+  //   };
 
   const handleTitleChange = ({ target }: any) => {
     console.log(target.value);
@@ -136,10 +89,10 @@ function index() {
   };
 
   return (
-    <Layout title={'Sản Phẩm'}>
+    <Layout title={'Thêm Sản Phẩm'}>
       <Form {...formItemLayout} form={form} name="register" onFinish={handleUpdateProduct} scrollToFirstError>
-        <Form.Item name="ProductCode" label="Mã Sản Phẩm" preserve>
-          <Input disabled={true} />
+        <Form.Item name="ProductCode" label="Mã Sản Phẩm">
+          <Input />
         </Form.Item>
         <Form.Item name="Title" label="Tên">
           <Input onChange={handleTitleChange} />
@@ -165,9 +118,6 @@ function index() {
         <Form.Item name="Summary" label="Tóm Tắt">
           <Input />
         </Form.Item>
-        <Form.Item name="CreateDate" label="Ngày Tạo" preserve>
-          <Input disabled={true} />
-        </Form.Item>
 
         {/* <div>
           <h4>Ảnh</h4>
@@ -187,10 +137,7 @@ function index() {
         <Form.Item {...tailFormItemLayout}>
           <Space>
             <Button type="primary" htmlType="submit">
-              Cập Nhật
-            </Button>
-            <Button htmlType="button" onClick={() => null}>
-              Xóa
+              Thêm mới
             </Button>
           </Space>
         </Form.Item>
