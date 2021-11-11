@@ -39,7 +39,7 @@ function index() {
       key: 'image',
       render: (text: any, record: any) => (
         <Space size="middle">
-          <Image src={record?.MetaTitle ? record.MetaTitle : NoImage} width={90} height={60} alt={record.Title} />
+          <Image src={record?.ProductImage ? record.ProductImage : NoImage} width={90} height={60} alt={record.Title} />
           {/* <Link href={`product/${record.ProductId}`}>
             <a>Detail</a>
           </Link> */}

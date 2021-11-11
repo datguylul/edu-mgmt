@@ -90,22 +90,22 @@ function index() {
       Title: data.Title,
       Content: data.Content,
       Summary: data.Summary,
-      MetaTitle: data.MetaTitle,
+      ProductImage: data.ProductImage,
     });
   };
 
   const handleUpdateProduct = (values: any) => {
-    if (values.ProductImage) {
-      values.ProductMetas = [
-        {
-          Url: values.ProductImage,
-          ProductId: id,
-          KeyMeta: '',
-          Content: '',
-          State: 2,
-        },
-      ];
-    }
+    // if (values.ProductImage) {
+    //   values.ProductMetas = [
+    //     {
+    //       Url: values.ProductImage,
+    //       ProductId: id,
+    //       KeyMeta: '',
+    //       Content: '',
+    //       State: 2,
+    //     },
+    //   ];
+    // }
 
     // console.log( handleProductImage(values));
     ProductUpdate(values)
@@ -152,7 +152,7 @@ function index() {
         <Form.Item name="Discount" label="Giảm Giá (%)">
           <Input />
         </Form.Item>
-        <Form.Item name="MetaTitle" label="Ảnh Chính">
+        <Form.Item name="ProductImage" label="Ảnh Chính">
           <Input />
         </Form.Item>
         <Form.Item name="Content" label="Nội Dung">
@@ -165,7 +165,7 @@ function index() {
           <Input disabled={true} />
         </Form.Item>
 
-        <div>
+        {/* <div>
           <h4>Ảnh</h4>
           {productMeta && productMeta.length > 0 ? (
             productMeta.map((item: ProductMeta, index: number) => (
@@ -178,7 +178,7 @@ function index() {
               <Input />
             </Form.Item>
           )}
-        </div>
+        </div> */}
 
         <Form.Item {...tailFormItemLayout}>
           <Space>

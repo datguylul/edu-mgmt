@@ -33,7 +33,7 @@ const LayoutPage: React.FC<SEOProps> = ({ children, ...rest }) => {
   const [menuState, setMenuState] = useState(false);
   const menuRef = useRef<MenuRefObject>(null);
   const [seeHeader, setSeeHeader] = useState(true);
-  let socket: any = io('http://localhost:5000');
+  let socket: any = io(process.env.REALTIME_BASE_URL || 'https://cnw-realtime.herokuapp.com');
 
   useEffect(() => {
     if (socket) {
