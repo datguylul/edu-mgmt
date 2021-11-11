@@ -36,7 +36,12 @@ const items: MenuItemType[] = [
     link: { href: '/log' },
   },
   {
-    title: 'Logout',
+    title: 'Sys Config (Dev)',
+    icon: { name: 'options-2-outline' },
+    link: { href: '/config' },
+  },
+  {
+    title: 'Đăng Xuất',
     icon: { name: 'log-out-outline' },
     link: { href: '/logout' },
   },

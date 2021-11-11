@@ -1,10 +1,16 @@
 import axios from 'axios';
 import * as RequestInterceptor from '../../network/interceptors/request';
 import * as ResponseInterceptor from '../../network/interceptors/response';
+import { getAPIHostName, setAPIHostName } from '@utils/APIHostUtil';
 
-const getInstance = (baseUrl: string) => {
+const getInstance = () => {
+  const urlLocal = localStorage.getItem('@cnw/host');
+  if (urlLocal && typeof urlLocal === 'string') {
+    setAPIHostName(urlLocal);
+  }
+
   const instance = axios.create({
-    baseURL: baseUrl,
+    baseURL: getAPIHostName(),
     timeout: 30000,
   });
   instance.interceptors.request.use(RequestInterceptor.addAccessToken, RequestInterceptor.onRejected);
@@ -12,4 +18,4 @@ const getInstance = (baseUrl: string) => {
   return instance;
 };
 
-export const apiClient = getInstance(process.env.API_LOCAL!);
+export const apiClient = getInstance();

@@ -24,6 +24,7 @@
       "@contexts/*": ["src/contexts/*"],
       "@hocs/*": ["src/hocs/*"],
       "@utils/*": ["src/utils/*"],
+      "@core/*": ["src/core/*"],
     }
   },
   "exclude": ["node_modules"],

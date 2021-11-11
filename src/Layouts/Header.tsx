@@ -110,13 +110,13 @@ const Header: React.FC<HeaderProps> = (props) => {
                 onClick: props.toggleSidebar,
               },
             },
-            {
-              content: (
-                <Link href="/">
-                  <a className="logo"></a>
-                </Link>
-              ),
-            },
+            // {
+            //   content: (
+            //     <Link href="/">
+            //       <a className="logo"></a>
+            //     </Link>
+            //   ),
+            // },
             {
               content: (
                 <SelectStyled
@@ -130,13 +130,13 @@ const Header: React.FC<HeaderProps> = (props) => {
                 />
               ),
             },
-            {
-              content: (
-                <Button size="Small" onClick={() => props.changeDir()}>
-                  {props.dir}
-                </Button>
-              ),
-            },
+            // {
+            //   content: (
+            //     <Button size="Small" onClick={() => props.changeDir()}>
+            //       {props.dir}
+            //     </Button>
+            //   ),
+            // },
           ]}
         />
         <Actions
