@@ -1,13 +1,9 @@
 import axios from 'axios';
 import * as RequestInterceptor from '../../network/interceptors/request';
 import * as ResponseInterceptor from '../../network/interceptors/response';
-import { getAPIHostName, setAPIHostName } from '@utils/APIHostUtil';
+import { getAPIHostName } from '@utils/APIHostUtil';
 
 const getInstance = () => {
-  const urlLocal = localStorage.getItem('@cnw/host');
-  if (urlLocal && typeof urlLocal === 'string') {
-    setAPIHostName(urlLocal);
-  }
 
   const instance = axios.create({
     baseURL: getAPIHostName(),

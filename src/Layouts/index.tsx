@@ -15,6 +15,7 @@ import menuItems from './menuItem';
 import SEO, { SEOProps } from 'components/SEO';
 import { io } from 'socket.io-client';
 import { notification } from 'antd';
+import { setAPIHostName } from '@utils/APIHostUtil';
 
 const getDefaultTheme = (): DefaultTheme['name'] => {
   if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
@@ -41,6 +42,13 @@ const LayoutPage: React.FC<SEOProps> = ({ children, ...rest }) => {
         // console.log('order-placed-admin', message)
         openNotification('New Order Received', message);
       });
+    }
+  }, []);
+
+  useEffect(() => {
+    const urlLocal = localStorage.getItem('@cnw/host');
+    if (urlLocal && typeof urlLocal === 'string') {
+      setAPIHostName(urlLocal);
     }
   }, []);
 
