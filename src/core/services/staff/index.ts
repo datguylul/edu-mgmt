@@ -6,3 +6,4 @@ const { get, post } = apiClient;
 export const getListStaff = () => get(ENDPOINTS.ACCOUNTS);
 export const getStaffDetail = (id: string) => get(`${ENDPOINTS.ACCOUNTS}/${id}`);
 export const editStaffDetail = (params: {}) => post(`${ENDPOINTS.ACCOUNTS}/edit_account`, params);
+export const deleteStaff = (id: string) => apiClient.delete(`${ENDPOINTS.ACCOUNTS}/${id}`);

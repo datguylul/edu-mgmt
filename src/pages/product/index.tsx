@@ -6,7 +6,7 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 import { parse } from 'path/posix';
 import Link from 'next/link';
-import { ProductList } from 'core/services/product';
+import { ProductList, DeleteProduct } from 'core/services/product';
 import Image from 'next/image';
 
 function index() {
@@ -14,9 +14,13 @@ function index() {
   const [totalRecord, setTotalRecord] = useState<number>(0);
   const [pageSize] = useState<number>(10);
   const [currentPage, setCurrentPage] = useState<number>(1);
-
+  const [userRole, setUserRole] = useState<number>(0);
+  const roles = localStorage.getItem('roles');
   useEffect(() => {
     getProductList();
+    if (roles) {
+      setUserRole(JSON.parse(roles));
+    }
   }, [currentPage]);
 
   const getProductList = async () => {
@@ -28,6 +32,12 @@ function index() {
       .catch((error) => {
         console.log('error', error);
       });
+  };
+
+  const deleteProduct = (id: string) => {
+    DeleteProduct(id).then((resp) => {
+      getProductList();
+    });
   };
 
   const NoImage =
@@ -74,12 +84,18 @@ function index() {
           <Link href={`product/${record.ProductId}`}>
             <a>Detail</a>
           </Link>
-          <a>Delete</a>
+          <a
+            onClick={() => {
+              deleteProduct(record.ProductId);
+            }}
+          >
+            Delete
+          </a>
         </Space>
       ),
     },
   ];
-
+  console.log(`roles`, roles);
   const onPagingChange = (page: number) => {
     setCurrentPage(page);
   };

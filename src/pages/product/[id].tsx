@@ -121,6 +121,7 @@ function index() {
         console.log('error', error);
         openNotification('Update Product', 'Fail');
       });
+    router.push('/product');
   };
 
   const handleProductImage = (params: object[]) => {

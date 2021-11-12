@@ -5,7 +5,8 @@ import { Table, Modal, Space } from 'antd';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import ModalEditStaffInfo from './ModalEditStaffInfo';
-import { getListStaff } from 'core/services/staff';
+import { getListStaff, deleteStaff } from 'core/services/staff';
+import router from 'next/router';
 
 function index() {
   const [role, setRole] = useState<any>();
@@ -37,6 +38,12 @@ function index() {
     setStaffID(record.AccountId);
   };
 
+  const handleDeleteStaff = (id: string) => {
+    deleteStaff(id).then((resp) => {
+      getStaffList();
+    });
+  };
+
   const columns = [
     {
       title: 'Name',
@@ -55,7 +62,7 @@ function index() {
       render: (record: any) => (
         <Space size="middle">
           <a onClick={() => openDetailModal(record)}>Detail </a>
-          <a>Delete</a>
+          <a onClick={() => handleDeleteStaff(record.AccountId)}>Delete</a>
         </Space>
       ),
     },
@@ -72,12 +79,12 @@ function index() {
             title={'Detail of staff'}
             visible={showEditProfileModal}
             onCancel={() => setShowEditProfileModal(false)}
-            // onOk={handleOkEditProfileModal}
+            onOk={() => setShowEditProfileModal(false)}
             destroyOnClose
             footer={null}
             className="edit-profile-modal"
           >
-            <ModalEditStaffInfo staffID={staffID} />
+            <ModalEditStaffInfo staffID={staffID} onCloseModal={() => setShowEditProfileModal(false)} />
           </Modal>
         </div>
       </Layout>

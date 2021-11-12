@@ -1,10 +1,10 @@
 import { Button } from '@paljs/ui/Button';
 import { InputGroup } from '@paljs/ui/Input';
 import { Checkbox } from '@paljs/ui/Checkbox';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Link from 'next/link';
-
+import { signUp } from 'core/services/user';
 import Auth from 'components/Auth';
 import Layout from 'Layouts';
 import Socials from 'components/Auth/Socials';
@@ -14,21 +14,27 @@ const Input = styled(InputGroup)`
 `;
 
 export default function Register() {
+  const [userName, setUserName] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
   const onCheckbox = () => {
     // v will be true or false
+  };
+  const handleSignUp = (e: any) => {
+    e.preventDefault();
+    signUp({
+      userName: userName,
+      password: password,
+    });
   };
   return (
     <Layout title="Register">
       <Auth title="Create new account">
         <form>
           <Input fullWidth>
-            <input type="text" placeholder="Username" />
+            <input type="text" placeholder="Username" onChange={(e) => setUserName(e.target.value)} />
           </Input>
           <Input fullWidth>
-            <input type="email" placeholder="Email Address" />
-          </Input>
-          <Input fullWidth>
-            <input type="password" placeholder="Password" />
+            <input type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)} />
           </Input>
           <Input fullWidth>
             <input type="password" placeholder="Confirm Password" />
@@ -39,7 +45,7 @@ export default function Register() {
               <a>Terms & Conditions</a>
             </Link>
           </Checkbox>
-          <Button status="Success" type="button" shape="SemiRound" fullWidth>
+          <Button onClick={handleSignUp} shape="SemiRound" fullWidth>
             Register
           </Button>
         </form>

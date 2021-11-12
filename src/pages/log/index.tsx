@@ -2,10 +2,6 @@ import React, { useEffect, useState } from 'react';
 import Layout from 'Layouts';
 import withAuth from '@hocs/withAuth';
 import { Table, Space, Pagination } from 'antd';
-import axios from 'axios';
-import Cookies from 'js-cookie';
-import { parse } from 'path/posix';
-import Link from 'next/link';
 import { LogList } from 'core/services/log';
 
 function index() {
@@ -49,18 +45,6 @@ function index() {
       title: 'CreateDate',
       dataIndex: 'CreateDate',
     },
-    {
-      title: 'Action',
-      key: 'action',
-      render: (text: any, record: any) => (
-        <Space size="middle">
-          <Link href={`product/${record.ProductId}`}>
-            <a>Detail</a>
-          </Link>
-          <a>Delete</a>
-        </Space>
-      ),
-    },
   ];
 
   const onPagingChange = (page: number) => {
@@ -68,7 +52,7 @@ function index() {
   };
 
   return (
-    <Layout title={'Danh Sách Sản Phẩm'}>
+    <Layout title={'Log'}>
       <div>
         <Table columns={columns} dataSource={productData} pagination={false} />
         <Pagination defaultCurrent={currentPage} onChange={onPagingChange} current={currentPage} total={totalRecord} />

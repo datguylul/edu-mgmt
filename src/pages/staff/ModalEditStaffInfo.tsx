@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
+import router, { useRouter } from 'next/router';
 
 import { Checkbox, Row, Col, Form, Input, Button, Space } from 'antd';
 import { getStaffDetail, editStaffDetail } from 'core/services/staff';
 
 interface IStaffInfo {
   staffID?: string;
+  onCloseModal?: () => void;
 }
 
 const formItemLayout = {
@@ -30,15 +31,12 @@ const tailFormItemLayout = {
     },
   },
 };
-const ModalEditStaffInfo: React.FC<IStaffInfo> = ({ staffID }) => {
+const ModalEditStaffInfo: React.FC<IStaffInfo> = ({ staffID, onCloseModal }) => {
   const [form] = Form.useForm();
-  const onFinish = (values: any) => {
-    console.log('Received values of form: ', values);
-  };
   const LoadDetail = () => {
     getStaffDetail(staffID!.toString())
       .then((resp) => {
-        const data = resp.data.Data.account_info;
+        const data = resp.data.Data.account;
         if (data) {
           console.log('resp', data);
           fillForm(data);
@@ -53,11 +51,11 @@ const ModalEditStaffInfo: React.FC<IStaffInfo> = ({ staffID }) => {
   const fillForm = (data: any) => {
     form.setFieldsValue({
       AccountId: data?.AccountId,
-      FirstName: data?.FirstName,
+      DisplayName: data?.DisplayName,
       LastName: data?.LastName,
       MidName: data.MidName,
       Email: data.Email,
-      Country: data.Country,
+      Address: data.Address,
       Mobile: data.Mobile,
       Intro: data.Intro,
     });
@@ -81,13 +79,10 @@ const ModalEditStaffInfo: React.FC<IStaffInfo> = ({ staffID }) => {
     <>
       <Form {...formItemLayout} form={form} name="register" onFinish={handleEditProfile} scrollToFirstError>
         <Form.Item name="AccountId" label="AccountId">
-          <Input />
+          <Input disabled={true} />
           {/* <Input /> */}
         </Form.Item>
-        <Form.Item name="MidName" label="MidName">
-          <Input />
-        </Form.Item>
-        <Form.Item name="LastName" label="LastName">
+        <Form.Item name="DisplayName" label="DisplayName">
           <Input />
         </Form.Item>
         <Form.Item name="Email" label="Email">
@@ -96,7 +91,7 @@ const ModalEditStaffInfo: React.FC<IStaffInfo> = ({ staffID }) => {
         <Form.Item name="Mobile" label="Mobile">
           <Input />
         </Form.Item>
-        <Form.Item name="Country" label="Country">
+        <Form.Item name="Address" label="Address">
           <Input />
         </Form.Item>
         <Form.Item name="Intro" label="Intro">
@@ -126,8 +121,8 @@ const ModalEditStaffInfo: React.FC<IStaffInfo> = ({ staffID }) => {
             <Button type="primary" htmlType="submit">
               Update
             </Button>
-            <Button htmlType="button" onClick={() => null}>
-              Delete
+            <Button htmlType="button" onClick={onCloseModal}>
+              Cancel
             </Button>
           </Space>
         </Form.Item>
