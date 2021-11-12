@@ -4,6 +4,7 @@ import { ProductAdd } from 'core/services/product';
 import Layout from 'Layouts';
 import withAuth from '@hocs/withAuth';
 import { Form, Input, Space, Cascader, Select, Row, Col, Checkbox, Button, notification } from 'antd';
+import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import { string_to_slug } from '@utils/StringUtil';
 
 const formItemLayout = {
@@ -62,6 +63,10 @@ function index() {
   };
 
   const handleUpdateProduct = (values: any) => {
+    console.log('values', values);
+
+    return;
+
     let params: object = {
       ...values,
     };
@@ -119,20 +124,29 @@ function index() {
           <Input />
         </Form.Item>
 
-        {/* <div>
-          <h4>Ảnh</h4>
-          {productMeta && productMeta.length > 0 ? (
-            productMeta.map((item: ProductMeta, index: number) => (
-              <Form.Item name="ProductImage" label="Product Image" key={index}>
-                <Input defaultValue={item.Url} />
-              </Form.Item>
-            ))
-          ) : (
-            <Form.Item name="ProductImage" label="Product Image">
-              <Input />
-            </Form.Item>
-          )}
-        </div> */}
+        <div>
+          <h4>Ảnh phụ</h4>
+          <Form.List name="ProductMeta">
+            {(fields, { add, remove }) => (
+              <>
+                {fields.map((field, index) => (
+                  <>
+                    <Form.Item {...field} label={`Ảnh ${index + 1}`} name={[field.name, 'product_meta']}>
+                      <Input style={{ width: '60%' }} />
+                      <MinusCircleOutlined onClick={() => remove(field.name)} />
+                    </Form.Item>
+                  </>
+                ))}
+
+                <Form.Item>
+                  <Button type="dashed" style={{ width: '100px' }} onClick={() => add()} block icon={<PlusOutlined />}>
+                    Add
+                  </Button>
+                </Form.Item>
+              </>
+            )}
+          </Form.List>
+        </div>
 
         <Form.Item {...tailFormItemLayout}>
           <Space>
