@@ -2,7 +2,12 @@ import React, { useEffect, useState } from 'react';
 import Layout from 'Layouts';
 import withAuth from '@hocs/withAuth';
 import { Table, Space, Pagination } from 'antd';
-import { LogList } from 'core/services/log';
+import axios from 'axios';
+import Cookies from 'js-cookie';
+import { parse } from 'path/posix';
+import Link from 'next/link';
+import { OrderList } from 'core/services/product';
+import Image from 'next/image';
 
 function index() {
   const [productData, setProductData] = useState<any>();
@@ -11,17 +16,14 @@ function index() {
   const [currentPage, setCurrentPage] = useState<number>(1);
 
   useEffect(() => {
-    getProductList();
+    getOrderList();
   }, [currentPage]);
 
-  const getProductList = async () => {
-    LogList(currentPage, pageSize)
+  const getOrderList = async () => {
+    OrderList(currentPage, pageSize)
       .then((resp) => {
-        const data = resp.data?.Data;
-        if (data) {
-          setProductData(data!.Data);
-          setTotalRecord(data!.TotalRecord);
-        }
+        setProductData(resp.data?.Data);
+        setTotalRecord(resp.data?.TotalRecord);
       })
       .catch((error) => {
         console.log('error', error);
@@ -30,20 +32,39 @@ function index() {
 
   const columns = [
     {
-      title: 'Action',
-      dataIndex: 'Action',
+      title: 'OrdersId',
+      dataIndex: 'OrdersId',
     },
     {
-      title: 'Ip',
-      dataIndex: 'Ip',
+      title: 'CustomerName',
+      dataIndex: 'CustomerName',
     },
     {
-      title: 'Username',
-      dataIndex: 'Username',
+      title: 'CustomerAddress',
+      dataIndex: 'CustomerAddress',
+    },
+    {
+      title: 'CustomerPhone',
+      dataIndex: 'CustomerPhone',
+    },
+    {
+      title: 'Total',
+      dataIndex: 'Total',
     },
     {
       title: 'CreateDate',
       dataIndex: 'CreateDate',
+    },
+    {
+      title: 'Action',
+      key: 'action',
+      render: (text: any, record: any) => (
+        <Space size="middle">
+          <Link href={`order/${record.OrdersId}`}>
+            <a>Detail</a>
+          </Link>
+        </Space>
+      ),
     },
   ];
 
@@ -52,7 +73,7 @@ function index() {
   };
 
   return (
-    <Layout title={'Log'}>
+    <Layout title={'Đơn Hàng'}>
       <div>
         <Table columns={columns} dataSource={productData} pagination={false} />
         <Pagination defaultCurrent={currentPage} onChange={onPagingChange} current={currentPage} total={totalRecord} />

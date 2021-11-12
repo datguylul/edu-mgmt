@@ -15,16 +15,12 @@ function index() {
   const [pageSize] = useState<number>(10);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [userRole, setUserRole] = useState<number>(0);
-  const roles = localStorage.getItem('roles');
   useEffect(() => {
     getProductList();
-    if (roles) {
-      setUserRole(JSON.parse(roles));
-    }
   }, [currentPage]);
 
   const getProductList = async () => {
-    ProductList(currentPage - 1, pageSize)
+    ProductList(currentPage, pageSize)
       .then((resp) => {
         setProductData(resp.data?.Data);
         setTotalRecord(resp.data?.TotalRecord);
@@ -95,13 +91,13 @@ function index() {
       ),
     },
   ];
-  console.log(`roles`, roles);
+
   const onPagingChange = (page: number) => {
     setCurrentPage(page);
   };
 
   return (
-    <Layout title={'Product'}>
+    <Layout title={'Sản Phẩm'}>
       <div>
         <Table columns={columns} dataSource={productData} pagination={false} />
         <Pagination defaultCurrent={currentPage} onChange={onPagingChange} current={currentPage} total={totalRecord} />

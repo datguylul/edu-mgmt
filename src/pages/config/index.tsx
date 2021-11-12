@@ -53,6 +53,8 @@ function index() {
   };
 
   const handleUpdateProduct = (values: any) => {
+    console.log(getAPIHostName());
+
     if (values.APIHost && values.APIHost.length > 0) {
       setAPIHostName(values.APIHost);
       setHostUrl(values.APIHost);

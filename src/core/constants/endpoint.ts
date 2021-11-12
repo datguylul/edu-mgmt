@@ -9,6 +9,7 @@ export const CONTROLLERS = {
   PRODUCTS: 'products',
   ROLE: 'role',
   LOG: 'logging',
+  ORDER: 'order',
 };
 
 export const ENDPOINTS = {
@@ -21,4 +22,5 @@ export const ENDPOINTS = {
   PRODUCTS_EDIT: `${CONTEXT.API}/${CONTROLLERS.PRODUCTS}/edit`,
   LISTS: `${CONTEXT.ADMIN}/${CONTROLLERS.ROLE}/list`,
   LOGING: `${CONTEXT.API}/${CONTROLLERS.LOG}/paging`,
+  ORDER: `${CONTEXT.API}/${CONTROLLERS.ORDER}/`,
 };

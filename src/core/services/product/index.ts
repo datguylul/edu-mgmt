@@ -8,3 +8,5 @@ export const ProductDetail = (id: string) => get(`${ENDPOINTS.PRODUCTS}detail?id
 export const ProductUpdate = (params: {}) => post(ENDPOINTS.PRODUCTS_EDIT, params);
 export const ProductAdd = (params: {}) => post(ENDPOINTS.PRODUCTS, params);
 export const DeleteProduct = (id: string) => apiClient.delete(`${ENDPOINTS.PRODUCTS}${id}`);
+
+export const OrderList = (page: number, record: number) => get(`${ENDPOINTS.ORDER}?page=${page}&record=${record}`);

@@ -3,10 +3,9 @@ import * as RequestInterceptor from '../../network/interceptors/request';
 import * as ResponseInterceptor from '../../network/interceptors/response';
 import { getAPIHostName } from '@utils/APIHostUtil';
 
-const getInstance = () => {
-
+const getInstance = (URL: string) => {
   const instance = axios.create({
-    baseURL: getAPIHostName(),
+    baseURL: URL,
     timeout: 30000,
   });
   instance.interceptors.request.use(RequestInterceptor.addAccessToken, RequestInterceptor.onRejected);
@@ -14,4 +13,4 @@ const getInstance = () => {
   return instance;
 };
 
-export const apiClient = getInstance();
+export const apiClient = getInstance(getAPIHostName());
