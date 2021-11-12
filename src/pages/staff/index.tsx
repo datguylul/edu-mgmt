@@ -44,6 +44,8 @@ function index() {
     });
   };
 
+  console.log(`role`, role);
+
   const columns = [
     {
       title: 'Name',
@@ -71,22 +73,26 @@ function index() {
   return (
     <>
       <Layout title={'Staff'}>
-        <div>
-          <Table columns={columns} dataSource={listStaff} />
-          <Modal
-            width={755}
-            bodyStyle={{ height: 'max-content' }}
-            title={'Detail of staff'}
-            visible={showEditProfileModal}
-            onCancel={() => setShowEditProfileModal(false)}
-            onOk={() => setShowEditProfileModal(false)}
-            destroyOnClose
-            footer={null}
-            className="edit-profile-modal"
-          >
-            <ModalEditStaffInfo staffID={staffID} onCloseModal={() => setShowEditProfileModal(false)} />
-          </Modal>
-        </div>
+        {role && role[0]?.RoleId === 1 ? (
+          <div>
+            <Table columns={columns} dataSource={listStaff} />
+            <Modal
+              width={755}
+              bodyStyle={{ height: 'max-content' }}
+              title={'Detail of staff'}
+              visible={showEditProfileModal}
+              onCancel={() => setShowEditProfileModal(false)}
+              onOk={() => setShowEditProfileModal(false)}
+              destroyOnClose
+              footer={null}
+              className="edit-profile-modal"
+            >
+              <ModalEditStaffInfo staffID={staffID} onCloseModal={() => setShowEditProfileModal(false)} />
+            </Modal>
+          </div>
+        ) : (
+          <>Ban khong co quyen xem trang nay</>
+        )}
       </Layout>
     </>
   );

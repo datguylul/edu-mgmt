@@ -14,8 +14,10 @@ function index() {
   const [totalRecord, setTotalRecord] = useState<number>(0);
   const [pageSize] = useState<number>(10);
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [userRole, setUserRole] = useState<number>(0);
+  const [role, setRole] = useState<any>();
   useEffect(() => {
+    let value = localStorage.getItem('roles') ?? '';
+    setRole(JSON.parse(value));
     getProductList();
   }, [currentPage]);
 
@@ -80,13 +82,17 @@ function index() {
           <Link href={`product/${record.ProductId}`}>
             <a>Detail</a>
           </Link>
-          <a
-            onClick={() => {
-              deleteProduct(record.ProductId);
-            }}
-          >
-            Delete
-          </a>
+          {role && role[0]?.RoleId === 1 ? (
+            <a
+              onClick={() => {
+                deleteProduct(record.ProductId);
+              }}
+            >
+              Delete
+            </a>
+          ) : (
+            <></>
+          )}
         </Space>
       ),
     },

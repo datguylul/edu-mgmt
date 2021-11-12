@@ -7,7 +7,7 @@ export const CONTEXT = {
 export const CONTROLLERS = {
   ACCOUNTS: 'accounts',
   PRODUCTS: 'products',
-  ROLE: 'role',
+  ROLE: 'roles',
   LOG: 'logging',
   ORDER: 'order',
 };
@@ -23,4 +23,5 @@ export const ENDPOINTS = {
   LISTS: `${CONTEXT.ADMIN}/${CONTROLLERS.ROLE}/list`,
   LOGING: `${CONTEXT.API}/${CONTROLLERS.LOG}/paging`,
   ORDER: `${CONTEXT.API}/${CONTROLLERS.ORDER}/`,
+  ROLES: `${CONTEXT.API}/${CONTROLLERS.ROLE}`,
 };

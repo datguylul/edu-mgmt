@@ -83,7 +83,7 @@ function index() {
       ProductCode: data?.ProductCode,
       ProductId: data?.ProductId,
       Discount: data.Discount,
-      Price: data.Price,
+      Price: data.Price.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'),
       CreateDate: data.CreateDate,
       Quantity: data.Quantity,
       Slug: data.Slug,
@@ -189,9 +189,6 @@ function index() {
           <Space>
             <Button type="primary" htmlType="submit">
               Cập Nhật
-            </Button>
-            <Button htmlType="button" onClick={() => null}>
-              Xóa
             </Button>
           </Space>
         </Form.Item>

@@ -1,4 +1,4 @@
-import { useEffect, useContext } from 'react';
+import { useEffect } from 'react';
 
 import { useAuth } from '@contexts/AuthContext';
 import withAuth from '@hocs/withAuth';
@@ -12,7 +12,7 @@ export default withAuth(function Logout() {
   useEffect(() => {
     async function doLogout() {
       logOut()
-        .then(async (resp) => {
+        .then(async () => {
           const response = await fetch('/api/logout');
           if (response.status === 200) {
           } else {
