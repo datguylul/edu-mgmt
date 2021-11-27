@@ -7,7 +7,12 @@ const items: MenuItemType[] = [
     link: { href: '/dashboard' },
   },
   {
-    title: 'Sản Phẩm',
+    title: 'Phân Loại (Category)',
+    icon: { name: 'pricetags-outline' },
+    link: { href: '/product-category' },
+  },
+  {
+    title: 'Sản Phẩm (Product)',
     icon: { name: 'shopping-bag-outline' },
     children: [
       {
@@ -21,9 +26,18 @@ const items: MenuItemType[] = [
     ],
   },
   {
-    title: 'Order',
+    title: 'Đơn Hàng (Order)',
     icon: { name: 'shopping-cart-outline' },
-    link: { href: '/order' },
+    children: [
+      {
+        title: 'Tạo mới',
+        link: { href: '/order/order-create' },
+      },
+      {
+        title: 'Danh sách',
+        link: { href: '/order' },
+      },
+    ],
   },
   {
     title: 'Nhân Viên',
@@ -35,11 +49,11 @@ const items: MenuItemType[] = [
     icon: { name: 'file-text-outline' },
     link: { href: '/log' },
   },
-  {
-    title: 'Sys Config (Dev)',
-    icon: { name: 'options-2-outline' },
-    link: { href: '/config' },
-  },
+  // {
+  //   title: 'Sys Config (Dev)',
+  //   icon: { name: 'options-2-outline' },
+  //   link: { href: '/config' },
+  // },
   {
     title: 'Đăng Xuất',
     icon: { name: 'log-out-outline' },

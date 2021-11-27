@@ -1,19 +1,28 @@
 import React, { useEffect, useState } from 'react';
 import Layout from 'Layouts';
 import withAuth from '@hocs/withAuth';
-import { Table, Space, Pagination } from 'antd';
-import axios from 'axios';
-import Cookies from 'js-cookie';
-import { parse } from 'path/posix';
+import { Table, Space, Pagination, notification, Modal, Tag } from 'antd';
 import Link from 'next/link';
-import { OrderList } from 'core/services/product';
-import Image from 'next/image';
+import { OrderList, OrderDelete } from 'core/services/product';
+import OrderDetailModal from './OrderDetailModal';
+import { ORDER_STATUS } from '@core/constants';
 
 function index() {
   const [productData, setProductData] = useState<any>();
   const [totalRecord, setTotalRecord] = useState<number>(0);
   const [pageSize] = useState<number>(10);
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [ordersId, setOrdersId] = useState<string>('');
+
+  const openNotification = (Title: string, Content: string) => {
+    notification.open({
+      message: Title,
+      description: Content,
+      onClick: () => {},
+      placement: 'bottomRight',
+    });
+  };
 
   useEffect(() => {
     getOrderList();
@@ -30,13 +39,81 @@ function index() {
       });
   };
 
+  const deleteOrder = (id: string) => {
+    OrderDelete(id)
+      .then((resp) => {
+        console.log(resp.data);
+        openNotification('Xóa đơn hàng thành công', 'Thành công');
+      })
+      .catch((error) => {
+        console.log('error', error);
+        openNotification('Xóa đơn hàng thất bại', 'Thất bại');
+      });
+  };
+
+  const getOrderStatusColor = (status: number) => {
+    let color: string = '';
+    switch (status) {
+      case 1:
+        color = 'geekblue';
+        break;
+      case 2:
+        color = 'cyan';
+        break;
+      case 3:
+        color = 'green';
+        break;
+      case 4:
+        color = '';
+        break;
+      case 5:
+        color = 'red';
+        break;
+      case 6:
+        color = 'red';
+        break;
+      default:
+        color = 'geekblue';
+        break;
+    }
+    return color;
+  };
+
+  function formatPrice(price: number | null | undefined) {
+    return price
+      ? price.toLocaleString('en-US', {
+          style: 'currency',
+          currency: 'VND',
+        })
+      : price;
+  }
+
   const columns = [
     {
-      title: 'OrdersId',
+      title: 'ID',
       dataIndex: 'OrdersId',
     },
     {
-      title: 'CustomerName',
+      title: 'Trạng thái',
+      dataIndex: 'Status',
+      render: (status: number) => (
+        <>
+          {ORDER_STATUS.map((item) => {
+            const color = getOrderStatusColor(status);
+
+            if (item.id === status) {
+              return (
+                <Tag color={color} key={item.id}>
+                  {item.name_en}
+                </Tag>
+              );
+            }
+          })}
+        </>
+      ),
+    },
+    {
+      title: 'Tên',
       dataIndex: 'CustomerName',
     },
     {
@@ -44,29 +121,35 @@ function index() {
       dataIndex: 'CustomerAddress',
     },
     {
-      title: 'CustomerPhone',
+      title: 'SĐT',
       dataIndex: 'CustomerPhone',
     },
     {
-      title: 'Total',
+      title: 'Tổng',
       dataIndex: 'Total',
+      render: (total: number) => <text>{formatPrice(total)}</text>,
     },
     {
-      title: 'CreateDate',
+      title: 'Ngày tạo',
       dataIndex: 'CreateDate',
+      render: (date: string) => <text>{new Date(date)?.toLocaleDateString()}</text>,
     },
     {
-      title: 'Action',
+      title: 'Tùy chọn',
       key: 'action',
       render: (text: any, record: any) => (
         <Space size="middle">
-          <Link href={`order/${record.OrdersId}`}>
-            <a>Detail</a>
-          </Link>
+          <a onClick={() => openDetailModal(record.OrdersId)}>Detail</a>
+          <a onClick={() => deleteOrder(record.OrdersId)}>Delete</a>
         </Space>
       ),
     },
   ];
+
+  const openDetailModal = (id: string) => {
+    setShowModal(true);
+    setOrdersId(id);
+  };
 
   const onPagingChange = (page: number) => {
     setCurrentPage(page);
@@ -77,6 +160,19 @@ function index() {
       <div>
         <Table columns={columns} dataSource={productData} pagination={false} />
         <Pagination defaultCurrent={currentPage} onChange={onPagingChange} current={currentPage} total={totalRecord} />
+        <Modal
+          width={755}
+          bodyStyle={{ height: 'max-content' }}
+          title={'Detail of staff'}
+          visible={showModal}
+          onCancel={() => setShowModal(false)}
+          onOk={() => setShowModal(false)}
+          destroyOnClose
+          footer={null}
+          className="edit-profile-modal"
+        >
+          <OrderDetailModal ordersId={ordersId} onCloseModal={() => setShowModal(false)} />
+        </Modal>
       </div>
     </Layout>
   );

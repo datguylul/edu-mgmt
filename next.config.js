@@ -4,7 +4,7 @@ module.exports = {
   },
   env: {
     API_BASE_URL: "https://salemodel.somee.com/",
-    API_LOCAL: "https://localhost:5001/",
+    API_LOCAL: "https://localhost:44335/",
     REALTIME_LOCAL: "http://localhost:5000",
     REALTIME_BASE_URL: "https://cnw-realtime.herokuapp.com",
   },

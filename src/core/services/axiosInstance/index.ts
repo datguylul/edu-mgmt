@@ -13,4 +13,7 @@ const getInstance = (URL: string) => {
   return instance;
 };
 
-export const apiClient = getInstance(getAPIHostName());
+// API_BASE_URL: "https://salemodel.somee.com/",
+// API_LOCAL: "https://localhost:5001/",
+
+export const apiClient = getInstance(process.env.API_LOCAL!);
