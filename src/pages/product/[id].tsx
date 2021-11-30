@@ -125,12 +125,10 @@ function index() {
   };
 
   const handleProductImage = (params: object[]) => {
-    console.log('params', Object.keys(params));
     const item = Object.keys(params).filter((item) => item.includes('ProductImage-'));
   };
 
   const handleTitleChange = ({ target }: any) => {
-    console.log(target.value);
     form.setFieldsValue({
       Slug: string_to_slug(target.value),
     });

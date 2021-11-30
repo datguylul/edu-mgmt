@@ -9,7 +9,7 @@ const items: MenuItemType[] = [
   {
     title: 'Phân Loại (Category)',
     icon: { name: 'pricetags-outline' },
-    link: { href: '/product-category' },
+    link: { href: '/category' },
   },
   {
     title: 'Sản Phẩm (Product)',

@@ -10,5 +10,12 @@ export const ProductAdd = (params: {}) => post(ENDPOINTS.PRODUCTS, params);
 export const DeleteProduct = (id: string) => apiClient.delete(`${ENDPOINTS.PRODUCTS}${id}`);
 
 export const OrderList = (page: number, record: number) => get(`${ENDPOINTS.ORDER}?page=${page}&record=${record}`);
-export const OrderDelete = (id: string) => apiClient.delete(`${ENDPOINTS.ORDER}${id}`);
 export const OrderDetail = (id: string) => get(`${ENDPOINTS.ORDER}detail?id=${id}`);
+export const OrderDelete = (id: string) => apiClient.delete(`${ENDPOINTS.ORDER}${id}`);
+
+export const CategoryList = (page: number, record: number) =>
+  get(`${ENDPOINTS.CATEGORY}?page=${page}&record=${record}`);
+export const CategoryDetail = (id: string) => get(`${ENDPOINTS.CATEGORY}detail?id=${id}`);
+export const CategoryDelete = (id: string) => apiClient.delete(`${ENDPOINTS.CATEGORY}${id}`);
+export const CategoryUpdate = (params: {}) => post(`${ENDPOINTS.CATEGORY}edit`, params);
+export const CategoryAdd = (params: {}) => post(ENDPOINTS.CATEGORY, params);

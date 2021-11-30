@@ -1,0 +1,158 @@
+import React, { useEffect, useState } from 'react';
+import Layout from 'Layouts';
+import withAuth from '@hocs/withAuth';
+import { Table, Modal, Checkbox, Pagination, DatePicker, Input, Button, Select, Space } from 'antd';
+import { CategoryList } from 'core/services/product';
+import ModalCategory from './ModalCategory';
+import Link from 'next/link';
+const { Option } = Select;
+
+function index() {
+  const [totalRecord, setTotalRecord] = useState<number>(0);
+  const [selectThang, setSelectThang] = useState<boolean>(true);
+  const [pageSize] = useState<number>(10);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [search, setSearch] = useState<string>('');
+  const [sort, setSort] = useState<string>('id_asc');
+  const [categoryData, setCategoryData] = useState([]);
+  const [date, setDate] = useState<string>('20190719');
+  const [categoryId, setCategoryId] = useState<string>('');
+  const [showModal, setShowModal] = React.useState<boolean>(false);
+
+  useEffect(() => {
+    getCategoryList();
+  }, [date, sort]);
+
+  const getCategoryList = async () => {
+    //   CategoryList(selectThang, date, currentPage - 1, pageSize, search, sort)
+    CategoryList(currentPage - 1, pageSize)
+      .then((resp: any) => {
+        const data = resp.data;
+
+        setCategoryData(data?.Data);
+        setTotalRecord(data?.TotalRecord);
+      })
+      .catch((error: any) => {
+        console.log('error', error);
+      });
+  };
+
+  const columns = [
+    {
+      title: 'Mã phân loại',
+      dataIndex: 'CategoryCode',
+    },
+    {
+      title: 'Tên',
+      dataIndex: 'Title',
+    },
+    {
+      title: 'Link hiển thị',
+      dataIndex: 'Slug',
+    },
+    {
+      title: 'Nội dung',
+      dataIndex: 'Content',
+    },
+    {
+      title: 'Tùy chọn',
+      key: 'action',
+      render: (text: any, record: any) => (
+        <Space size="middle">
+          <a onClick={() => openDetailModal(record.CategoryId)}>Chi tiết</a>
+        </Space>
+      ),
+    },
+  ];
+
+  function onDateChange(date: any, dateString: any) {
+    let selectedDate = dateString.replaceAll('-', '');
+    if (selectThang) {
+      selectedDate = selectedDate + '01';
+    }
+    setDate(selectedDate);
+  }
+
+  const openDetailModal = (id: string) => {
+    setCategoryId(id);
+    setShowModal(true);
+  };
+
+  const onPagingChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const handleSelectChange = (value: any) => {
+    setSort(value);
+  };
+
+  const handleSearchChange = ({ target }: any) => {
+    setSearch(target.value);
+  };
+
+  const handleCheckboxChange = () => {
+    setSelectThang((prev) => !prev);
+  };
+
+  const handleAddNew = () => {
+    setCategoryId('');
+    setShowModal(true);
+  };
+
+  return (
+    <Layout title={'Phân loại sản phẩm'}>
+      <div>
+        <div>
+          <DatePicker onChange={onDateChange} picker={selectThang ? 'month' : 'date'} />
+          <Checkbox checked={selectThang} onChange={handleCheckboxChange}>
+            {selectThang ? 'Theo Tháng' : 'Theo Tuần'}
+          </Checkbox>
+        </div>
+        <div>
+          <Input placeholder={'Search'} onChange={handleSearchChange} width="50%" />
+          <Button type="primary" onClick={getCategoryList}>
+            Tìm kiếm
+          </Button>
+        </div>
+        <Select defaultValue={'ID 0-9'} style={{ width: 120 }} onChange={handleSelectChange}>
+          <Option value={'work_name_asc'}>Công Việc A-Z</Option>
+          <Option value={'work_name_desc'}>Công Việc Z-A</Option>
+          <Option value={'empl_name_asc'}>Tên A-Z</Option>
+          <Option value={'empl_name_desc'}>Tên Z-A</Option>
+          <Option value={'id_asc'}>ID 0-9</Option>
+          <Option value={'id_desc'}>ID 9-0</Option>
+          {/* {sortSelect.map((item, index) => {
+            <Option value={item.name} key={index}>{item.title}</Option>
+          })} */}
+        </Select>
+        <Button type="primary" onClick={handleAddNew}>
+          Thêm mới
+        </Button>
+      </div>
+      <div>
+        <Table columns={columns} dataSource={categoryData} pagination={false} />
+        <Pagination
+          defaultPageSize={pageSize}
+          defaultCurrent={currentPage}
+          onChange={onPagingChange}
+          current={currentPage}
+          total={totalRecord}
+        />
+        <Modal
+          width={755}
+          bodyStyle={{ height: 'max-content' }}
+          title={'Loại sản phẩm'}
+          visible={showModal}
+          onCancel={() => setShowModal(false)}
+          destroyOnClose
+          footer={null}
+          className="edit-profile-modal"
+        >
+          <ModalCategory categoryId={categoryId} />
+        </Modal>
+      </div>
+    </Layout>
+  );
+}
+
+export default withAuth(index);

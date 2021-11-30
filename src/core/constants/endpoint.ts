@@ -10,6 +10,7 @@ export const CONTROLLERS = {
   ROLE: 'roles',
   LOG: 'logging',
   ORDER: 'order',
+  CATEGORY: 'category',
 };
 
 export const ENDPOINTS = {
@@ -24,4 +25,5 @@ export const ENDPOINTS = {
   LOGING: `${CONTEXT.API}/${CONTROLLERS.LOG}/paging`,
   ORDER: `${CONTEXT.API}/${CONTROLLERS.ORDER}/`,
   ROLES: `${CONTEXT.API}/${CONTROLLERS.ROLE}`,
+  CATEGORY: `${CONTEXT.API}/${CONTROLLERS.CATEGORY}/`,
 };
