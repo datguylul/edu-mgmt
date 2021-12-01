@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { ProductUpdate, ProductDetail } from 'core/services/product';
+import { ProductUpdate, ProductDetail, CategoryList } from 'core/services/product';
 import Layout from 'Layouts';
 import withAuth from '@hocs/withAuth';
 import { Form, Input, Space, Cascader, Select, Row, Col, Checkbox, Button, notification } from 'antd';
 import { string_to_slug } from '@utils/StringUtil';
+const { Option } = Select;
 
 const formItemLayout = {
   labelCol: {
@@ -50,10 +51,23 @@ function index() {
   const { id } = router.query; // object destructuring
   const [form] = Form.useForm();
   const [productMeta, setProductMeta] = useState<Array<ProductMeta>>();
+  const [categoryData, setCategoryData] = useState([]);
 
   useEffect(() => {
     LoadDetail();
+    getCategoryList();
   }, []);
+
+  const getCategoryList = async () => {
+    CategoryList(0, 10)
+      .then((resp: any) => {
+        const data = resp.data;
+        setCategoryData(data?.Data);
+      })
+      .catch((error: any) => {
+        console.log('error', error);
+      });
+  };
 
   const LoadDetail = () => {
     ProductDetail(id!.toString())
@@ -142,6 +156,25 @@ function index() {
         </Form.Item>
         <Form.Item name="Title" label="Tên">
           <Input onChange={handleTitleChange} />
+        </Form.Item>
+        <Form.Item name="Category" label="Phân loại">
+          {categoryData && categoryData.length > 0 && (
+            <Select
+              mode="multiple"
+              allowClear
+              style={{ width: '100%' }}
+              placeholder="Chọn phân loại sản phẩm"
+              defaultValue={[]}
+              onChange={handleSelectChange}
+            >
+              {categoryData &&
+                categoryData.map((item: any) => (
+                  <Select.Option key={item.CategoryId} value={item.CategoryId}>
+                    {item.Title}
+                  </Select.Option>
+                ))}
+            </Select>
+          )}
         </Form.Item>
         <Form.Item name="Price" label="Giá">
           <Input />

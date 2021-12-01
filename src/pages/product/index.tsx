@@ -15,6 +15,9 @@ function index() {
   const [pageSize] = useState<number>(10);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [role, setRole] = useState<any>();
+  const [search, setSearch] = useState<string>('');
+  const [sort, setSort] = useState<string>('id_asc');
+
   useEffect(() => {
     let value = localStorage.getItem('roles') ?? '';
     setRole(JSON.parse(value));
@@ -22,7 +25,7 @@ function index() {
   }, [currentPage]);
 
   const getProductList = async () => {
-    ProductList(currentPage, pageSize)
+    ProductList(search, sort, currentPage, pageSize)
       .then((resp) => {
         setProductData(resp.data?.Data);
         setTotalRecord(resp.data?.TotalRecord);
