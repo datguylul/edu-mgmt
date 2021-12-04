@@ -83,18 +83,19 @@ function index() {
   };
 
   const handleUpdateProduct = (values: any) => {
-    console.log('values', values);
     let params: object = {
       ...values,
     };
     ProductAdd(params)
       .then((resp) => {
-        console.log(resp.data);
-        openNotification('Add Product', 'Success');
+        if (resp.data.Success) {
+          openNotification('Thêm thông tin sản phẩm', 'Thêm thông tin sản phẩm thành công');
+          router.push('/product');
+        }
       })
       .catch((error) => {
         console.log('error', error);
-        openNotification('Add Product', 'Fail');
+        openNotification('Thêm thông tin sản phẩm', 'Sửa thông tin sản phẩm thất bại');
       });
   };
 

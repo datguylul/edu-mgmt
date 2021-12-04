@@ -134,14 +134,15 @@ function index() {
     };
     ProductUpdate(params)
       .then((resp) => {
-        console.log(resp.data);
-        openNotification('Update Product', 'Success');
+        if (resp.data.Success) {
+          openNotification('Sửa thông tin sản phẩm', 'Sửa thông tin sản phẩm thành công');
+          router.push('/product');
+        }
       })
       .catch((error) => {
         console.log('error', error);
-        openNotification('Update Product', 'Fail');
+        openNotification('Sửa thông tin sản phẩm', 'Sửa thông tin sản phẩm thất bại');
       });
-    router.push('/product');
   };
 
   const handleProductImage = (params: object[]) => {

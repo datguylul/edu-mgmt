@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import router, { useRouter } from 'next/router';
 
-import { Checkbox, Row, Col, Form, Input, Button, Space } from 'antd';
-import { OrderDetail } from 'core/services/product';
+import { Checkbox, Row, Col, Form, Input, Button, Space, Menu, Select } from 'antd';
+import { OrderDetail, OrderChangeStatus } from 'core/services/product';
+import { ORDER_STATUS } from '@core/constants';
+
+const { Option } = Select;
 
 interface IStaffInfo {
   ordersId?: string;
@@ -36,7 +39,7 @@ const ModalEditStaffInfo: React.FC<IStaffInfo> = ({ ordersId, onCloseModal }) =>
   const LoadDetail = () => {
     OrderDetail(ordersId!.toString())
       .then((resp) => {
-        const data = resp.data.Data.account;
+        const data = resp.data.Data;
         if (data) {
           fillForm(data);
         }
@@ -48,18 +51,26 @@ const ModalEditStaffInfo: React.FC<IStaffInfo> = ({ ordersId, onCloseModal }) =>
 
   const fillForm = (data: any) => {
     form.setFieldsValue({
-      AccountId: data?.AccountId,
-      DisplayName: data?.DisplayName,
-      LastName: data?.LastName,
-      MidName: data.MidName,
-      Email: data.Email,
-      Address: data.Address,
-      Mobile: data.Mobile,
-      Intro: data.Intro,
+      orderId: data?.orderId,
+      customerName: data?.customerName,
+      customerPhone: data?.customerPhone,
+      customerEmail: data.customerEmail,
+      customerAddress: data.customerAddress,
+      Status: data.Status,
+      Total: data.Total,
+      Content: data.Content,
     });
   };
 
-  const handleEditProfile = (params: any) => {};
+  const handleEditOrder = (params: any) => {
+    OrderChangeStatus(params)
+      .then((resp) => {
+        console.log(resp.data);
+      })
+      .catch((error) => {
+        console.log('error', error);
+      });
+  };
 
   useEffect(() => {
     LoadDetail();
@@ -67,33 +78,45 @@ const ModalEditStaffInfo: React.FC<IStaffInfo> = ({ ordersId, onCloseModal }) =>
 
   return (
     <>
-      <Form {...formItemLayout} form={form} name="register" onFinish={handleEditProfile} scrollToFirstError>
-        <Form.Item name="AccountId" label="AccountId">
+      <Form {...formItemLayout} form={form} name="register" onFinish={handleEditOrder} scrollToFirstError>
+        <Form.Item name="orderId" label="orderId" preserve={true}>
           <Input disabled={true} />
           {/* <Input /> */}
         </Form.Item>
-        <Form.Item name="DisplayName" label="DisplayName">
+        <Form.Item name="customerName" label="customerName">
           <Input />
         </Form.Item>
-        <Form.Item name="Email" label="Email">
+        <Form.Item name="customerPhone" label="customerPhone">
           <Input />
         </Form.Item>
-        <Form.Item name="Mobile" label="Mobile">
+        <Form.Item name="customerEmail" label="customerEmail">
           <Input />
         </Form.Item>
-        <Form.Item name="Address" label="Address">
+        <Form.Item name="customerAddress" label="customerAddress">
           <Input />
         </Form.Item>
-        <Form.Item name="Intro" label="Intro">
+        <Form.Item name="status" label="Trạng thái">
+          <Select allowClear style={{ width: '100%' }} placeholder="Trang thái đơn hàng" defaultValue={[]}>
+            {ORDER_STATUS.map((item: any) => (
+              <Select.Option key={item.id} value={item.id}>
+                {item.name}
+              </Select.Option>
+            ))}
+          </Select>
+        </Form.Item>
+        <Form.Item name="Total" label="Total" preserve={true}>
+          <Input disabled={true} />
+        </Form.Item>
+        <Form.Item name="Content" label="Content">
           <Input />
         </Form.Item>
         <Form.Item {...tailFormItemLayout}>
           <Space>
             <Button type="primary" htmlType="submit">
-              Update
+              Cập Nhật
             </Button>
             <Button htmlType="button" onClick={onCloseModal}>
-              Cancel
+              Hủy
             </Button>
           </Space>
         </Form.Item>

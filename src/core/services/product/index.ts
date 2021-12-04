@@ -13,6 +13,7 @@ export const DeleteProduct = (id: string) => apiClient.delete(`${ENDPOINTS.PRODU
 export const OrderList = (page: number, record: number) => get(`${ENDPOINTS.ORDER}?page=${page}&record=${record}`);
 export const OrderDetail = (id: string) => get(`${ENDPOINTS.ORDER}/detail?id=${id}`);
 export const OrderDelete = (id: string) => apiClient.delete(`${ENDPOINTS.ORDER}/${id}`);
+export const OrderChangeStatus = (params: {}) => post(`${ENDPOINTS.ORDER}/change/status`, params);
 
 export const CategoryList = (page: number, record: number) =>
   get(`${ENDPOINTS.CATEGORY}?page=${page}&record=${record}`);
