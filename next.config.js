@@ -1,6 +1,6 @@
 module.exports = {
   images: {
-    domains: ['product.hstatic.net', 'st4.depositphotos.com'],
+    domains: ['product.hstatic.net', 'st4.depositphotos.com', 'res.cloudinary.com'],
   },
   env: {
     API_BASE_URL: "https://salemodel.somee.com/",

@@ -3,9 +3,11 @@ import { useRouter } from 'next/router';
 import { ProductAdd, CategoryList } from 'core/services/product';
 import Layout from 'Layouts';
 import withAuth from '@hocs/withAuth';
-import { Form, Input, Space, Cascader, Select, Row, Col, Checkbox, Button, notification } from 'antd';
-import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
+import { Form, Input, Space, Cascader, Select, Row, Col, Checkbox, Button, notification, Upload } from 'antd';
+import { MinusCircleOutlined, PlusOutlined, UploadOutlined } from '@ant-design/icons';
+import axios from 'axios';
 import { string_to_slug } from '@utils/StringUtil';
+
 const { Option } = Select;
 
 const formItemLayout = {
@@ -52,6 +54,9 @@ function index() {
   const [form] = Form.useForm();
   const [productMeta, setProductMeta] = useState<Array<ProductMeta>>();
   const [categoryData, setCategoryData] = useState([]);
+  const [imgFile, setImgFile] = useState(null);
+  const [uploading, setUploading] = useState(false);
+  const [imgMultiple] = useState(false);
 
   useEffect(() => {
     getCategoryList();
@@ -79,9 +84,6 @@ function index() {
 
   const handleUpdateProduct = (values: any) => {
     console.log('values', values);
-
-    return;
-
     let params: object = {
       ...values,
     };
@@ -108,8 +110,28 @@ function index() {
     });
   };
 
-  const handleSelectChange = (value: any) => {
-    console.log(value);
+  const handleSelectChange = (value: any) => {};
+
+  const handleUpload = () => {
+    const formData = new FormData();
+    // Hình ảnh cần upload
+    formData.append('file', imgFile);
+    // Tên preset vừa tạo ở bước 1
+    formData.append('upload_preset', 'bn3jjpdp');
+    formData.append('api_key', '454226386488799');
+    // Tải ảnh lên cloudinary
+    // API: https://api.cloudinary.com/v1_1/{Cloudinary-Name}/image/upload
+    axios
+      .post('https://api.cloudinary.com/v1_1/dhi8xksch/image/upload?api_key=454226386488799', formData)
+      .then((response) => {
+        form.setFieldsValue({
+          ProductImage: response.data.url,
+        });
+      })
+      .catch((err) => {
+        console.error(err);
+        openNotification('Upload Ảnh', 'Đã có lỗi');
+      });
   };
 
   return (
@@ -121,7 +143,7 @@ function index() {
         <Form.Item name="Title" label="Tên">
           <Input onChange={handleTitleChange} />
         </Form.Item>
-        <Form.Item name="Category" label="Phân loại">
+        <Form.Item name="ProductCategories" label="Phân loại">
           {categoryData && categoryData.length > 0 && (
             <Select
               mode="multiple"
@@ -155,6 +177,26 @@ function index() {
         <Form.Item name="ProductImage" label="Ảnh Chính">
           <Input />
         </Form.Item>
+        <Form.Item>
+          <Button
+            type="primary"
+            onClick={handleUpload}
+            disabled={!imgFile}
+            loading={uploading}
+            style={{ marginTop: 16 }}
+          >
+            {uploading ? 'Đang tải' : 'Tải ảnh lên'}
+          </Button>
+          <Upload
+            multiple={false}
+            beforeUpload={(file: any) => setImgFile(file)}
+            name="logo"
+            listType="picture"
+            accept="image/png, image/gif, image/jpeg"
+          >
+            <Button icon={<UploadOutlined />}>Chọn File</Button>
+          </Upload>
+        </Form.Item>
         <Form.Item name="Content" label="Nội Dung">
           <Input />
         </Form.Item>
@@ -162,29 +204,37 @@ function index() {
           <Input />
         </Form.Item>
 
-        <div>
-          <h4>Ảnh phụ</h4>
-          <Form.List name="ProductMeta">
-            {(fields, { add, remove }) => (
-              <>
-                {fields.map((field, index) => (
-                  <>
-                    <Form.Item {...field} label={`Ảnh ${index + 1}`} name={[field.name, 'product_meta']}>
-                      <Input style={{ width: '60%' }} />
-                      <MinusCircleOutlined onClick={() => remove(field.name)} />
-                    </Form.Item>
-                  </>
-                ))}
+        {imgMultiple && (
+          <div>
+            <h4>Ảnh phụ</h4>
+            <Form.List name="ProductMeta">
+              {(fields, { add, remove }) => (
+                <>
+                  {fields.map((field, index) => (
+                    <>
+                      <Form.Item {...field} label={`Ảnh ${index + 1}`} name={[field.name, 'product_meta']}>
+                        <Input style={{ width: '60%' }} />
+                        <MinusCircleOutlined onClick={() => remove(field.name)} />
+                      </Form.Item>
+                    </>
+                  ))}
 
-                <Form.Item>
-                  <Button type="dashed" style={{ width: '100px' }} onClick={() => add()} block icon={<PlusOutlined />}>
-                    Add
-                  </Button>
-                </Form.Item>
-              </>
-            )}
-          </Form.List>
-        </div>
+                  <Form.Item>
+                    <Button
+                      type="dashed"
+                      style={{ width: '100px' }}
+                      onClick={() => add()}
+                      block
+                      icon={<PlusOutlined />}
+                    >
+                      Add
+                    </Button>
+                  </Form.Item>
+                </>
+              )}
+            </Form.List>
+          </div>
+        )}
 
         <Form.Item {...tailFormItemLayout}>
           <Space>

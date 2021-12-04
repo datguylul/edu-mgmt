@@ -16,7 +16,7 @@ function index() {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [role, setRole] = useState<any>();
   const [search, setSearch] = useState<string>('');
-  const [sort, setSort] = useState<string>('id_asc');
+  const [sort, setSort] = useState<string>('');
 
   useEffect(() => {
     let value = localStorage.getItem('roles') ?? '';
