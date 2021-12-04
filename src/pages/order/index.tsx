@@ -6,6 +6,14 @@ import Link from 'next/link';
 import { OrderList, OrderDelete } from 'core/services/product';
 import OrderDetailModal from './OrderDetailModal';
 import { ORDER_STATUS } from '@core/constants';
+import {
+  CheckCircleOutlined,
+  SyncOutlined,
+  CloseCircleOutlined,
+  ExclamationCircleOutlined,
+  ClockCircleOutlined,
+  MinusCircleOutlined,
+} from '@ant-design/icons';
 
 function index() {
   const [productData, setProductData] = useState<any>();
@@ -79,6 +87,34 @@ function index() {
     return color;
   };
 
+  const getOrderStatusIcon = (status: number) => {
+    let icon: any = null;
+    switch (status) {
+      case 1:
+        icon = <SyncOutlined spin />;
+        break;
+      case 2:
+        icon = <ClockCircleOutlined />;
+        break;
+      case 3:
+        icon = <CheckCircleOutlined spin />;
+        break;
+      case 4:
+        icon = <ExclamationCircleOutlined />;
+        break;
+      case 5:
+        icon = <ExclamationCircleOutlined />;
+        break;
+      case 6:
+        icon = <CloseCircleOutlined />;
+        break;
+      default:
+        icon = <SyncOutlined />;
+        break;
+    }
+    return icon;
+  };
+
   function formatPrice(price: number | null | undefined) {
     return price
       ? price.toLocaleString('en-US', {
@@ -100,11 +136,12 @@ function index() {
         <>
           {ORDER_STATUS.map((item) => {
             const color = getOrderStatusColor(status);
+            const icon = getOrderStatusIcon(status);
 
             if (item.id === status) {
               return (
-                <Tag color={color} key={item.id}>
-                  {item.name_en}
+                <Tag color={color} key={item.id} icon={icon}>
+                  {item.name}
                 </Tag>
               );
             }

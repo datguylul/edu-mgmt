@@ -6,27 +6,27 @@ export const ORDER_STATUS = [
   },
   {
     id: 2,
-    name: 'Delivering',
+    name: 'Đang giao hàng',
     name_en: 'Delivering',
   },
   {
     id: 3,
-    name: 'Received',
+    name: 'Đã nhận',
     name_en: 'Received',
   },
   {
     id: 4,
-    name: 'Canceled',
+    name: 'Hủy',
     name_en: 'Canceled',
   },
   {
     id: 5,
-    name: 'Return',
+    name: 'Hoàn trả',
     name_en: 'Return',
   },
   {
     id: 6,
-    name: 'Error',
+    name: 'Lỗi',
     name_en: 'Error',
   },
 ];
