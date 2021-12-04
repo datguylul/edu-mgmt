@@ -64,10 +64,10 @@ function index() {
         color = 'green';
         break;
       case 4:
-        color = '';
+        color = 'grey';
         break;
       case 5:
-        color = 'red';
+        color = 'orange';
         break;
       case 6:
         color = 'red';
