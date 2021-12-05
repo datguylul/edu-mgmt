@@ -34,7 +34,7 @@ const tailFormItemLayout = {
     },
   },
 };
-const ModalEditStaffInfo: React.FC<IStaffInfo> = ({ ordersId, onCloseModal }) => {
+const ModalEditStaffInfo: React.FC<IStaffInfo> = ({ ordersId, onCloseModal = () => {} }) => {
   const [form] = Form.useForm();
   const LoadDetail = () => {
     OrderDetail(ordersId!.toString())
@@ -65,7 +65,9 @@ const ModalEditStaffInfo: React.FC<IStaffInfo> = ({ ordersId, onCloseModal }) =>
   const handleEditOrder = (params: any) => {
     OrderChangeStatus(params)
       .then((resp) => {
-        console.log(resp.data);
+        if (resp.data.Success) {
+          onCloseModal();
+        }
       })
       .catch((error) => {
         console.log('error', error);

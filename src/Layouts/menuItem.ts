@@ -16,7 +16,7 @@ const items: MenuItemType[] = [
     icon: { name: 'shopping-bag-outline' },
     children: [
       {
-        title: 'Tạo mới',
+        title: 'Nhập mới',
         link: { href: '/product/product-create' },
       },
       {

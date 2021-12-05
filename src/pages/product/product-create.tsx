@@ -5,7 +5,7 @@ import Layout from 'Layouts';
 import withAuth from '@hocs/withAuth';
 import { Form, Input, Space, Cascader, Select, Row, Col, Checkbox, Button, notification, Upload } from 'antd';
 import { MinusCircleOutlined, PlusOutlined, UploadOutlined } from '@ant-design/icons';
-import axios from 'axios';
+import { handleCloudinaryUpload } from 'core/services/cloudinaryUpload';
 import { string_to_slug } from '@utils/StringUtil';
 
 const { Option } = Select;
@@ -114,22 +114,13 @@ function index() {
   const handleSelectChange = (value: any) => {};
 
   const handleUpload = () => {
-    const formData = new FormData();
-    // Hình ảnh cần upload
-    formData.append('file', imgFile);
-    // Tên preset vừa tạo ở bước 1
-    formData.append('upload_preset', 'bn3jjpdp');
-    formData.append('api_key', '454226386488799');
-    // Tải ảnh lên cloudinary
-    // API: https://api.cloudinary.com/v1_1/{Cloudinary-Name}/image/upload
-    axios
-      .post('https://api.cloudinary.com/v1_1/dhi8xksch/image/upload?api_key=454226386488799', formData)
-      .then((response) => {
+    handleCloudinaryUpload(imgFile)
+      .then((res: any) => {
         form.setFieldsValue({
-          ProductImage: response.data.url,
+          ProductImage: res.url,
         });
       })
-      .catch((err) => {
+      .catch((err: any) => {
         console.error(err);
         openNotification('Upload Ảnh', 'Đã có lỗi');
       });

@@ -33,8 +33,10 @@ function index() {
   };
 
   useEffect(() => {
-    getOrderList();
-  }, [currentPage]);
+    if (!showModal) {
+      getOrderList();
+    }
+  }, [currentPage, showModal]);
 
   const getOrderList = async () => {
     OrderList(currentPage, pageSize)
@@ -128,6 +130,11 @@ function index() {
     {
       title: 'ID',
       dataIndex: 'OrdersId',
+      render: (text: any, record: any) => (
+        <Space size="middle">
+          <text onClick={() => openDetailModal(record.OrdersId)}>{text}</text>
+        </Space>
+      ),
     },
     {
       title: 'Trạng thái',
@@ -177,7 +184,6 @@ function index() {
       render: (text: any, record: any) => (
         <Space size="middle">
           <a onClick={() => openDetailModal(record.OrdersId)}>Detail</a>
-          <a onClick={() => deleteOrder(record.OrdersId)}>Delete</a>
         </Space>
       ),
     },

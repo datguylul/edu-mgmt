@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { ProductUpdate, ProductDetail, CategoryList } from 'core/services/product';
+import { handleCloudinaryUpload } from 'core/services/cloudinaryUpload';
 import Layout from 'Layouts';
 import withAuth from '@hocs/withAuth';
 import { Form, Input, Space, Cascader, Select, Row, Col, Upload, Button, notification } from 'antd';
 import { MinusCircleOutlined, PlusOutlined, UploadOutlined } from '@ant-design/icons';
 import { string_to_slug } from '@utils/StringUtil';
-import axios from 'axios';
 
 const { Option } = Select;
 
@@ -115,19 +115,6 @@ function index() {
   };
 
   const handleUpdateProduct = (values: any) => {
-    // if (values.ProductImage) {
-    //   values.ProductMetas = [
-    //     {
-    //       Url: values.ProductImage,
-    //       ProductId: id,
-    //       KeyMeta: '',
-    //       Content: '',
-    //       State: 2,
-    //     },
-    //   ];
-    // }
-
-    // console.log( handleProductImage(values));
     let params: object = {
       ...values,
       ProductId: id,
@@ -158,22 +145,13 @@ function index() {
   const handleSelectChange = () => {};
 
   const handleUpload = () => {
-    const formData = new FormData();
-    // Hình ảnh cần upload
-    formData.append('file', imgFile);
-    // Tên preset vừa tạo ở bước 1
-    formData.append('upload_preset', 'bn3jjpdp');
-    formData.append('api_key', '454226386488799');
-    // Tải ảnh lên cloudinary
-    // API: https://api.cloudinary.com/v1_1/{Cloudinary-Name}/image/upload
-    axios
-      .post('https://api.cloudinary.com/v1_1/dhi8xksch/image/upload?api_key=454226386488799', formData)
-      .then((response) => {
+    handleCloudinaryUpload(imgFile)
+      .then((res: any) => {
         form.setFieldsValue({
-          ProductImage: response.data.url,
+          ProductImage: res.url,
         });
       })
-      .catch((err) => {
+      .catch((err: any) => {
         console.error(err);
         openNotification('Upload Ảnh', 'Đã có lỗi');
       });

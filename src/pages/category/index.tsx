@@ -15,13 +15,14 @@ function index() {
   const [search, setSearch] = useState<string>('');
   const [sort, setSort] = useState<string>('id_asc');
   const [categoryData, setCategoryData] = useState([]);
-  const [date, setDate] = useState<string>('20190719');
   const [categoryId, setCategoryId] = useState<string>('');
   const [showModal, setShowModal] = React.useState<boolean>(false);
 
   useEffect(() => {
-    getCategoryList();
-  }, [date, sort]);
+    if (!showModal) {
+      getCategoryList();
+    }
+  }, [sort, showModal]);
 
   const getCategoryList = async () => {
     //   CategoryList(selectThang, date, currentPage - 1, pageSize, search, sort)
@@ -65,14 +66,6 @@ function index() {
     },
   ];
 
-  function onDateChange(date: any, dateString: any) {
-    let selectedDate = dateString.replaceAll('-', '');
-    if (selectThang) {
-      selectedDate = selectedDate + '01';
-    }
-    setDate(selectedDate);
-  }
-
   const openDetailModal = (id: string) => {
     setCategoryId(id);
     setShowModal(true);
@@ -102,12 +95,6 @@ function index() {
   return (
     <Layout title={'Phân loại sản phẩm'}>
       <div>
-        <div>
-          <DatePicker onChange={onDateChange} picker={selectThang ? 'month' : 'date'} />
-          <Checkbox checked={selectThang} onChange={handleCheckboxChange}>
-            {selectThang ? 'Theo Tháng' : 'Theo Tuần'}
-          </Checkbox>
-        </div>
         <div>
           <Input placeholder={'Search'} onChange={handleSearchChange} width="50%" />
           <Button type="primary" onClick={getCategoryList}>

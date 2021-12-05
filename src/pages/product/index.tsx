@@ -41,8 +41,11 @@ function index() {
     });
   };
 
-  const NoImage =
-    'https://st4.depositphotos.com/17828278/24401/v/600/depositphotos_244011872-stock-illustration-image-vector-symbol-missing-available.jpg';
+  const imgStyle = {
+    width: 60,
+    height: 'auto',
+    maxHeight: 90,
+  };
 
   const columns = [
     {
@@ -50,7 +53,12 @@ function index() {
       key: 'image',
       render: (text: any, record: any) => (
         <Space size="middle">
-          <Image src={record?.ProductImage ? record.ProductImage : NoImage} width={90} height={60} alt={record.Title} />
+          {/* <Image src={record?.ProductImage ? record.ProductImage : '/img/blank-img.jpg'} width={90} height={60} alt={record.Title} /> */}
+          <img
+            src={record?.ProductImage ? record.ProductImage : '/img/blank-img.jpg'}
+            style={imgStyle}
+            alt={record.Title}
+          />
           {/* <Link href={`product/${record.ProductId}`}>
             <a>Detail</a>
           </Link> */}
