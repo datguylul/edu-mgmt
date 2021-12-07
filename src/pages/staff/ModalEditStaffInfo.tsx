@@ -88,7 +88,7 @@ const ModalEditStaffInfo: React.FC<IStaffInfo> = ({ showModal = false, staffID, 
       Address: data.Address,
       Mobile: data.Mobile,
       Intro: data.Intro,
-      Role: role,
+      RoleIds: role,
     });
   };
 
@@ -125,26 +125,23 @@ const ModalEditStaffInfo: React.FC<IStaffInfo> = ({ showModal = false, staffID, 
   return (
     <>
       <Form {...formItemLayout} form={form} name="register" onFinish={handleEditProfile} scrollToFirstError>
-        <Form.Item name="AccountId" label="AccountId">
+        <Form.Item name="AccountId" label="ID">
           <Input disabled={true} />
           {/* <Input /> */}
         </Form.Item>
-        <Form.Item name="DisplayName" label="DisplayName">
+        <Form.Item name="DisplayName" label="Tên nhân viên">
           <Input />
         </Form.Item>
         <Form.Item name="Email" label="Email">
           <Input />
         </Form.Item>
-        <Form.Item name="Mobile" label="Mobile">
+        <Form.Item name="Mobile" label="Số điện thoại">
           <Input />
         </Form.Item>
-        <Form.Item name="Address" label="Address">
+        <Form.Item name="Address" label="Địa chỉ">
           <Input />
         </Form.Item>
-        <Form.Item name="Intro" label="Intro">
-          <Input />
-        </Form.Item>
-        <Form.Item name="Role" label="Role" extra="Quyền Admin có tất cả các quyền khác.">
+        <Form.Item name="RoleIds" label="Quyền" extra="Quyền Admin có tất cả các quyền khác.">
           {rolesData && rolesData.length > 0 && (
             <Checkbox.Group>
               {rolesData.map((item: RoleItem) => {
