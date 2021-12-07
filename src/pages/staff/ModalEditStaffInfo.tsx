@@ -7,7 +7,13 @@ import { getRole, getRoleName } from 'core/services/role';
 
 interface IStaffInfo {
   staffID?: string;
+  showModal: boolean;
   onCloseModal?: () => void;
+}
+interface RoleItem {
+  Name: string;
+  RoleId: number;
+  Role_Code: string;
 }
 
 const formItemLayout = {
@@ -32,38 +38,47 @@ const tailFormItemLayout = {
     },
   },
 };
-const ModalEditStaffInfo: React.FC<IStaffInfo> = ({ staffID, onCloseModal }) => {
+const ModalEditStaffInfo: React.FC<IStaffInfo> = ({ showModal = false, staffID, onCloseModal }) => {
   const [form] = Form.useForm();
-  const [accountId, setAccountId] = useState<string>('');
-  const [rolesID, setRolesID] = useState<any>([]);
+  const [rolesData, setRolesData] = useState<[RoleItem] | []>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+
   const LoadDetail = () => {
     getStaffDetail(staffID!.toString())
       .then((resp) => {
         const data = resp.data.Data.account;
-        if (data) {
-          console.log('resp', data);
-          fillForm(data);
-          setAccountId(data?.AccountId);
-          console.log(`data.AccountId`, data.AccountId);
-        }
+        getAccountRole(staffID!, data);
       })
       .catch((error) => {
         console.log(error);
       });
   };
-  const getAccountRole = () => {
-    console.log(`accountId`, accountId);
-    getRole(accountId).then((resp) => {
-      const data = resp?.data?.Data.map((item: any) => item.RoleId);
-      console.log(`rolesID.indexOf(1) > -1`, data.indexOf(1) > -1);
-      setRolesID(data);
-    });
+
+  const getAccountRole = (id: string, data: {}) => {
+    if (id) {
+      getRole(id).then((res) => {
+        const rolesAccount = res.data.Data.map((a: RoleItem) => a.RoleId);
+        // const findAdmin = rolesAccount.includes(1);
+
+        // let roles = rolesAccount;
+        // if (findAdmin) {
+        //   roles = rolesData.map((a: RoleItem) => a.RoleId);
+        // }
+        fillForm(data, rolesAccount);
+      });
+    }
   };
 
   const getRolesName = () => {
-    getRoleName();
+    getRoleName()
+      .then((res) => {
+        // console.log("res", res.data.Data);
+        setRolesData(res.data.Data);
+      })
+      .catch((error) => {});
   };
-  const fillForm = (data: any) => {
+
+  const fillForm = (data: any, role: [number]) => {
     form.setFieldsValue({
       AccountId: data?.AccountId,
       DisplayName: data?.DisplayName,
@@ -73,30 +88,39 @@ const ModalEditStaffInfo: React.FC<IStaffInfo> = ({ staffID, onCloseModal }) => 
       Address: data.Address,
       Mobile: data.Mobile,
       Intro: data.Intro,
+      Role: role,
     });
   };
 
   const handleEditProfile = (params: any) => {
+    console.log('params', params);
+    setLoading(true);
+
     editStaffDetail(params)
       .then((resp) => {
         console.log(resp.data);
       })
       .catch((error) => {
         console.log('error', error);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   };
 
-  const handleCheckboxChange = (checkedValues: any) => {
-    console.log(`checkedValues`, checkedValues);
-  };
-
-  console.log(`rolesID.indexOf(1) > -1`, rolesID.indexOf(1) > -1);
-
   useEffect(() => {
-    LoadDetail();
-    getAccountRole();
-    getRolesName();
-  }, [accountId]);
+    if (staffID && showModal) {
+      setLoading(true);
+      try {
+        LoadDetail();
+        getRolesName();
+      } catch (error) {
+        console.log('error', error);
+      } finally {
+        setLoading(false);
+      }
+    }
+  }, [showModal, staffID]);
 
   return (
     <>
@@ -120,38 +144,26 @@ const ModalEditStaffInfo: React.FC<IStaffInfo> = ({ staffID, onCloseModal }) => 
         <Form.Item name="Intro" label="Intro">
           <Input />
         </Form.Item>
-        <Form.Item name="Right" label="Right">
-          <Checkbox.Group>
-            <Row>
-              <Col xs={4}>
-                <Checkbox value="5">Add Product</Checkbox>
-              </Col>
-              <Col xs={4}>
-                <Checkbox checked={rolesID.indexOf(5) > -1} value="6">
-                  Edit Product
-                </Checkbox>
-              </Col>
-              <Col xs={4}>
-                <Checkbox value="4">Delete Product</Checkbox>
-              </Col>
-              <Col xs={4}>
-                <Checkbox value="3">Delete Account</Checkbox>
-              </Col>
-              <Col xs={4}>
-                <Checkbox value="1" checked={rolesID.indexOf(1) > -1}>
-                  All
-                </Checkbox>
-              </Col>
-            </Row>
-          </Checkbox.Group>
+        <Form.Item name="Role" label="Role" extra="Quyền Admin có tất cả các quyền khác.">
+          {rolesData && rolesData.length > 0 && (
+            <Checkbox.Group>
+              {rolesData.map((item: RoleItem) => {
+                return (
+                  <Row>
+                    <Checkbox value={item.RoleId}>{item.Name}</Checkbox>
+                  </Row>
+                );
+              })}
+            </Checkbox.Group>
+          )}
         </Form.Item>
         <Form.Item {...tailFormItemLayout}>
           <Space>
-            <Button type="primary" htmlType="submit">
-              Update
+            <Button type="primary" htmlType="submit" loading={loading} disabled={loading}>
+              Cập Nhật
             </Button>
             <Button htmlType="button" onClick={onCloseModal}>
-              Cancel
+              Huỷ
             </Button>
           </Space>
         </Form.Item>

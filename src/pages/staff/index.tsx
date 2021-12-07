@@ -11,7 +11,7 @@ import router from 'next/router';
 function index() {
   const [role, setRole] = useState<any>();
   const [listStaff, setListStaff] = useState<any>();
-  const [showEditProfileModal, setShowEditProfileModal] = React.useState<boolean>(false);
+  const [showModal, setShowModal] = React.useState<boolean>(false);
   const [staffID, setStaffID] = useState<string>('');
   useEffect(() => {
     let value = localStorage.getItem('roles') ?? '';
@@ -32,10 +32,9 @@ function index() {
       });
   };
 
-  const openDetailModal = (record: any) => {
-    setShowEditProfileModal(true);
-    console.log('record', record);
-    setStaffID(record.AccountId);
+  const openDetailModal = (id: string) => {
+    setShowModal(true);
+    setStaffID(id);
   };
 
   const handleDeleteStaff = (id: string) => {
@@ -43,8 +42,6 @@ function index() {
       getStaffList();
     });
   };
-
-  console.log(`role`, role);
 
   const columns = [
     {
@@ -63,8 +60,8 @@ function index() {
       title: 'Action',
       render: (record: any) => (
         <Space size="middle">
-          <a onClick={() => openDetailModal(record)}>Detail </a>
-          <a onClick={() => handleDeleteStaff(record.AccountId)}>Delete</a>
+          <a onClick={() => openDetailModal(record.AccountId)}>Detail </a>
+          {/* <a onClick={() => handleDeleteStaff(record.AccountId)}>Delete</a> */}
         </Space>
       ),
     },
@@ -80,14 +77,14 @@ function index() {
               width={755}
               bodyStyle={{ height: 'max-content' }}
               title={'Detail of staff'}
-              visible={showEditProfileModal}
-              onCancel={() => setShowEditProfileModal(false)}
-              onOk={() => setShowEditProfileModal(false)}
+              visible={showModal}
+              onCancel={() => setShowModal(false)}
+              onOk={() => setShowModal(false)}
               destroyOnClose
               footer={null}
               className="edit-profile-modal"
             >
-              <ModalEditStaffInfo staffID={staffID} onCloseModal={() => setShowEditProfileModal(false)} />
+              <ModalEditStaffInfo showModal={showModal} staffID={staffID} onCloseModal={() => setShowModal(false)} />
             </Modal>
           </div>
         ) : (
