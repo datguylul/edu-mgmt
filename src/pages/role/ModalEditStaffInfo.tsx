@@ -83,7 +83,6 @@ const ModalEditStaffInfo: React.FC<IStaffInfo> = ({ showModal = false, staffID =
     form.setFieldsValue({
       AccountId: data?.AccountId,
       DisplayName: data?.DisplayName,
-      Username: data?.Username,
       LastName: data?.LastName,
       MidName: data.MidName,
       Email: data.Email,
@@ -162,15 +161,15 @@ const ModalEditStaffInfo: React.FC<IStaffInfo> = ({ showModal = false, staffID =
             {/* <Input /> */}
           </Form.Item>
         )}
-        <Form.Item
-          name={staffID ? 'Username' : 'username'}
-          label="Username"
-          rules={[{ required: true, message: 'Tên đăng nhập không thể trống!' }]}
-        >
-          <Input disabled={staffID ? true : false} />
-        </Form.Item>
         {!staffID && (
           <React.Fragment>
+            <Form.Item
+              name="username"
+              label="Username"
+              rules={[{ required: true, message: 'Tên đăng nhập không thể trống!' }]}
+            >
+              <Input />
+            </Form.Item>
             <Form.Item
               name="password"
               label="Mật khẩu"
@@ -212,7 +211,7 @@ const ModalEditStaffInfo: React.FC<IStaffInfo> = ({ showModal = false, staffID =
         <Form.Item
           name="DisplayName"
           label="Tên nhân viên"
-          rules={[{ required: true, message: 'Tên nhân viên không thể trống!' }]}
+          rules={[{ required: true, message: 'Tên không thể trống!' }]}
         >
           <Input />
         </Form.Item>
@@ -227,7 +226,7 @@ const ModalEditStaffInfo: React.FC<IStaffInfo> = ({ showModal = false, staffID =
           <Input
             addonBefore={
               <Form.Item name="prefix" noStyle>
-                <Select style={{ width: 70 }} defaultValue={'84'}>
+                <Select style={{ width: 70 }}>
                   <Option value="84">+84</Option>
                 </Select>
               </Form.Item>
