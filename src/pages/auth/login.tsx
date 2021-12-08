@@ -10,82 +10,104 @@ import Layout from 'Layouts';
 import { login } from 'core/services/user';
 import { useAuth } from '@contexts/AuthContext';
 import withoutAuth from '@hocs/withoutAuth';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+
+const schema = yup
+  .object({
+    username: yup.string().required('Tên đăng nhập không thể trống'),
+    password: yup.string().required('Mật khẩu không thể trống'),
+  })
+  .required();
 
 function Login() {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(schema),
+  });
   const { setAuthenticated } = useAuth();
+  const [message, setMessage] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
+
   const onCheckbox = () => {
     // v will be true or false
   };
 
-  const [user, setUser] = useState<object>({
-    username: '',
-    password: '',
-  });
-
-  const onSubmit = async (e: any) => {
-    e.preventDefault();
-    try {
-      const resp: any = await login(user);
-      const res = resp.data?.Data;
-      if (res?.account) {
-        setAuthenticated(true);
-        console.log(`res`, res);
-        Cookie.set('accessToken', res?.token, { expires: 7 });
-        localStorage.setItem('roles', JSON.stringify(res.roles));
-        localStorage.setItem('username', res?.account?.Username);
-      }
-    } catch (err) {
-      console.log('err', err);
-    }
+  const onSubmit = (data: any) => {
+    setLoading(true);
+    login(data)
+      .then((res) => {
+        const data = res.data?.Data;
+        if (data?.account) {
+          setAuthenticated(true);
+          Cookie.set('accessToken', data?.token, { expires: 7 });
+          localStorage.setItem('roles', JSON.stringify(data.roles));
+          localStorage.setItem('username', data?.account?.Username);
+        }
+      })
+      .catch((error) => {
+        console.log('error', error);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   return (
-    <Layout title="Login">
-      <Auth title="Login" subTitle="Hello! Login with your email">
-        <form onSubmit={onSubmit}>
+    <Layout title="Đăng nhập">
+      <Auth title="Đăng Nhập" subTitle="Đăng nhập để quản lý shop ngay!">
+        <form onSubmit={handleSubmit(onSubmit)}>
           <InputGroup fullWidth>
             <input
               type="text"
-              placeholder="Email Address"
-              onChange={(e) =>
-                setUser({
-                  ...user,
-                  username: e.target.value,
-                })
-              }
+              placeholder="Username"
+              // onChange={(e) =>
+              //   setUser({
+              //     ...user,
+              //     username: e.target.value,
+              //   })
+              // }
+              {...register('username')}
             />
           </InputGroup>
+          <p>{errors.username?.message}</p>
           <InputGroup fullWidth>
             <input
               type="password"
               placeholder="Password"
-              onChange={(e) =>
-                setUser({
-                  ...user,
-                  password: e.target.value,
-                })
-              }
+              // onChange={(e) =>
+              //   setUser({
+              //     ...user,
+              //     password: e.target.value,
+              //   })
+              // }
+              {...register('password')}
             />
           </InputGroup>
-          <Group>
+          <p>{errors.password?.message}</p>
+          {/* <Group>
             <Checkbox checked onChange={onCheckbox}>
               Remember me
             </Checkbox>
             <Link href="/auth/request-password">
-              <a>Forgot Password?</a>
+              <a>Quên mật khẩu?</a>
             </Link>
-          </Group>
-          <Button status="Success" type="submit" shape="SemiRound" fullWidth>
-            Login
+          </Group> */}
+          <Button status="Success" type="submit" shape="SemiRound" fullWidth disabled={loading}>
+            Đăng Nhập
           </Button>
         </form>
-        <Socials />
-        <p>
+        {/* <Socials /> */}
+        {/* <p>
           Don&apos;t have account?{' '}
           <Link href="/auth/register">
             <a>Register</a>
           </Link>
-        </p>
+        </p> */}
       </Auth>
     </Layout>
   );
