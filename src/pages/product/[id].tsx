@@ -50,6 +50,12 @@ interface Product {
   tags: Array<object>;
 }
 
+const imgStyle = {
+  width: 100,
+  height: 'auto',
+  // maxHeight: 150,
+};
+
 function index() {
   const router = useRouter();
   const { id } = router.query; // object destructuring
@@ -59,6 +65,8 @@ function index() {
   const [imgFile, setImgFile] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [imgMultiple] = useState(false);
+  const [imageUrl, setImageUrl] = useState('');
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     LoadDetail();
@@ -77,16 +85,21 @@ function index() {
   };
 
   const LoadDetail = () => {
+    setLoading(true);
     ProductDetail(id!.toString())
       .then((resp) => {
         const data = resp.data?.Data?.product;
         if (data) {
           setProductMeta(resp.data?.Data?.product_meta);
+          setImageUrl(resp.data?.Data.product.ProductImage);
           fillForm(resp.data?.Data.product);
         }
       })
       .catch((error) => {
         console.log(error);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   };
 
@@ -111,6 +124,7 @@ function index() {
       ...values,
       ProductId: id,
     };
+    setLoading(true);
     ProductUpdate(params)
       .then((resp) => {
         if (resp.data.Success) {
@@ -121,7 +135,14 @@ function index() {
       .catch((error) => {
         console.log('error', error);
         openNotification('Sửa thông tin sản phẩm', 'Sửa thông tin sản phẩm thất bại');
+      })
+      .finally(() => {
+        setLoading(false);
       });
+  };
+
+  const handleImageTxtChange = ({ target }: any) => {
+    setImageUrl(target);
   };
 
   const handleProductImage = (params: object[]) => {
@@ -137,28 +158,41 @@ function index() {
   const handleSelectChange = () => {};
 
   const handleUpload = () => {
+    setLoading(true);
     handleCloudinaryUpload(imgFile)
       .then((res: any) => {
         form.setFieldsValue({
           ProductImage: res.url,
         });
+        setImageUrl(res.url);
       })
       .catch((err: any) => {
         console.error(err);
         openNotification('Upload Ảnh', 'Đã có lỗi');
+      })
+      .finally(() => {
+        setLoading(false);
       });
   };
 
   return (
-    <Layout title={'Sản Phẩm'}>
+    <Layout title={'Thông Tin Sản Phẩm'}>
       <Form {...formItemLayout} form={form} name="register" onFinish={handleUpdateProduct} scrollToFirstError>
-        <Form.Item name="ProductCode" label="Mã Sản Phẩm" preserve>
-          <Input disabled={true} />
+        <Form.Item
+          name="ProductCode"
+          label="Mã sản shẩm"
+          rules={[{ required: true, message: 'Mã sản phẩm không thể trống!' }]}
+        >
+          <Input />
         </Form.Item>
-        <Form.Item name="Title" label="Tên">
+        <Form.Item
+          name="Title"
+          label="Tên sản phẩm"
+          rules={[{ required: true, message: 'Tên sản phẩm không thể trống!' }]}
+        >
           <Input onChange={handleTitleChange} />
         </Form.Item>
-        <Form.Item name="Category" label="Phân loại">
+        <Form.Item name="ProductCategories" label="Phân loại">
           {categoryData && categoryData.length > 0 && (
             <Select
               mode="multiple"
@@ -177,27 +211,42 @@ function index() {
             </Select>
           )}
         </Form.Item>
-        <Form.Item name="Price" label="Giá">
+        <Form.Item
+          name="ImportPrice"
+          label="Giá Nhập"
+          rules={[{ required: true, message: 'Giá nhập không thể trống!' }]}
+        >
           <Input />
         </Form.Item>
-        <Form.Item name="Quantity" label="Số Lượng">
+        <Form.Item name="Price" label="Giá bán" rules={[{ required: true, message: 'Giá bán không thể trống!' }]}>
+          <Input />
+        </Form.Item>
+        <Form.Item name="Quantity" label="Số lượng" rules={[{ required: true, message: 'Số lượng không thể trống!' }]}>
           <Input />
         </Form.Item>
         <Form.Item name="Slug" label="Slug" preserve>
           <Input disabled={true} />
         </Form.Item>
-        <Form.Item name="Discount" label="Giảm Giá (%)">
+        <Form.Item name="Discount" label="Giảm giá (%)">
           <Input />
         </Form.Item>
-        <Form.Item name="ProductImage" label="Ảnh Chính">
-          <Input />
+        <Form.Item
+          name="ProductImage"
+          label="Ảnh hiển thị"
+          rules={[{ required: true, message: 'Ảnh hiển thị không thể trống!' }]}
+          extra={'Chèn link ảnh hoặc tải lên'}
+        >
+          <Input onChange={handleImageTxtChange} />
         </Form.Item>
         <Form.Item>
+          <div>
+            <img src={imageUrl && imageUrl} style={imgStyle} alt={imageUrl} />
+          </div>
           <Button
             type="primary"
             onClick={handleUpload}
-            disabled={!imgFile}
-            loading={uploading}
+            disabled={!imgFile || loading}
+            loading={uploading || loading}
             style={{ marginTop: 16 }}
           >
             {uploading ? 'Đang tải' : 'Tải ảnh lên'}
@@ -212,34 +261,48 @@ function index() {
             <Button icon={<UploadOutlined />}>Chọn File</Button>
           </Upload>
         </Form.Item>
-        <Form.Item name="Content" label="Nội Dung">
+        <Form.Item name="Content" label="Nội dung">
           <Input />
         </Form.Item>
-        <Form.Item name="Summary" label="Tóm Tắt">
+        <Form.Item name="Summary" label="Tóm tắt">
           <Input />
-        </Form.Item>
-        <Form.Item name="CreateDate" label="Ngày Tạo" preserve>
-          <Input disabled={true} />
         </Form.Item>
 
-        {/* <div>
-          <h4>Ảnh</h4>
-          {productMeta && productMeta.length > 0 ? (
-            productMeta.map((item: ProductMeta, index: number) => (
-              <Form.Item name="ProductImage" label="Product Image" key={index}>
-                <Input defaultValue={item.Url} />
-              </Form.Item>
-            ))
-          ) : (
-            <Form.Item name="ProductImage" label="Product Image">
-              <Input />
-            </Form.Item>
-          )}
-        </div> */}
+        {imgMultiple && (
+          <div>
+            <h4>Ảnh phụ</h4>
+            <Form.List name="ProductMeta">
+              {(fields, { add, remove }) => (
+                <>
+                  {fields.map((field, index) => (
+                    <>
+                      <Form.Item {...field} label={`Ảnh ${index + 1}`} name={[field.name, 'product_meta']}>
+                        <Input style={{ width: '60%' }} />
+                        <MinusCircleOutlined onClick={() => remove(field.name)} />
+                      </Form.Item>
+                    </>
+                  ))}
+
+                  <Form.Item>
+                    <Button
+                      type="dashed"
+                      style={{ width: '100px' }}
+                      onClick={() => add()}
+                      block
+                      icon={<PlusOutlined />}
+                    >
+                      Add
+                    </Button>
+                  </Form.Item>
+                </>
+              )}
+            </Form.List>
+          </div>
+        )}
 
         <Form.Item {...tailFormItemLayout}>
           <Space>
-            <Button type="primary" htmlType="submit">
+            <Button type="primary" htmlType="submit" loading={loading} disabled={loading}>
               Cập Nhật
             </Button>
           </Space>

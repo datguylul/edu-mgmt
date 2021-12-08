@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Layout from 'Layouts';
 import withAuth from '@hocs/withAuth';
-import { Table, Space, Pagination, notification, Modal, Tag } from 'antd';
+import { Table, Space, Pagination, Button, Input, Modal, Tag, Row, Col, Select } from 'antd';
 import Link from 'next/link';
 import { OrderList, OrderDelete } from 'core/services/product';
 import OrderDetailModal from './OrderDetailModal';
@@ -12,9 +12,11 @@ import {
   CloseCircleOutlined,
   ExclamationCircleOutlined,
   ClockCircleOutlined,
-  MinusCircleOutlined,
+  FormOutlined,
 } from '@ant-design/icons';
 import { openNotification } from '@utils/Noti';
+
+const { Option } = Select;
 
 function index() {
   const [productData, setProductData] = useState<any>();
@@ -92,7 +94,7 @@ function index() {
         icon = <ClockCircleOutlined />;
         break;
       case 3:
-        icon = <CheckCircleOutlined spin />;
+        icon = <CheckCircleOutlined />;
         break;
       case 4:
         icon = <ExclamationCircleOutlined />;
@@ -176,7 +178,7 @@ function index() {
       key: 'action',
       render: (text: any, record: any) => (
         <Space size="middle">
-          <a onClick={() => openDetailModal(record.OrdersId)}>Detail</a>
+          <FormOutlined onClick={() => openDetailModal(record.OrdersId)} />
         </Space>
       ),
     },
@@ -191,8 +193,45 @@ function index() {
     setCurrentPage(page);
   };
 
+  const handleAddNew = () => {
+    setOrdersId('');
+    setShowModal(true);
+  };
+
   return (
     <Layout title={'Đơn Hàng'}>
+      <div>
+        <Row>
+          <Col span={18}>
+            <Input placeholder={'Tìm kiếm'} onChange={() => null} width="50%" />
+          </Col>
+          <Col span={6}>
+            <Button type="primary" onClick={getOrderList}>
+              Tìm kiếm
+            </Button>
+          </Col>
+        </Row>
+        <Row>
+          <Col span={12}>
+            <Button type="primary" onClick={handleAddNew}>
+              Thêm mới
+            </Button>
+          </Col>
+          <Col span={12}>
+            <Select defaultValue={'ID 0-9'} style={{ width: 120 }} onChange={() => null}>
+              <Option value={'work_name_asc'}>Công Việc A-Z</Option>
+              <Option value={'work_name_desc'}>Công Việc Z-A</Option>
+              <Option value={'empl_name_asc'}>Tên A-Z</Option>
+              <Option value={'empl_name_desc'}>Tên Z-A</Option>
+              <Option value={'id_asc'}>ID 0-9</Option>
+              <Option value={'id_desc'}>ID 9-0</Option>
+              {/* {sortSelect.map((item, index) => {
+            <Option value={item.name} key={index}>{item.title}</Option>
+          })} */}
+            </Select>
+          </Col>
+        </Row>
+      </div>
       <div>
         <Table columns={columns} dataSource={productData} pagination={false} />
         <Pagination defaultCurrent={currentPage} onChange={onPagingChange} current={currentPage} total={totalRecord} />
@@ -207,7 +246,7 @@ function index() {
           footer={null}
           className="edit-profile-modal"
         >
-          <OrderDetailModal ordersId={ordersId} onCloseModal={() => setShowModal(false)} />
+          <OrderDetailModal showModal={showModal} ordersId={ordersId} onCloseModal={() => setShowModal(false)} />
         </Modal>
       </div>
     </Layout>

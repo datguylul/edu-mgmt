@@ -36,8 +36,10 @@ const tailFormItemLayout = {
 };
 const ModalEditStaffInfo: React.FC<IStaffInfo> = ({ categoryId, onCloseModal, onSubmitAndReload }) => {
   const [form] = Form.useForm();
+  const [loading, setLoading] = useState(false);
 
   const LoadDetail = () => {
+    setLoading(true);
     CategoryDetail(categoryId!)
       .then((resp) => {
         const data = resp.data.Data?.category;
@@ -47,6 +49,9 @@ const ModalEditStaffInfo: React.FC<IStaffInfo> = ({ categoryId, onCloseModal, on
       })
       .catch((error) => {
         console.log(error);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   };
 
@@ -62,6 +67,7 @@ const ModalEditStaffInfo: React.FC<IStaffInfo> = ({ categoryId, onCloseModal, on
 
   const handleSubmit = (values: any) => {
     if (categoryId && categoryId !== '') {
+      setLoading(true);
       CategoryUpdate(values)
         .then((resp) => {
           if (resp.data.Success) {
@@ -73,8 +79,12 @@ const ModalEditStaffInfo: React.FC<IStaffInfo> = ({ categoryId, onCloseModal, on
         .catch((error) => {
           console.log('error', error);
           openNotification('Cập nhật phân loại', 'Cập nhật phân loại thất bại');
+        })
+        .finally(() => {
+          setLoading(false);
         });
     } else {
+      setLoading(true);
       CategoryAdd(values)
         .then((resp) => {
           if (resp.data.Success) {
@@ -86,6 +96,9 @@ const ModalEditStaffInfo: React.FC<IStaffInfo> = ({ categoryId, onCloseModal, on
         .catch((error) => {
           console.log('error', error);
           openNotification('Thêm mới phân loại', 'Thêm mới phân loại thất bại');
+        })
+        .finally(() => {
+          setLoading(false);
         });
     }
   };
@@ -119,10 +132,18 @@ const ModalEditStaffInfo: React.FC<IStaffInfo> = ({ categoryId, onCloseModal, on
             <Input disabled={true} />
           </Form.Item>
         )}
-        <Form.Item name="CategoryCode" label="Mã phân loại">
+        <Form.Item
+          name="CategoryCode"
+          label="Mã phân loại"
+          rules={[{ required: true, message: 'Mã phân loại không thể trống!' }]}
+        >
           <Input />
         </Form.Item>
-        <Form.Item name="Title" label="Tên phân loại">
+        <Form.Item
+          name="Title"
+          label="Tên phân loại"
+          rules={[{ required: true, message: 'Tên phân loại không thể trống!' }]}
+        >
           <Input onChange={handleTitleChange} />
         </Form.Item>
         <Form.Item name="Slug" label="Link hiển thị" preserve>
@@ -133,7 +154,7 @@ const ModalEditStaffInfo: React.FC<IStaffInfo> = ({ categoryId, onCloseModal, on
         </Form.Item>
         <Form.Item {...tailFormItemLayout}>
           <Space>
-            <Button type="primary" htmlType="submit">
+            <Button type="primary" htmlType="submit" loading={loading} disabled={loading}>
               {categoryId && categoryId !== '' ? 'Cập nhật' : 'Thêm mới'}
             </Button>
             <Button htmlType="button" onClick={onCloseModal}>

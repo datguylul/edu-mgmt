@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import Layout from 'Layouts';
 import withAuth from '@hocs/withAuth';
-import { Table, Modal, Checkbox, Pagination, DatePicker, Input, Button, Select, Space } from 'antd';
+import { Table, Modal, Checkbox, Pagination, DatePicker, Input, Button, Select, Space, Row, Col } from 'antd';
 import { CategoryList } from 'core/services/product';
 import ModalCategory from './ModalCategory';
-import Link from 'next/link';
+import { FormOutlined, DeleteOutlined } from '@ant-design/icons';
 const { Option } = Select;
 
 function index() {
@@ -60,7 +60,9 @@ function index() {
       key: 'action',
       render: (text: any, record: any) => (
         <Space size="middle">
-          <a onClick={() => openDetailModal(record.CategoryId)}>Chi tiết</a>
+          <FormOutlined onClick={() => openDetailModal(record.CategoryId)} />
+          <DeleteOutlined onClick={() => openDetailModal(record.CategoryId)} />
+          {/* <a >Chi tiết</a> */}
         </Space>
       ),
     },
@@ -95,26 +97,36 @@ function index() {
   return (
     <Layout title={'Phân loại sản phẩm'}>
       <div>
-        <div>
-          <Input placeholder={'Search'} onChange={handleSearchChange} width="50%" />
-          <Button type="primary" onClick={getCategoryList}>
-            Tìm kiếm
-          </Button>
-        </div>
-        <Select defaultValue={'ID 0-9'} style={{ width: 120 }} onChange={handleSelectChange}>
-          <Option value={'work_name_asc'}>Công Việc A-Z</Option>
-          <Option value={'work_name_desc'}>Công Việc Z-A</Option>
-          <Option value={'empl_name_asc'}>Tên A-Z</Option>
-          <Option value={'empl_name_desc'}>Tên Z-A</Option>
-          <Option value={'id_asc'}>ID 0-9</Option>
-          <Option value={'id_desc'}>ID 9-0</Option>
-          {/* {sortSelect.map((item, index) => {
+        <Row>
+          <Col span={18}>
+            <Input placeholder={'Tìm kiếm'} onChange={handleSearchChange} width="50%" />
+          </Col>
+          <Col span={6}>
+            <Button type="primary" onClick={getCategoryList}>
+              Tìm kiếm
+            </Button>
+          </Col>
+        </Row>
+        <Row>
+          <Col span={12}>
+            <Button type="primary" onClick={handleAddNew}>
+              Thêm mới
+            </Button>
+          </Col>
+          <Col span={12}>
+            <Select defaultValue={'ID 0-9'} style={{ width: 120 }} onChange={handleSelectChange}>
+              <Option value={'work_name_asc'}>Công Việc A-Z</Option>
+              <Option value={'work_name_desc'}>Công Việc Z-A</Option>
+              <Option value={'empl_name_asc'}>Tên A-Z</Option>
+              <Option value={'empl_name_desc'}>Tên Z-A</Option>
+              <Option value={'id_asc'}>ID 0-9</Option>
+              <Option value={'id_desc'}>ID 9-0</Option>
+              {/* {sortSelect.map((item, index) => {
             <Option value={item.name} key={index}>{item.title}</Option>
           })} */}
-        </Select>
-        <Button type="primary" onClick={handleAddNew}>
-          Thêm mới
-        </Button>
+            </Select>
+          </Col>
+        </Row>
       </div>
       <div>
         <Table columns={columns} dataSource={categoryData} pagination={false} />

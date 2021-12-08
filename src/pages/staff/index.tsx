@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import Layout from 'Layouts';
 import withAuth from '@hocs/withAuth';
-import { Table, Modal, Checkbox, Pagination, DatePicker, Input, Button, Select, Space } from 'antd';
+import { Table, Modal, Row, Col, DatePicker, Input, Button, Select, Space } from 'antd';
 import ModalEditStaffInfo from './ModalEditStaffInfo';
 import { getListStaff, deleteStaff } from 'core/services/staff';
 import { openNotification } from '@utils/Noti';
+import { FormOutlined } from '@ant-design/icons';
 
 const { Option } = Select;
 
@@ -67,8 +68,8 @@ function index() {
       title: 'Action',
       render: (record: any) => (
         <Space size="middle">
-          <a onClick={() => openDetailModal(record.AccountId)}>Detail </a>
-          {/* <a onClick={() => handleDeleteStaff(record.AccountId)}>Delete</a> */}
+          <FormOutlined onClick={() => openDetailModal(record.AccountId)} />
+          {/* <a onClick={() => openDetailModal(record.AccountId)}>Detail </a> */}
         </Space>
       ),
     },
@@ -93,26 +94,36 @@ function index() {
         {role && role[0]?.RoleId === 1 ? (
           <React.Fragment>
             <div>
-              <div>
-                <Input placeholder={'Search'} onChange={handleSearchChange} width="50%" />
-                <Button type="primary" onClick={getStaffList}>
-                  Tìm kiếm
-                </Button>
-              </div>
-              <Select defaultValue={'ID 0-9'} style={{ width: 120 }} onChange={handleSelectChange}>
-                <Option value={'work_name_asc'}>Công Việc A-Z</Option>
-                <Option value={'work_name_desc'}>Công Việc Z-A</Option>
-                <Option value={'empl_name_asc'}>Tên A-Z</Option>
-                <Option value={'empl_name_desc'}>Tên Z-A</Option>
-                <Option value={'id_asc'}>ID 0-9</Option>
-                <Option value={'id_desc'}>ID 9-0</Option>
-                {/* {sortSelect.map((item, index) => {
-                <Option value={item.name} key={index}>{item.title}</Option>
-              })} */}
-              </Select>
-              <Button type="primary" onClick={handleAddNew}>
-                Thêm mới
-              </Button>
+              <Row>
+                <Col span={18}>
+                  <Input placeholder={'Tìm kiếm'} onChange={() => null} width="50%" />
+                </Col>
+                <Col span={6}>
+                  <Button type="primary" onClick={getStaffList}>
+                    Tìm kiếm
+                  </Button>
+                </Col>
+              </Row>
+              <Row>
+                <Col span={12}>
+                  <Button type="primary" onClick={handleAddNew}>
+                    Thêm mới
+                  </Button>
+                </Col>
+                <Col span={12}>
+                  <Select defaultValue={'ID 0-9'} style={{ width: 120 }} onChange={() => null}>
+                    <Option value={'work_name_asc'}>Công Việc A-Z</Option>
+                    <Option value={'work_name_desc'}>Công Việc Z-A</Option>
+                    <Option value={'empl_name_asc'}>Tên A-Z</Option>
+                    <Option value={'empl_name_desc'}>Tên Z-A</Option>
+                    <Option value={'id_asc'}>ID 0-9</Option>
+                    <Option value={'id_desc'}>ID 9-0</Option>
+                    {/* {sortSelect.map((item, index) => {
+            <Option value={item.name} key={index}>{item.title}</Option>
+          })} */}
+                  </Select>
+                </Col>
+              </Row>
             </div>
             <div>
               <Table columns={columns} dataSource={listStaff} />

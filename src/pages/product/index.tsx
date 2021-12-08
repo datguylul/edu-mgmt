@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import Layout from 'Layouts';
 import withAuth from '@hocs/withAuth';
-import { Table, Space, Pagination } from 'antd';
-import axios from 'axios';
-import Cookies from 'js-cookie';
-import { parse } from 'path/posix';
+import { Table, Row, Col, Pagination, DatePicker, Input, Button, Select, Space } from 'antd';
 import Link from 'next/link';
 import { ProductList, DeleteProduct } from 'core/services/product';
-import Image from 'next/image';
+import { useRouter } from 'next/router';
+import { FormOutlined } from '@ant-design/icons';
+
+const { Option } = Select;
 
 function index() {
+  const router = useRouter();
   const [productData, setProductData] = useState<any>();
   const [totalRecord, setTotalRecord] = useState<number>(0);
   const [pageSize] = useState<number>(10);
@@ -91,7 +92,7 @@ function index() {
       render: (text: any, record: any) => (
         <Space size="middle">
           <Link href={`product/${record.ProductId}`}>
-            <a>Detail</a>
+            <FormOutlined />
           </Link>
           {role && role[0]?.RoleId === 1 ? (
             <a
@@ -113,8 +114,48 @@ function index() {
     setCurrentPage(page);
   };
 
+  const handleSelectChange = (value: any) => {
+    setSort(value);
+  };
+
+  const handleSearchChange = ({ target }: any) => {
+    setSearch(target.value);
+  };
+
   return (
     <Layout title={'Sản Phẩm'}>
+      <div>
+        <Row>
+          <Col span={18}>
+            <Input placeholder={'Tìm kiếm'} onChange={() => null} width="50%" />
+          </Col>
+          <Col span={6}>
+            <Button type="primary" onClick={getProductList}>
+              Tìm kiếm
+            </Button>
+          </Col>
+        </Row>
+        <Row>
+          <Col span={12}>
+            <Button type="primary" onClick={() => router.push('/product/product-create')}>
+              Thêm mới
+            </Button>
+          </Col>
+          <Col span={12}>
+            <Select defaultValue={'ID 0-9'} style={{ width: 120 }} onChange={() => null}>
+              <Option value={'work_name_asc'}>Công Việc A-Z</Option>
+              <Option value={'work_name_desc'}>Công Việc Z-A</Option>
+              <Option value={'empl_name_asc'}>Tên A-Z</Option>
+              <Option value={'empl_name_desc'}>Tên Z-A</Option>
+              <Option value={'id_asc'}>ID 0-9</Option>
+              <Option value={'id_desc'}>ID 9-0</Option>
+              {/* {sortSelect.map((item, index) => {
+            <Option value={item.name} key={index}>{item.title}</Option>
+          })} */}
+            </Select>
+          </Col>
+        </Row>
+      </div>
       <div>
         <Table columns={columns} dataSource={productData} pagination={false} />
         <Pagination defaultCurrent={currentPage} onChange={onPagingChange} current={currentPage} total={totalRecord} />
