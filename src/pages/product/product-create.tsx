@@ -7,6 +7,7 @@ import { Form, Input, Space, Cascader, Select, Row, Col, Checkbox, Button, notif
 import { MinusCircleOutlined, PlusOutlined, UploadOutlined } from '@ant-design/icons';
 import { handleCloudinaryUpload } from 'core/services/cloudinaryUpload';
 import { string_to_slug } from '@utils/StringUtil';
+import { openNotification } from '@utils/Noti';
 
 const { Option } = Select;
 
@@ -71,15 +72,6 @@ function index() {
       .catch((error: any) => {
         console.log('error', error);
       });
-  };
-
-  const openNotification = (Title: string, Content: string) => {
-    notification.open({
-      message: Title,
-      description: Content,
-      onClick: () => {},
-      placement: 'bottomRight',
-    });
   };
 
   const handleUpdateProduct = (values: any) => {

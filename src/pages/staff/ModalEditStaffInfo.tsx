@@ -4,6 +4,7 @@ import router, { useRouter } from 'next/router';
 import { Checkbox, Row, Col, Form, Input, Button, Space } from 'antd';
 import { getStaffDetail, editStaffDetail } from 'core/services/staff';
 import { getRole, getRoleName } from 'core/services/role';
+import { openNotification } from '@utils/Noti';
 
 interface IStaffInfo {
   staffID?: string;
@@ -99,9 +100,15 @@ const ModalEditStaffInfo: React.FC<IStaffInfo> = ({ showModal = false, staffID, 
     editStaffDetail(params)
       .then((resp) => {
         console.log(resp.data);
+        if (!resp.data.Success) {
+          openNotification('Cập nhật nhân viên', resp.data.Message);
+        } else {
+          openNotification('Cập nhật nhân viên', 'Cập nhật nhân viên thành công');
+        }
       })
       .catch((error) => {
         console.log('error', error);
+        openNotification('Cập nhật nhân viên', 'Có lỗi khi lấy cập nhật nhân viên');
       })
       .finally(() => {
         setLoading(false);

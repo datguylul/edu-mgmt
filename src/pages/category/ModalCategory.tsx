@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import { Checkbox, Row, Col, Form, Input, Button, Space, notification } from 'antd';
 import { CategoryAdd, CategoryDetail, CategoryUpdate } from '@core/services/product';
 import { string_to_slug } from '@utils/StringUtil';
+import { openNotification } from '@utils/Noti';
 
 interface IStaffInfo {
   categoryId?: string;
@@ -89,14 +90,14 @@ const ModalEditStaffInfo: React.FC<IStaffInfo> = ({ categoryId, onCloseModal, on
     }
   };
 
-  const openNotification = (Title: string, Content: string) => {
-    notification.open({
-      message: Title,
-      description: Content,
-      onClick: () => {},
-      placement: 'bottomRight',
-    });
-  };
+  // const openNotification = (Title: string, Content: string) => {
+  //   notification.open({
+  //     message: Title,
+  //     description: Content,
+  //     onClick: () => {},
+  //     placement: 'bottomRight',
+  //   });
+  // };
 
   const handleTitleChange = ({ target }: any) => {
     form.setFieldsValue({

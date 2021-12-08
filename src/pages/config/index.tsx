@@ -5,6 +5,7 @@ import Layout from 'Layouts';
 import withAuth from '@hocs/withAuth';
 import { Form, Input, Space, Cascader, Select, Row, Col, Checkbox, Button, notification } from 'antd';
 import { getAPIHostName, setAPIHostName } from '@utils/APIHostUtil';
+import { openNotification } from '@utils/Noti';
 
 const formItemLayout = {
   labelCol: {
@@ -42,15 +43,6 @@ function index() {
     }
     fillForm();
   }, [hostUrl]);
-
-  const openNotification = (Title: string, Content: string) => {
-    notification.open({
-      message: Title,
-      description: Content,
-      onClick: () => {},
-      placement: 'bottomRight',
-    });
-  };
 
   const handleUpdateProduct = (values: any) => {
     console.log(getAPIHostName());

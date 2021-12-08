@@ -7,17 +7,22 @@ import Cookies from 'js-cookie';
 import ModalEditStaffInfo from './ModalEditStaffInfo';
 import { getListStaff, deleteStaff } from 'core/services/staff';
 import router from 'next/router';
+import { openNotification } from '@utils/Noti';
 
 function index() {
   const [role, setRole] = useState<any>();
   const [listStaff, setListStaff] = useState<any>();
   const [showModal, setShowModal] = React.useState<boolean>(false);
   const [staffID, setStaffID] = useState<string>('');
+
   useEffect(() => {
     let value = localStorage.getItem('roles') ?? '';
     setRole(JSON.parse(value));
-    getStaffList();
-  }, []);
+
+    if (!showModal) {
+      getStaffList();
+    }
+  }, [showModal]);
 
   const getStaffList = async () => {
     getListStaff()
@@ -29,6 +34,7 @@ function index() {
       })
       .catch((error) => {
         console.log('error', error);
+        openNotification('Danh sách nhân viên', 'Có lỗi khi lấy danh sách nhân viên');
       });
   };
 

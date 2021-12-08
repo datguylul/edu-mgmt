@@ -14,6 +14,7 @@ import {
   ClockCircleOutlined,
   MinusCircleOutlined,
 } from '@ant-design/icons';
+import { openNotification } from '@utils/Noti';
 
 function index() {
   const [productData, setProductData] = useState<any>();
@@ -22,15 +23,6 @@ function index() {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [ordersId, setOrdersId] = useState<string>('');
-
-  const openNotification = (Title: string, Content: string) => {
-    notification.open({
-      message: Title,
-      description: Content,
-      onClick: () => {},
-      placement: 'bottomRight',
-    });
-  };
 
   useEffect(() => {
     if (!showModal) {
@@ -45,20 +37,21 @@ function index() {
         setTotalRecord(resp.data?.TotalRecord);
       })
       .catch((error) => {
+        openNotification('Danh sách đơn hàng', 'Có lỗi khi lấy danh sách đơn hàng');
         console.log('error', error);
       });
   };
 
   const deleteOrder = (id: string) => {
-    OrderDelete(id)
-      .then((resp) => {
-        console.log(resp.data);
-        openNotification('Xóa đơn hàng thành công', 'Thành công');
-      })
-      .catch((error) => {
-        console.log('error', error);
-        openNotification('Xóa đơn hàng thất bại', 'Thất bại');
-      });
+    // OrderDelete(id)
+    //   .then((resp) => {
+    //     console.log(resp.data);
+    //     openNotification('Xóa đơn hàng thành công', 'Thành công');
+    //   })
+    //   .catch((error) => {
+    //     console.log('error', error);
+    //     openNotification('Xóa đơn hàng thất bại', 'Thất bại');
+    //   });
   };
 
   const getOrderStatusColor = (status: number) => {

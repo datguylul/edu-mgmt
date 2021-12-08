@@ -16,13 +16,14 @@ import SEO, { SEOProps } from 'components/SEO';
 import { io } from 'socket.io-client';
 import { notification } from 'antd';
 import { setAPIHostName } from '@utils/APIHostUtil';
+import { openNotification } from '@utils/Noti';
 
 const getDefaultTheme = (): DefaultTheme['name'] => {
   if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
     return localStorage.getItem('theme') as DefaultTheme['name'];
   } else {
     const hours = new Date().getHours();
-    return hours > 6 && hours < 19 ? 'default' : 'dark';
+    return hours > 6 && hours < 19 ? 'default' : 'default';
   }
 };
 
@@ -34,32 +35,24 @@ const LayoutPage: React.FC<SEOProps> = ({ children, ...rest }) => {
   const [menuState, setMenuState] = useState(false);
   const menuRef = useRef<MenuRefObject>(null);
   const [seeHeader, setSeeHeader] = useState(true);
-  let socket: any = io(process.env.REALTIME_BASE_URL || 'https://cnw-realtime.herokuapp.com');
+  // let socket: any = io(process.env.REALTIME_BASE_URL || 'https://cnw-realtime.herokuapp.com');
+  let socket: any = null;
 
   useEffect(() => {
-    if (socket) {
-      socket.on('order-placed-admin', (message: string) => {
-        // console.log('order-placed-admin', message)
-        openNotification('New Order Received', message);
-      });
-    }
+    // if (socket) {
+    //   socket.on('order-placed-admin', (message: string) => {
+    //     // console.log('order-placed-admin', message)
+    //     openNotification('New Order Received', message);
+    //   });
+    // }
   }, []);
 
   useEffect(() => {
-    const urlLocal = localStorage.getItem('@cnw/host');
-    if (urlLocal && typeof urlLocal === 'string') {
-      setAPIHostName(urlLocal);
-    }
+    // const urlLocal = localStorage.getItem('@cnw/host');
+    // if (urlLocal && typeof urlLocal === 'string') {
+    //   setAPIHostName(urlLocal);
+    // }
   }, []);
-
-  const openNotification = (Title: string, Content: string) => {
-    notification.open({
-      message: Title,
-      description: Content,
-      onClick: () => {},
-      placement: 'bottomRight',
-    });
-  };
 
   const getState = (state?: 'hidden' | 'visible' | 'compacted' | 'expanded') => {
     setSeeHeader(state !== 'compacted');
