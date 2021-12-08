@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import router, { useRouter } from 'next/router';
-
-import { Checkbox, Row, Col, Form, Input, Button, Space } from 'antd';
-import { getStaffDetail, editStaffDetail } from 'core/services/staff';
+import { Checkbox, Row, Col, Form, Input, Button, Space, Select } from 'antd';
+import { getStaffDetail, editStaffDetail, addStaff } from 'core/services/staff';
 import { getRole, getRoleName } from 'core/services/role';
 import { openNotification } from '@utils/Noti';
 
+const { Option } = Select;
 interface IStaffInfo {
   staffID?: string;
   showModal: boolean;
@@ -39,10 +39,10 @@ const tailFormItemLayout = {
     },
   },
 };
-const ModalEditStaffInfo: React.FC<IStaffInfo> = ({ showModal = false, staffID, onCloseModal }) => {
+const ModalEditStaffInfo: React.FC<IStaffInfo> = ({ showModal = false, staffID = '', onCloseModal }) => {
   const [form] = Form.useForm();
   const [rolesData, setRolesData] = useState<[RoleItem] | []>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const LoadDetail = () => {
     getStaffDetail(staffID!.toString())
@@ -97,23 +97,46 @@ const ModalEditStaffInfo: React.FC<IStaffInfo> = ({ showModal = false, staffID, 
     console.log('params', params);
     setLoading(true);
 
-    editStaffDetail(params)
-      .then((resp) => {
-        console.log(resp.data);
-        if (!resp.data.Success) {
-          openNotification('Cập nhật nhân viên', resp.data.Message);
-        } else {
-          openNotification('Cập nhật nhân viên', 'Cập nhật nhân viên thành công');
-        }
-      })
-      .catch((error) => {
-        console.log('error', error);
-        openNotification('Cập nhật nhân viên', 'Có lỗi khi lấy cập nhật nhân viên');
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    if (staffID) {
+      editStaffDetail(params)
+        .then((resp) => {
+          if (!resp.data.Success) {
+            openNotification('Cập nhật nhân viên', resp.data.Message);
+          } else {
+            openNotification('Cập nhật nhân viên', 'Cập nhật nhân viên thành công');
+          }
+        })
+        .catch((error) => {
+          console.log('error', error);
+          openNotification('Cập nhật nhân viên', 'Có lỗi khi lấy cập nhật nhân viên');
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    } else {
+      addStaff(params)
+        .then((resp) => {
+          if (!resp.data.Success) {
+            openNotification('Thêm mới nhân viên', resp.data.Message);
+          } else {
+            openNotification('Thêm mới nhân viên', 'Thêm mới nhân viên thành công');
+          }
+        })
+        .catch((error) => {
+          console.log('error', error);
+          openNotification('Thêm mới nhân viên', 'Có lỗi khi lấy cập nhật nhân viên');
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
   };
+
+  useEffect(() => {
+    if (showModal) {
+      getRolesName();
+    }
+  }, [showModal]);
 
   useEffect(() => {
     if (staffID && showModal) {
@@ -132,20 +155,86 @@ const ModalEditStaffInfo: React.FC<IStaffInfo> = ({ showModal = false, staffID, 
   return (
     <>
       <Form {...formItemLayout} form={form} name="register" onFinish={handleEditProfile} scrollToFirstError>
-        <Form.Item name="AccountId" label="ID">
-          <Input disabled={true} />
-          {/* <Input /> */}
-        </Form.Item>
-        <Form.Item name="DisplayName" label="Tên nhân viên">
+        {staffID && (
+          <Form.Item name="AccountId" label="ID">
+            <Input disabled={true} />
+            {/* <Input /> */}
+          </Form.Item>
+        )}
+        {!staffID && (
+          <React.Fragment>
+            <Form.Item
+              name="username"
+              label="Username"
+              rules={[{ required: true, message: 'Tên đăng nhập không thể trống!' }]}
+            >
+              <Input />
+            </Form.Item>
+            <Form.Item
+              name="password"
+              label="Mật khẩu"
+              rules={[
+                {
+                  required: true,
+                  message: 'Mật khẩu không thể trống',
+                },
+              ]}
+              hasFeedback
+            >
+              <Input.Password />
+            </Form.Item>
+
+            <Form.Item
+              name="confirm"
+              label="Xác nhận mật khẩu"
+              dependencies={['password']}
+              hasFeedback
+              rules={[
+                {
+                  required: true,
+                  message: 'Nhập xác nhật mật khẩu',
+                },
+                ({ getFieldValue }) => ({
+                  validator(_, value) {
+                    if (!value || getFieldValue('password') === value) {
+                      return Promise.resolve();
+                    }
+                    return Promise.reject(new Error('Xác nhận mật khẩu không khớp'));
+                  },
+                }),
+              ]}
+            >
+              <Input.Password />
+            </Form.Item>
+          </React.Fragment>
+        )}
+        <Form.Item
+          name="DisplayName"
+          label="Tên nhân viên"
+          rules={[{ required: true, message: 'Tên không thể trống!' }]}
+        >
           <Input />
         </Form.Item>
-        <Form.Item name="Email" label="Email">
+        <Form.Item name="Email" label="Email" rules={[{ type: 'email', message: 'E-mail không hợp lệ' }]}>
           <Input />
         </Form.Item>
-        <Form.Item name="Mobile" label="Số điện thoại">
-          <Input />
+        <Form.Item
+          name="Mobile"
+          label="Số điện thoại"
+          rules={[{ required: true, message: 'Số điện thoại không thể trống!' }]}
+        >
+          <Input
+            addonBefore={
+              <Form.Item name="prefix" noStyle>
+                <Select style={{ width: 70 }}>
+                  <Option value="84">+84</Option>
+                </Select>
+              </Form.Item>
+            }
+            style={{ width: '100%' }}
+          />
         </Form.Item>
-        <Form.Item name="Address" label="Địa chỉ">
+        <Form.Item name="Address" label="Địa chỉ" rules={[{ required: true, message: 'Địa chỉ không thể trống!' }]}>
           <Input />
         </Form.Item>
         <Form.Item name="RoleIds" label="Quyền" extra="Quyền Admin có tất cả các quyền khác.">
@@ -163,9 +252,15 @@ const ModalEditStaffInfo: React.FC<IStaffInfo> = ({ showModal = false, staffID, 
         </Form.Item>
         <Form.Item {...tailFormItemLayout}>
           <Space>
-            <Button type="primary" htmlType="submit" loading={loading} disabled={loading}>
-              Cập Nhật
-            </Button>
+            {staffID ? (
+              <Button type="primary" htmlType="submit" loading={loading} disabled={loading}>
+                Cập Nhật
+              </Button>
+            ) : (
+              <Button type="primary" htmlType="submit" loading={loading} disabled={loading}>
+                Thêm mới
+              </Button>
+            )}
             <Button htmlType="button" onClick={onCloseModal}>
               Huỷ
             </Button>
