@@ -92,7 +92,7 @@ function index() {
         if (data) {
           setProductMeta(resp.data?.Data?.product_meta);
           setImageUrl(resp.data?.Data.product.ProductImage);
-          fillForm(resp.data?.Data.product);
+          fillForm(resp.data?.Data);
         }
       })
       .catch((error) => {
@@ -105,18 +105,19 @@ function index() {
 
   const fillForm = (data: any) => {
     form.setFieldsValue({
-      ProductCode: data?.ProductCode,
-      ProductId: data?.ProductId,
-      Discount: data.Discount,
-      Price: data.Price.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'),
-      ImportPrice: data.ImportPrice.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'),
-      CreateDate: data.CreateDate,
-      Quantity: data.Quantity,
-      Slug: data.Slug,
-      Title: data.Title,
-      Content: data.Content,
-      Summary: data.Summary,
-      ProductImage: data.ProductImage,
+      ProductCode: data?.product?.ProductCode,
+      ProductId: data?.product?.ProductId,
+      Discount: data?.product?.Discount,
+      Price: data?.product?.Price.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'),
+      ImportPrice: data?.product?.ImportPrice.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'),
+      CreateDate: data?.product?.CreateDate,
+      Quantity: data?.product?.Quantity,
+      Slug: data?.product?.Slug,
+      Title: data?.product?.Title,
+      Content: data?.product?.Content,
+      Summary: data?.product?.Summary,
+      ProductImage: data?.product?.ProductImage,
+      ProductCategories: data?.categories.map((x: any) => x.CategoryId),
     });
   };
 
