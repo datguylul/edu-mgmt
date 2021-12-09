@@ -90,13 +90,13 @@ function index() {
     ProductAdd(params)
       .then((resp) => {
         if (resp.data.Success) {
-          openNotification('Thêm thông tin sản phẩm', 'Thêm thông tin sản phẩm thành công');
+          openNotification('Thêm sản phẩm', 'Thêm sản phẩm thành công');
           router.push('/product');
         }
       })
       .catch((error) => {
         console.log('error', error);
-        openNotification('Thêm thông tin sản phẩm', 'Sửa thông tin sản phẩm thất bại');
+        openNotification('Thêm sản phẩm', 'Thêm sản phẩm thất bại');
       })
       .finally(() => {
         setLoading(false);
@@ -136,7 +136,7 @@ function index() {
   };
 
   const handleImageTxtChange = ({ target }: any) => {
-    setImageUrl(target);
+    setImageUrl(target.value);
   };
 
   return (

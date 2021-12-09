@@ -109,6 +109,7 @@ function index() {
       ProductId: data?.ProductId,
       Discount: data.Discount,
       Price: data.Price.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'),
+      ImportPrice: data.ImportPrice.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'),
       CreateDate: data.CreateDate,
       Quantity: data.Quantity,
       Slug: data.Slug,
@@ -142,7 +143,7 @@ function index() {
   };
 
   const handleImageTxtChange = ({ target }: any) => {
-    setImageUrl(target);
+    setImageUrl(target.value);
   };
 
   const handleProductImage = (params: object[]) => {
