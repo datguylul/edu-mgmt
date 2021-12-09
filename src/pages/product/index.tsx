@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { ProductList, DeleteProduct } from 'core/services/product';
 import { useRouter } from 'next/router';
 import { FormOutlined } from '@ant-design/icons';
+import { formatNumber } from '@utils/StringUtil';
 
 const { Option } = Select;
 
@@ -17,13 +18,13 @@ function index() {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [role, setRole] = useState<any>();
   const [search, setSearch] = useState<string>('');
-  const [sort, setSort] = useState<string>('');
+  const [sort, setSort] = useState<string>('ProductCode+asc');
 
   useEffect(() => {
     let value = localStorage.getItem('roles') ?? '';
     setRole(JSON.parse(value));
     getProductList();
-  }, [currentPage]);
+  }, [currentPage, sort]);
 
   const getProductList = async () => {
     ProductList(search, sort, currentPage, pageSize)
@@ -77,6 +78,12 @@ function index() {
     {
       title: 'Price',
       dataIndex: 'Price',
+      render: (text: any) => (
+        <text>
+          {formatNumber(text)}
+          {'đ'}
+        </text>
+      ),
     },
     {
       title: 'Quantity',
@@ -85,6 +92,11 @@ function index() {
     {
       title: 'Discount',
       dataIndex: 'Discount',
+      render: (text: any) => (
+        <text>
+          {text} {'%'}
+        </text>
+      ),
     },
     {
       title: 'Action',
@@ -127,7 +139,7 @@ function index() {
       <div>
         <Row>
           <Col span={18}>
-            <Input placeholder={'Tìm kiếm'} onChange={() => null} width="50%" />
+            <Input placeholder={'Tìm kiếm'} onChange={({ target }: any) => setSearch(target.value)} width="50%" />
           </Col>
           <Col span={6}>
             <Button type="primary" onClick={getProductList}>
@@ -142,16 +154,15 @@ function index() {
             </Button>
           </Col>
           <Col span={12}>
-            <Select defaultValue={'ID 0-9'} style={{ width: 120 }} onChange={() => null}>
-              <Option value={'work_name_asc'}>Công Việc A-Z</Option>
-              <Option value={'work_name_desc'}>Công Việc Z-A</Option>
-              <Option value={'empl_name_asc'}>Tên A-Z</Option>
-              <Option value={'empl_name_desc'}>Tên Z-A</Option>
-              <Option value={'id_asc'}>ID 0-9</Option>
-              <Option value={'id_desc'}>ID 9-0</Option>
-              {/* {sortSelect.map((item, index) => {
-            <Option value={item.name} key={index}>{item.title}</Option>
-          })} */}
+            <Select defaultValue={'ProductCode+asc'} style={{ width: 120 }} onChange={(value) => setSort(value)}>
+              <Option value={'ProductCode+asc'}>Mã SP 0-9</Option>
+              <Option value={'ProductCode+desc'}>Mã SP 9-0</Option>
+              <Option value={'Title+asc'}>Tên 0-9</Option>
+              <Option value={'Title+desc'}>Tên 9-0</Option>
+              <Option value={'Price+asc'}>Giá 0-9</Option>
+              <Option value={'Price+desc'}>Giá 9-0</Option>
+              <Option value={'Quantity+asc'}>Số lượng 0-9</Option>
+              <Option value={'Quantity+desc'}>Số lượng 9-0</Option>
             </Select>
           </Col>
         </Row>

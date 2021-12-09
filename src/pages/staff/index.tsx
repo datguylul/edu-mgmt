@@ -6,6 +6,7 @@ import ModalEditStaffInfo from './ModalEditStaffInfo';
 import { getListStaff, deleteStaff } from 'core/services/staff';
 import { openNotification } from '@utils/Noti';
 import { FormOutlined } from '@ant-design/icons';
+import { formatDate } from '@utils/StringUtil';
 
 const { Option } = Select;
 
@@ -53,8 +54,20 @@ function index() {
 
   const columns = [
     {
+      title: 'Mã',
+      dataIndex: 'AccountId',
+    },
+    {
       title: 'Name',
       dataIndex: 'DisplayName',
+    },
+    {
+      title: 'Username',
+      dataIndex: 'Username',
+    },
+    {
+      title: 'SĐT',
+      dataIndex: 'Mobile',
     },
     {
       title: 'Address',
@@ -63,6 +76,7 @@ function index() {
     {
       title: 'Last login',
       dataIndex: 'LastLogin',
+      render: (date: string) => <text>{formatDate(date)}</text>,
     },
     {
       title: 'Action',

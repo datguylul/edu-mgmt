@@ -95,7 +95,6 @@ const ModalEditStaffInfo: React.FC<IStaffInfo> = ({ showModal = false, staffID =
   };
 
   const handleEditProfile = (params: any) => {
-    console.log('params', params);
     setLoading(true);
 
     if (staffID) {

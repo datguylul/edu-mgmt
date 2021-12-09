@@ -15,6 +15,7 @@ import {
   FormOutlined,
 } from '@ant-design/icons';
 import { openNotification } from '@utils/Noti';
+import { formatNumber, formatDate } from '@utils/StringUtil';
 
 const { Option } = Select;
 
@@ -25,15 +26,17 @@ function index() {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [ordersId, setOrdersId] = useState<string>('');
+  const [search, setSearch] = useState<string>('');
+  const [sort, setSort] = useState<string>('CreateDate+asc');
 
   useEffect(() => {
     if (!showModal) {
       getOrderList();
     }
-  }, [currentPage, showModal]);
+  }, [currentPage, showModal, sort]);
 
   const getOrderList = async () => {
-    OrderList(currentPage, pageSize)
+    OrderList(search, sort, currentPage, pageSize)
       .then((resp) => {
         setProductData(resp.data?.Data);
         setTotalRecord(resp.data?.TotalRecord);
@@ -112,24 +115,15 @@ function index() {
     return icon;
   };
 
-  function formatPrice(price: number | null | undefined) {
-    return price
-      ? price.toLocaleString('en-US', {
-          style: 'currency',
-          currency: 'VND',
-        })
-      : price;
-  }
-
   const columns = [
     {
       title: 'ID',
       dataIndex: 'OrdersId',
-      render: (text: any, record: any) => (
-        <Space size="middle">
-          <text onClick={() => openDetailModal(record.OrdersId)}>{text}</text>
-        </Space>
-      ),
+      // render: (text: any, record: any) => (
+      //   <Space size="middle">
+      //     <text onClick={() => openDetailModal(record.OrdersId)}>{text}</text>
+      //   </Space>
+      // ),
     },
     {
       title: 'Trạng thái',
@@ -156,7 +150,7 @@ function index() {
       dataIndex: 'CustomerName',
     },
     {
-      title: 'CustomerAddress',
+      title: 'Địa chỉ',
       dataIndex: 'CustomerAddress',
     },
     {
@@ -166,12 +160,17 @@ function index() {
     {
       title: 'Tổng',
       dataIndex: 'Total',
-      render: (total: number) => <text>{formatPrice(total)}</text>,
+      render: (total: number) => (
+        <text>
+          {formatNumber(total)}
+          {'đ'}
+        </text>
+      ),
     },
     {
       title: 'Ngày tạo',
       dataIndex: 'CreateDate',
-      render: (date: string) => <text>{new Date(date)?.toLocaleDateString()}</text>,
+      render: (date: string) => <text>{formatDate(date)}</text>,
     },
     {
       title: 'Tùy chọn',
@@ -203,7 +202,7 @@ function index() {
       <div>
         <Row>
           <Col span={18}>
-            <Input placeholder={'Tìm kiếm'} onChange={() => null} width="50%" />
+            <Input placeholder={'Tìm kiếm'} onChange={({ target }: any) => setSearch(target.value)} width="50%" />
           </Col>
           <Col span={6}>
             <Button type="primary" onClick={getOrderList}>
@@ -218,16 +217,13 @@ function index() {
             </Button>
           </Col>
           <Col span={12}>
-            <Select defaultValue={'ID 0-9'} style={{ width: 120 }} onChange={() => null}>
-              <Option value={'work_name_asc'}>Công Việc A-Z</Option>
-              <Option value={'work_name_desc'}>Công Việc Z-A</Option>
-              <Option value={'empl_name_asc'}>Tên A-Z</Option>
-              <Option value={'empl_name_desc'}>Tên Z-A</Option>
-              <Option value={'id_asc'}>ID 0-9</Option>
-              <Option value={'id_desc'}>ID 9-0</Option>
-              {/* {sortSelect.map((item, index) => {
-            <Option value={item.name} key={index}>{item.title}</Option>
-          })} */}
+            <Select defaultValue={'CreateDate+desc'} style={{ width: 120 }} onChange={(value) => setSort(value)}>
+              <Option value={'CreateDate+asc'}>Ngày tạo 0-9</Option>
+              <Option value={'CreateDate+desc'}>Ngày tạo 9-0</Option>
+              <Option value={'OrdersId+asc'}>ID 0-9</Option>
+              <Option value={'OrdersId+desc'}>ID 9-0</Option>
+              <Option value={'Status+asc'}>Trạng thái 0-9</Option>
+              <Option value={'Status+desc'}>Trạng thái 9-0</Option>
             </Select>
           </Col>
         </Row>
