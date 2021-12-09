@@ -1,10 +1,10 @@
 import { notification } from 'antd';
 
-export const openNotification = (Title: string, Content: string) => {
+export const openNotification = (Title: string, Content?: string, onNotiClick?: Function | undefined) => {
   notification.open({
     message: Title,
     description: Content,
-    onClick: () => {},
+    onClick: onNotiClick ? onNotiClick() : () => null,
     placement: 'bottomRight',
   });
 };
