@@ -1,3 +1,5 @@
+import Layout from 'Layouts';
+import withAuth from '@hocs/withAuth';
 import React, { useEffect, useState } from 'react';
 import router, { useRouter } from 'next/router';
 
@@ -8,12 +10,6 @@ import { openNotification } from '@utils/Noti';
 import { formatNumber } from '@utils/StringUtil';
 
 const { Option } = Select;
-
-interface IStaffInfo {
-  showModal: boolean;
-  ordersId?: string;
-  onCloseModal?: () => void;
-}
 
 const formItemLayout = {
   labelCol: {
@@ -44,23 +40,28 @@ const imgStyle = {
   maxHeight: 90,
 };
 
-const ModalEditStaffInfo: React.FC<IStaffInfo> = ({ showModal = false, ordersId, onCloseModal = () => {} }) => {
+function index() {
+  const router = useRouter();
+  const { id } = router.query; // object destructuring
   const [form] = Form.useForm();
   const [orderItems, setOrderItems] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const LoadDetail = () => {
     setLoading(true);
-    OrderDetail(ordersId!.toString())
+    OrderDetail(id!.toString())
       .then((resp) => {
         const data = resp.data.Data;
         if (data) {
           setOrderItems(data.items);
           fillForm(data);
+        } else {
+          openNotification('Thông tin đơn hàng', 'Có lỗi khi lấy thông tin đơn hàng');
         }
       })
       .catch((error) => {
         console.log(error);
+        openNotification('Thông tin đơn hàng', 'Có lỗi khi lấy thông tin đơn hàng');
       })
       .finally(() => {
         setLoading(false);
@@ -134,7 +135,6 @@ const ModalEditStaffInfo: React.FC<IStaffInfo> = ({ showModal = false, ordersId,
       .then((resp) => {
         if (resp.data.Success) {
           openNotification('Sửa thông tin đơn hàng', resp.data.Message || 'Sửa thông tin đơn hàng thành công');
-          onCloseModal();
         } else {
           openNotification('Sửa thông tin đơn hàng', resp.data.Message || 'Sửa thông tin đơn hàng thất bại');
         }
@@ -149,20 +149,16 @@ const ModalEditStaffInfo: React.FC<IStaffInfo> = ({ showModal = false, ordersId,
   };
 
   useEffect(() => {
-    if (showModal && ordersId) {
-      LoadDetail();
-    }
-  }, [showModal, ordersId]);
+    LoadDetail();
+  }, []);
 
   return (
-    <>
+    <Layout title={'Thông Tin Đơn Hàng'}>
       <Form {...formItemLayout} form={form} name="register" onFinish={handleEditOrder} scrollToFirstError>
-        {ordersId && (
-          <Form.Item name="orderId" label="Mã Order" preserve={true}>
-            <Input disabled={true} />
-            {/* <Input /> */}
-          </Form.Item>
-        )}
+        <Form.Item name="orderId" label="Mã Order" preserve={true}>
+          <Input disabled={true} />
+          {/* <Input /> */}
+        </Form.Item>
         <Form.Item name="customerName" label="Tên" rules={[{ required: true, message: 'Tên không thể trống!' }]}>
           <Input />
         </Form.Item>
@@ -194,21 +190,18 @@ const ModalEditStaffInfo: React.FC<IStaffInfo> = ({ showModal = false, ordersId,
         <Form.Item name="Content" label="Nội dung">
           <Input />
         </Form.Item>
-        {ordersId && <Table columns={columns} dataSource={orderItems} pagination={false} />}
+        <Table columns={columns} dataSource={orderItems} pagination={false} />
         <br />
         <Form.Item {...tailFormItemLayout}>
           <Space>
             <Button type="primary" htmlType="submit" loading={loading} disabled={loading}>
-              {ordersId ? 'Cập Nhật' : 'Thêm Mới'}
-            </Button>
-            <Button htmlType="button" onClick={onCloseModal}>
-              Hủy
+              Cập Nhật
             </Button>
           </Space>
         </Form.Item>
       </Form>
-    </>
+    </Layout>
   );
-};
+}
 
-export default ModalEditStaffInfo;
+export default withAuth(index);

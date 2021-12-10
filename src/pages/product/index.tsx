@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import Layout from 'Layouts';
 import withAuth from '@hocs/withAuth';
-import { Table, Row, Col, Pagination, DatePicker, Input, Button, Select, Space } from 'antd';
+import { Table, Row, Col, Pagination, Modal, Input, Button, Select, Space } from 'antd';
 import Link from 'next/link';
 import { ProductList, DeleteProduct } from 'core/services/product';
 import { useRouter } from 'next/router';
 import { FormOutlined } from '@ant-design/icons';
 import { formatNumber } from '@utils/StringUtil';
+import ModalProduct from './ModalProduct';
 
 const { Option } = Select;
 
 function index() {
-  const router = useRouter();
   const [productData, setProductData] = useState<any>();
   const [totalRecord, setTotalRecord] = useState<number>(0);
   const [pageSize] = useState<number>(10);
@@ -19,12 +19,22 @@ function index() {
   const [role, setRole] = useState<any>();
   const [search, setSearch] = useState<string>('');
   const [sort, setSort] = useState<string>('ProductCode+asc');
+  const [showModal, setShowModal] = React.useState<boolean>(false);
+  const [productId, setProductId] = useState<string>('');
 
   useEffect(() => {
     let value = localStorage.getItem('roles') ?? '';
     setRole(JSON.parse(value));
-    getProductList();
-  }, [currentPage, sort]);
+
+    if (!showModal) {
+      getProductList();
+    }
+  }, [showModal, currentPage, sort]);
+
+  const openDetailModal = (id: string) => {
+    setProductId(id);
+    setShowModal(true);
+  };
 
   const getProductList = async () => {
     ProductList(search, sort, currentPage, pageSize)
@@ -103,9 +113,7 @@ function index() {
       key: 'action',
       render: (text: any, record: any) => (
         <Space size="middle">
-          <Link href={`product/${record.ProductId}`}>
-            <FormOutlined />
-          </Link>
+          <FormOutlined onClick={() => openDetailModal(record.ProductId)} />
           {role && role[0]?.RoleId === 1 ? (
             <a
               onClick={() => {
@@ -134,6 +142,11 @@ function index() {
     setSearch(target.value);
   };
 
+  const handleAddNew = () => {
+    setProductId('');
+    setShowModal(true);
+  };
+
   return (
     <Layout title={'Sản Phẩm'}>
       <div>
@@ -149,7 +162,8 @@ function index() {
         </Row>
         <Row>
           <Col span={12}>
-            <Button type="primary" onClick={() => router.push('/product/product-create')}>
+            <Button type="primary" onClick={handleAddNew}>
+              {/* <Button type="primary" onClick={() => router.push('/product/product-create')}> */}
               Thêm mới
             </Button>
           </Col>
@@ -170,6 +184,19 @@ function index() {
       <div>
         <Table columns={columns} dataSource={productData} pagination={false} />
         <Pagination defaultCurrent={currentPage} onChange={onPagingChange} current={currentPage} total={totalRecord} />
+        <Modal
+          width={755}
+          bodyStyle={{ height: 'max-content' }}
+          title={'Detail of staff'}
+          visible={showModal}
+          onCancel={() => setShowModal(false)}
+          onOk={() => setShowModal(false)}
+          destroyOnClose
+          footer={null}
+          className="edit-profile-modal"
+        >
+          <ModalProduct showModal={showModal} productId={productId} onCloseModal={() => setShowModal(false)} />
+        </Modal>
       </div>
     </Layout>
   );

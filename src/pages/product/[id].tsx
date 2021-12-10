@@ -132,6 +132,8 @@ function index() {
         if (resp.data.Success) {
           openNotification('Sửa thông tin sản phẩm', 'Sửa thông tin sản phẩm thành công');
           router.push('/product');
+        } else {
+          openNotification('Sửa sản phẩm', resp.data.Message);
         }
       })
       .catch((error) => {

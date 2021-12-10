@@ -39,9 +39,11 @@ const LayoutPage: React.FC<SEOProps> = ({ children, ...rest }) => {
 
   useEffect(() => {
     if (socket) {
-      socket.on('order-placed-admin', (message: string) => {
+      socket.on('order-placed-admin', (orderId: string) => {
         // console.log('order-placed-admin', message)
-        openNotification('Đơn hàng mới được nhận', message);
+        openNotification('Đơn hàng mới được nhận', orderId, () => {
+          router.push('/order/detail/' + orderId);
+        });
       });
     }
   }, []);

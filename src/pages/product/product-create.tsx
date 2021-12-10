@@ -92,6 +92,8 @@ function index() {
         if (resp.data.Success) {
           openNotification('Thêm sản phẩm', 'Thêm sản phẩm thành công');
           router.push('/product');
+        } else {
+          openNotification('Thêm sản phẩm', resp.data.Message);
         }
       })
       .catch((error) => {
