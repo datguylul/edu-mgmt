@@ -3,12 +3,12 @@ import { ENDPOINTS } from '../../constants/endpoint';
 
 const { get, post, put } = apiClient;
 
-export const ProductList = (search: string, sort: string, page: number, record: number) =>
-  get(`${ENDPOINTS.PRODUCTS}?search=${search}&sort=${sort}&page=${page}&record=${record}`);
+export const ProductList = (search: string, sort: string, page: number, record: number, categoryId: string) =>
+  get(`${ENDPOINTS.PRODUCTS}?search=${search}&sort=${sort}&page=${page}&record=${record}&categoryId=${categoryId}`);
 export const ProductDetail = (id: string) => get(`${ENDPOINTS.PRODUCTS}/detail?id=${id}`);
 export const ProductUpdate = (params: {}) => post(`${ENDPOINTS.PRODUCTS}/edit`, params);
 export const ProductAdd = (params: {}) => post(ENDPOINTS.PRODUCTS, params);
-export const DeleteProduct = (id: string) => apiClient.delete(`${ENDPOINTS.PRODUCTS}${id}`);
+export const DeleteProduct = (id: string) => apiClient.delete(`${ENDPOINTS.PRODUCTS}/${id}`);
 
 export const OrderList = (search: string, sort: string, page: number, record: number) =>
   get(`${ENDPOINTS.ORDER}?search=${search}&sort=${sort}&page=${page}&record=${record}`);

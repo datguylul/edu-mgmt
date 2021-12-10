@@ -3,7 +3,6 @@ import Layout from 'Layouts';
 import withAuth from '@hocs/withAuth';
 import { Table, Modal, Row, Col, DatePicker, Input, Button, Select, Space } from 'antd';
 import ModalEditStaffInfo from './ModalEditStaffInfo';
-import { getListStaff, deleteStaff } from 'core/services/staff';
 import { openNotification } from '@utils/Noti';
 import { FormOutlined } from '@ant-design/icons';
 import { getRoleName } from 'core/services/role';
@@ -23,7 +22,7 @@ function index() {
     setRole(JSON.parse(value));
 
     if (!showModal) {
-      getStaffList();
+      getRoleName();
     }
   }, [showModal]);
 
@@ -44,12 +43,6 @@ function index() {
   const openDetailModal = (id: string) => {
     setShowModal(true);
     setStaffID(id);
-  };
-
-  const handleDeleteStaff = (id: string) => {
-    deleteStaff(id).then((resp) => {
-      getStaffList();
-    });
   };
 
   const columns = [

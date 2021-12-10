@@ -2,25 +2,41 @@ import React, { useEffect, useState } from 'react';
 import Layout from 'Layouts';
 import withAuth from '@hocs/withAuth';
 import { Table, Row, Col, Pagination, Modal, Input, Button, Select, Space } from 'antd';
-import Link from 'next/link';
-import { ProductList, DeleteProduct } from 'core/services/product';
-import { useRouter } from 'next/router';
-import { FormOutlined } from '@ant-design/icons';
+import { ProductList, DeleteProduct, CategoryList } from 'core/services/product';
+import { FormOutlined, DeleteOutlined } from '@ant-design/icons';
 import { formatNumber } from '@utils/StringUtil';
 import ModalProduct from './ModalProduct';
+import { openNotification } from '@utils/Noti';
 
 const { Option } = Select;
 
 function index() {
   const [productData, setProductData] = useState<any>();
+  const [categoryData, setCategoryData] = useState<any>();
   const [totalRecord, setTotalRecord] = useState<number>(0);
-  const [pageSize] = useState<number>(10);
+  const [pageSize] = useState<number>(20);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [role, setRole] = useState<any>();
   const [search, setSearch] = useState<string>('');
   const [sort, setSort] = useState<string>('ProductCode+asc');
   const [showModal, setShowModal] = React.useState<boolean>(false);
   const [productId, setProductId] = useState<string>('');
+  const [categoryId, setCategoryId] = useState<string>('');
+
+  useEffect(() => {
+    getCategoryList();
+  }, []);
+
+  const getCategoryList = async () => {
+    CategoryList(1, 20)
+      .then((resp: any) => {
+        const data = resp.data;
+        setCategoryData(data?.Data);
+      })
+      .catch((error: any) => {
+        console.log('error', error);
+      });
+  };
 
   useEffect(() => {
     let value = localStorage.getItem('roles') ?? '';
@@ -29,7 +45,7 @@ function index() {
     if (!showModal) {
       getProductList();
     }
-  }, [showModal, currentPage, sort]);
+  }, [showModal, currentPage, sort, categoryId]);
 
   const openDetailModal = (id: string) => {
     setProductId(id);
@@ -37,7 +53,7 @@ function index() {
   };
 
   const getProductList = async () => {
-    ProductList(search, sort, currentPage, pageSize)
+    ProductList(search, sort, currentPage, pageSize, categoryId)
       .then((resp) => {
         setProductData(resp.data?.Data);
         setTotalRecord(resp.data?.TotalRecord);
@@ -48,9 +64,19 @@ function index() {
   };
 
   const deleteProduct = (id: string) => {
-    DeleteProduct(id).then((resp) => {
-      getProductList();
-    });
+    DeleteProduct(id)
+      .then((resp) => {
+        if (resp.data.Success) {
+          openNotification('Xoá sản phẩm', 'Xóa sản phẩm thành công');
+          getProductList();
+        } else {
+          openNotification('Xoá sản phẩm', resp.data.Message);
+        }
+      })
+      .catch((error) => {
+        openNotification('Xoá sản phẩm', 'Đã có lỗi');
+        console.log('error', error);
+      });
   };
 
   const imgStyle = {
@@ -61,7 +87,7 @@ function index() {
 
   const columns = [
     {
-      title: 'Image',
+      title: 'Ảnh',
       key: 'image',
       render: (text: any, record: any) => (
         <Space size="middle">
@@ -78,15 +104,15 @@ function index() {
       ),
     },
     {
-      title: 'ProductCode',
+      title: 'Mã SP',
       dataIndex: 'ProductCode',
     },
     {
-      title: 'Title',
+      title: 'Tên SP',
       dataIndex: 'Title',
     },
     {
-      title: 'Price',
+      title: 'Giá',
       dataIndex: 'Price',
       render: (text: any) => (
         <text>
@@ -96,11 +122,11 @@ function index() {
       ),
     },
     {
-      title: 'Quantity',
+      title: 'Số lượng',
       dataIndex: 'Quantity',
     },
     {
-      title: 'Discount',
+      title: 'GIảm giá',
       dataIndex: 'Discount',
       render: (text: any) => (
         <text>
@@ -109,22 +135,12 @@ function index() {
       ),
     },
     {
-      title: 'Action',
+      title: 'Tùy chọn',
       key: 'action',
       render: (text: any, record: any) => (
         <Space size="middle">
           <FormOutlined onClick={() => openDetailModal(record.ProductId)} />
-          {role && role[0]?.RoleId === 1 ? (
-            <a
-              onClick={() => {
-                deleteProduct(record.ProductId);
-              }}
-            >
-              Delete
-            </a>
-          ) : (
-            <></>
-          )}
+          {role && role[0]?.RoleId === 1 ? <DeleteOutlined onClick={() => deleteProduct(record.ProductId)} /> : <></>}
         </Space>
       ),
     },
@@ -132,14 +148,6 @@ function index() {
 
   const onPagingChange = (page: number) => {
     setCurrentPage(page);
-  };
-
-  const handleSelectChange = (value: any) => {
-    setSort(value);
-  };
-
-  const handleSearchChange = ({ target }: any) => {
-    setSearch(target.value);
   };
 
   const handleAddNew = () => {
@@ -161,14 +169,15 @@ function index() {
           </Col>
         </Row>
         <Row>
-          <Col span={12}>
-            <Button type="primary" onClick={handleAddNew}>
-              {/* <Button type="primary" onClick={() => router.push('/product/product-create')}> */}
-              Thêm mới
-            </Button>
-          </Col>
-          <Col span={12}>
-            <Select defaultValue={'ProductCode+asc'} style={{ width: 120 }} onChange={(value) => setSort(value)}>
+          <Col span={3}>
+            <Select
+              defaultValue={'ProductCode+asc'}
+              style={{ width: 120 }}
+              onChange={(value) => {
+                setCurrentPage(1);
+                setSort(value);
+              }}
+            >
               <Option value={'ProductCode+asc'}>Mã SP 0-9</Option>
               <Option value={'ProductCode+desc'}>Mã SP 9-0</Option>
               <Option value={'Title+asc'}>Tên 0-9</Option>
@@ -179,6 +188,27 @@ function index() {
               <Option value={'Quantity+desc'}>Số lượng 9-0</Option>
             </Select>
           </Col>
+          <Col span={3}>
+            <Select
+              style={{ width: 120 }}
+              onChange={(value: string) => {
+                setCurrentPage(1);
+                setCategoryId(value);
+              }}
+            >
+              <Option value={''}>{'All'}</Option>
+              {categoryData &&
+                categoryData.map((item: any) => {
+                  return <Option value={item.CategoryId}>{item.Title}</Option>;
+                })}
+            </Select>
+          </Col>
+          <Col span={18}>
+            <Button type="primary" onClick={handleAddNew}>
+              {/* <Button type="primary" onClick={() => router.push('/product/product-create')}> */}
+              Thêm mới
+            </Button>
+          </Col>
         </Row>
       </div>
       <div>
@@ -187,7 +217,7 @@ function index() {
         <Modal
           width={755}
           bodyStyle={{ height: 'max-content' }}
-          title={'Detail of staff'}
+          title={productId ? 'Sửa thông tin sản phẩm' : 'Thêm mới sản phẩm'}
           visible={showModal}
           onCancel={() => setShowModal(false)}
           onOk={() => setShowModal(false)}

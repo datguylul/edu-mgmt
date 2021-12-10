@@ -60,7 +60,7 @@ interface ModalProp {
   onCloseModal?: () => void;
 }
 
-const ModalEditStaffInfo: React.FC<ModalProp> = ({ showModal = false, productId = '', onCloseModal }) => {
+const ModalEditStaffInfo: React.FC<ModalProp> = ({ showModal = false, productId = '', onCloseModal = () => null }) => {
   const router = useRouter();
   const [form] = Form.useForm();
   const [productMeta, setProductMeta] = useState<Array<ProductMeta>>();
@@ -128,13 +128,14 @@ const ModalEditStaffInfo: React.FC<ModalProp> = ({ showModal = false, productId 
   };
 
   const handleUpdateProduct = (values: any) => {
-    let params: object = {
+    let params: any = {
       ...values,
-      ProductId: productId,
     };
+
     setLoading(true);
 
     if (productId) {
+      params.ProductId = productId;
       ProductUpdate(params)
         .then((resp) => {
           if (resp.data.Success) {
