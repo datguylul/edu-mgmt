@@ -39,6 +39,7 @@ function Login() {
 
   const onSubmit = (data: any) => {
     setLoading(true);
+    setMessage('');
     login(data)
       .then((res) => {
         const data = res.data?.Data;
@@ -47,10 +48,13 @@ function Login() {
           Cookie.set('accessToken', data?.token, { expires: 7 });
           localStorage.setItem('roles', JSON.stringify(data.roles));
           localStorage.setItem('username', data?.account?.Username);
+        } else {
+          setMessage('Tài khoản không hợp lệ hoặc có lỗi');
         }
       })
       .catch((error) => {
         console.log('error', error);
+        setMessage('Đã có lỗi');
       })
       .finally(() => {
         setLoading(false);
@@ -60,6 +64,16 @@ function Login() {
   return (
     <Layout title="Đăng nhập">
       <Auth title="Đăng Nhập" subTitle="Đăng nhập để quản lý shop ngay!">
+        {message && (
+          <h2
+            style={{
+              color: 'red',
+              textAlign: 'center',
+            }}
+          >
+            {message}
+          </h2>
+        )}
         <form onSubmit={handleSubmit(onSubmit)}>
           <InputGroup fullWidth>
             <input
