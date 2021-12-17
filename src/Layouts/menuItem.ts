@@ -47,10 +47,10 @@ const items: MenuItemType[] = [
         title: 'Danh sách nhân viên',
         link: { href: '/staff' },
       },
-      {
-        title: 'Quyền nhân viên (Role)',
-        link: { href: '/role' },
-      },
+      // {
+      //   title: 'Quyền nhân viên (Role)',
+      //   link: { href: '/role' },
+      // },
     ],
   },
   {
