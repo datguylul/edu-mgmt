@@ -54,6 +54,11 @@ const items: MenuItemType[] = [
     ],
   },
   {
+    title: 'Log',
+    icon: { name: 'book-outline' },
+    link: { href: '/log' },
+  },
+  {
     title: 'Đăng Xuất',
     icon: { name: 'log-out-outline' },
     link: { href: '/logout' },
