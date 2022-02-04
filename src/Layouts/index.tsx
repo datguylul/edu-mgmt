@@ -35,23 +35,16 @@ const LayoutPage: React.FC<SEOProps> = ({ children, ...rest }) => {
   const [menuState, setMenuState] = useState(false);
   const menuRef = useRef<MenuRefObject>(null);
   const [seeHeader, setSeeHeader] = useState(true);
-  let socket: any = io(process.env.REALTIME_BASE_URL || 'https://cnw-realtime.herokuapp.com');
+  // let socket: any = io(process.env.REALTIME_BASE_URL || 'https://cnw-realtime.herokuapp.com');
 
   useEffect(() => {
-    if (socket) {
-      socket.on('order-placed-admin', (orderId: string) => {
-        // console.log('order-placed-admin', message)
-        openNotification('Đơn hàng mới được nhận', orderId, () => {
-          router.push('/order/detail/' + orderId);
-        });
-      });
-    }
-  }, []);
-
-  useEffect(() => {
-    // const urlLocal = localStorage.getItem('@cnw/host');
-    // if (urlLocal && typeof urlLocal === 'string') {
-    //   setAPIHostName(urlLocal);
+    // if (socket) {
+    //   socket.on('order-placed-admin', (orderId: string) => {
+    //     // console.log('order-placed-admin', message)
+    //     openNotification('Đơn hàng mới được nhận', orderId, () => {
+    //       router.push('/order/detail/' + orderId);
+    //     });
+    //   });
     // }
   }, []);
 

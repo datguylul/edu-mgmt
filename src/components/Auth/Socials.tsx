@@ -21,13 +21,13 @@ export default function Socials() {
     <SocialsStyle>
       <p>or enter with:</p>
       <div className="links">
-        <a href="https://github.com/AhmedElywa">
+        <a href="https://github.com/">
           <EvaIcon name="github" />
         </a>
-        <a href="https://www.facebook.com/AhmedElywa">
+        <a href="https://www.facebook.com/">
           <EvaIcon name="facebook" />
         </a>
-        <a href="https://twitter.com/AhmedElywh">
+        <a href="https://twitter.com/">
           <EvaIcon name="twitter" />
         </a>
       </div>

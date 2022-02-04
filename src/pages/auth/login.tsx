@@ -1,11 +1,9 @@
 import { Button } from '@paljs/ui/Button';
 import { InputGroup } from '@paljs/ui/Input';
-import { Checkbox } from '@paljs/ui/Checkbox';
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Cookie from 'js-cookie';
 import Auth, { Group } from 'components/Auth';
-import Socials from 'components/Auth/Socials';
 import Layout from 'Layouts';
 import { login } from 'core/services/user';
 import { useAuth } from '@contexts/AuthContext';
@@ -32,10 +30,6 @@ function Login() {
   const { setAuthenticated } = useAuth();
   const [message, setMessage] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
-
-  const onCheckbox = () => {
-    // v will be true or false
-  };
 
   const onSubmit = (data: any) => {
     setLoading(true);

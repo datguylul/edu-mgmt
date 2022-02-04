@@ -5,4 +5,4 @@ import withAuth from '@hocs/withAuth';
 const Home = () => {
   return <Layout title="Home" />;
 };
-export default withAuth(Home);
+export default Home;
