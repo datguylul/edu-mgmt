@@ -93,7 +93,7 @@ function index() {
   };
 
   return (
-    <Layout title={'Danh sách học sinh'}>
+    <Layout title={'Danh sách lớp'}>
       <div>
         <Row>
           <Col span={18}>
