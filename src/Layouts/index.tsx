@@ -11,12 +11,12 @@ import { EvaIcon } from '@paljs/ui/Icon';
 import { Button } from '@paljs/ui/Button';
 import { Menu, MenuRefObject } from '@paljs/ui/Menu';
 import Link from 'next/link';
-import menuItems from './menuItem';
+import { admin_menu, student_menu, default_menu } from './menuItems';
 import SEO, { SEOProps } from 'components/SEO';
-import { io } from 'socket.io-client';
-import { notification } from 'antd';
-import { setAPIHostName } from '@utils/APIHostUtil';
+import { MenuItemType } from '@paljs/ui/types';
+// import { io } from 'socket.io-client';
 import { openNotification } from '@utils/Noti';
+import { USER_ROLE } from '@core/constants/role';
 
 const getDefaultTheme = (): DefaultTheme['name'] => {
   if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
@@ -35,9 +35,18 @@ const LayoutPage: React.FC<SEOProps> = ({ children, ...rest }) => {
   const [menuState, setMenuState] = useState(false);
   const menuRef = useRef<MenuRefObject>(null);
   const [seeHeader, setSeeHeader] = useState(true);
+  const [menuItem, setMenuItem] = useState<MenuItemType[]>([]);
   // let socket: any = io(process.env.REALTIME_BASE_URL || 'https://cnw-realtime.herokuapp.com');
 
   useEffect(() => {
+    const path = router.pathname.split('/')[1];
+    if (path === USER_ROLE.student) {
+      setMenuItem(student_menu);
+    } else if (path === USER_ROLE.admin) {
+      setMenuItem(admin_menu);
+    } else {
+      setMenuItem(default_menu);
+    }
     // if (socket) {
     //   socket.on('order-placed-admin', (orderId: string) => {
     //     // console.log('order-placed-admin', message)
@@ -117,7 +126,7 @@ const LayoutPage: React.FC<SEOProps> = ({ children, ...rest }) => {
                       className="sidebar-menu"
                       Link={Link}
                       ref={menuRef}
-                      items={menuItems}
+                      items={menuItem}
                       currentPath={router.pathname}
                       toggleSidebar={() => sidebarRef.current?.hide()}
                     />

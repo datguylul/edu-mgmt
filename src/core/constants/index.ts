@@ -1,2 +1,2 @@
 export * from './endpoint';
-export * from './orderStatus';
+export * from './role';

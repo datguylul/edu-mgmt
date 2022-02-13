@@ -3,6 +3,6 @@ import Layout from 'Layouts';
 import withAuth from '@hocs/withAuth';
 
 const Home = () => {
-  return <Layout title="Home" />;
+  return <Layout title="Trang chủ giáo viên" />;
 };
 export default Home;

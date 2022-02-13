@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Cookie from 'js-cookie';
 import Auth, { Group } from 'components/Auth';
 import Layout from 'Layouts';
-import { login } from 'core/services/user';
+import { login } from 'core/services/api';
 import { useAuth } from '@contexts/AuthContext';
 import withoutAuth from '@hocs/withoutAuth';
 import { useForm } from 'react-hook-form';
@@ -57,7 +57,7 @@ function Login() {
 
   return (
     <Layout title="Đăng nhập">
-      <Auth title="Đăng Nhập" subTitle="Đăng nhập để quản lý shop ngay!">
+      <Auth title="Đăng Nhập" subTitle="Đăng nhập ngay!">
         {message && (
           <h2
             style={{
