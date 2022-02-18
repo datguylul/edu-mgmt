@@ -11,7 +11,7 @@ import { EvaIcon } from '@paljs/ui/Icon';
 import { Button } from '@paljs/ui/Button';
 import { Menu, MenuRefObject } from '@paljs/ui/Menu';
 import Link from 'next/link';
-import { admin_menu, student_menu, default_menu } from './menuItems';
+import { admin_menu, student_menu, teacher_menu, default_menu } from './menuItems';
 import SEO, { SEOProps } from 'components/SEO';
 import { MenuItemType } from '@paljs/ui/types';
 // import { io } from 'socket.io-client';
@@ -39,14 +39,12 @@ const LayoutPage: React.FC<SEOProps> = ({ children, ...rest }) => {
   // let socket: any = io(process.env.REALTIME_BASE_URL || 'https://cnw-realtime.herokuapp.com');
 
   useEffect(() => {
-    const path = router.pathname.split('/')[1];
-    if (path === USER_ROLE.student) {
-      setMenuItem(student_menu);
-    } else if (path === USER_ROLE.admin) {
-      setMenuItem(admin_menu);
-    } else {
-      setMenuItem(default_menu);
-    }
+    const path = router.pathname.split('/')[1].toUpperCase();
+
+    if (path === USER_ROLE.student) setMenuItem(student_menu);
+    else if (path === USER_ROLE.admin) setMenuItem(admin_menu);
+    else if (path === USER_ROLE.teacher) setMenuItem(teacher_menu);
+    else setMenuItem(default_menu);
     // if (socket) {
     //   socket.on('order-placed-admin', (orderId: string) => {
     //     // console.log('order-placed-admin', message)

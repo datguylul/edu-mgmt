@@ -7,28 +7,19 @@ export const admin_menu: MenuItemType[] = [
     link: { href: '/admin/dashboard' },
   },
   {
-    title: 'Bài tập',
-    icon: { name: 'book-outline' },
-    link: { href: '/admin/homework' },
-  },
-  {
-    title: 'Danh sách lớp/Học sinh',
-    icon: { name: 'people-outline' },
-    children: [
-      {
-        title: 'Lớp',
-        link: { href: '/admin/class' },
-      },
-      {
-        title: 'Học sinh',
-        link: { href: '/admin/student' },
-      },
-    ],
-  },
-  {
-    title: 'Ngân hàng đề thi',
+    title: 'Lớp',
     icon: { name: 'folder-outline' },
-    link: { href: '/admin/testbank' },
+    link: { href: '/admin/class' },
+  },
+  {
+    title: 'Học sinh',
+    icon: { name: 'folder-outline' },
+    link: { href: '/admin/student' },
+  },
+  {
+    title: 'Giáo viên',
+    icon: { name: 'folder-outline' },
+    link: { href: '/admin/teacher' },
   },
   {
     title: 'Đăng Xuất',

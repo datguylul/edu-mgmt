@@ -5,4 +5,4 @@ import withAuth from '@hocs/withAuth';
 const TestBank = () => {
   return <Layout title="Ngân hàng đề thi" />;
 };
-export default TestBank;
+export default withAuth(TestBank);

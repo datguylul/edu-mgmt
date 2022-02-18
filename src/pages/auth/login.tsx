@@ -36,19 +36,21 @@ function Login() {
     setMessage('');
     login(data)
       .then((res) => {
-        const data = res.data?.Data;
-        if (data?.account) {
+        const data = res.data;
+        // if (data?.error) {
+        //   setMessage('Tài khoản không hợp lệ hoặc có lỗi');
+        // }
+
+        if (data?.responseData) {
           setAuthenticated(true);
-          Cookie.set('accessToken', data?.token, { expires: 7 });
-          localStorage.setItem('roles', JSON.stringify(data.roles));
-          localStorage.setItem('username', data?.account?.Username);
-        } else {
-          setMessage('Tài khoản không hợp lệ hoặc có lỗi');
+          Cookie.set('accessToken', data?.responseData?.token, { expires: 7 });
+          localStorage.setItem('roles', data?.responseData?.roles[0]);
+          localStorage.setItem('username', data?.responseData?.username);
         }
       })
       .catch((error) => {
         console.log('error', error);
-        setMessage('Đã có lỗi');
+        setMessage('Tài khoản không hợp lệ hoặc có lỗi');
       })
       .finally(() => {
         setLoading(false);
@@ -58,53 +60,29 @@ function Login() {
   return (
     <Layout title="Đăng nhập">
       <Auth title="Đăng Nhập" subTitle="Đăng nhập ngay!">
-        {message && (
-          <h2
-            style={{
-              color: 'red',
-              textAlign: 'center',
-            }}
-          >
-            {message}
-          </h2>
-        )}
         <form onSubmit={handleSubmit(onSubmit)}>
           <InputGroup fullWidth>
-            <input
-              type="text"
-              placeholder="Username"
-              // onChange={(e) =>
-              //   setUser({
-              //     ...user,
-              //     username: e.target.value,
-              //   })
-              // }
-              {...register('username')}
-            />
+            <input type="text" placeholder="Username" {...register('username')} />
           </InputGroup>
           <p>{errors.username?.message}</p>
           <InputGroup fullWidth>
-            <input
-              type="password"
-              placeholder="Password"
-              // onChange={(e) =>
-              //   setUser({
-              //     ...user,
-              //     password: e.target.value,
-              //   })
-              // }
-              {...register('password')}
-            />
+            <input type="password" placeholder="Password" {...register('password')} />
           </InputGroup>
           <p>{errors.password?.message}</p>
-          {/* <Group>
-            <Checkbox checked onChange={onCheckbox}>
-              Remember me
-            </Checkbox>
-            <Link href="/auth/request-password">
-              <a>Quên mật khẩu?</a>
-            </Link>
-          </Group> */}
+
+          <div>
+            {message && (
+              <h2
+                style={{
+                  color: 'red',
+                  textAlign: 'center',
+                }}
+              >
+                {message}
+              </h2>
+            )}
+          </div>
+
           <Button status="Success" type="submit" shape="SemiRound" fullWidth disabled={loading}>
             Đăng Nhập
           </Button>
