@@ -4,7 +4,7 @@ import { Checkbox } from '@paljs/ui/Checkbox';
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Link from 'next/link';
-import { signUp } from 'core/services/user';
+import { signUp } from '@core/services/api';
 import Auth from 'components/Auth';
 import Layout from 'Layouts';
 import Socials from 'components/Auth/Socials';
