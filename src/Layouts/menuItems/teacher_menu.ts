@@ -4,12 +4,12 @@ export const teacher_menu: MenuItemType[] = [
   {
     title: 'Trang Chủ',
     icon: { name: 'home' },
-    link: { href: '/admin/dashboard' },
+    link: { href: '/teacher/dashboard' },
   },
   {
     title: 'Bài tập',
     icon: { name: 'book-outline' },
-    link: { href: '/admin/homework' },
+    link: { href: '/teacher/homework' },
   },
   {
     title: 'Danh sách lớp/Học sinh',
@@ -17,18 +17,18 @@ export const teacher_menu: MenuItemType[] = [
     children: [
       {
         title: 'Lớp',
-        link: { href: '/admin/class' },
+        link: { href: '/teacher/class' },
       },
       {
         title: 'Học sinh',
-        link: { href: '/admin/student' },
+        link: { href: '/teacher/student' },
       },
     ],
   },
   {
     title: 'Ngân hàng đề thi',
     icon: { name: 'folder-outline' },
-    link: { href: '/admin/testbank' },
+    link: { href: '/teacher/testbank' },
   },
   {
     title: 'Đăng Xuất',

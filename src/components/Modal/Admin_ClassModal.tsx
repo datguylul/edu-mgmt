@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
-import { Form, Input, Button, Space, Select, Menu, Dropdown } from 'antd';
-import { DownOutlined } from '@ant-design/icons';
-import {} from '@core/services/api';
+import { Form, Input, Button, Space, Select, DatePicker } from 'antd';
+import { CreateClass } from '@core/services/api';
+import moment from 'moment';
+import { openNotification } from '@utils/Noti';
+
 const { Option } = Select;
 
 interface IStaffInfo {
-  staffID?: string;
+  classId?: string;
 }
 
 const formItemLayout = {
@@ -33,30 +34,53 @@ const tailFormItemLayout = {
   },
 };
 
-const Admin_ClassModal: React.FC<IStaffInfo> = () => {
+const Admin_ClassModal: React.FC<IStaffInfo> = ({ classId }) => {
   const [form] = Form.useForm();
   const [caLam, setCaLam] = useState(1);
 
   const onFinish = (values: any) => {
-    const params = {};
-    console.log('Received: ', params);
+    const year = values['year']?.format('YYYY');
+    if (!year) {
+    }
+    const yearEnd = moment(year).add(1, 'years').format('YYYY');
+
+    const params = {
+      clazzName: values.clazzName,
+      year: year + '-' + yearEnd,
+      groupId: null,
+    };
+    CreateClass(params)
+      .then((resp) => {
+        console.log('resp', resp.data);
+        openNotification('Tạo mới lớp', 'Tạo mới lớp thành công');
+      })
+      .catch((error) => {
+        console.log('error', error);
+        openNotification('Tạo mới lớp', 'Có lỗi khi tạo mới lớp');
+      });
   };
 
   return (
     <>
       <Form {...formItemLayout} form={form} name="register" onFinish={onFinish} scrollToFirstError>
-        <Form.Item name="caLam" label="Ca Làm">
-          <Select defaultValue={'1'} style={{ width: 120 }} onChange={() => {}}>
-            <Option value={'1'}>Ca 1</Option>
-            <Option value={'2'}>Ca 2</Option>
-            <Option value={'3'}>Ca 3</Option>
-          </Select>
-        </Form.Item>
-        <Form.Item name="sanLuongThucTe" label="Sản Lượng Thực Tế">
+        <Form.Item
+          name="clazzName"
+          label="Tên lớp"
+          rules={[
+            {
+              required: true,
+              message: 'Tên lớp không thể trống',
+            },
+          ]}
+        >
           <Input />
         </Form.Item>
-        <Form.Item name="soLoSanPham" label="Số Lô Sản Phẩm">
-          <Input />
+        <Form.Item
+          name="year"
+          label="Năm học"
+          rules={[{ type: 'object' as const, required: true, message: 'Please select time!' }]}
+        >
+          <DatePicker picker="year" />
         </Form.Item>
         <Form.Item {...tailFormItemLayout}>
           <Space>

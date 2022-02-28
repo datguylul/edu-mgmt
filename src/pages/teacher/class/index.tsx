@@ -2,14 +2,13 @@ import React, { useEffect, useState } from 'react';
 import Layout from 'Layouts';
 import withAuth from '@hocs/withAuth';
 import { Table, Modal, Checkbox, Pagination, DatePicker, Input, Button, Select, Space, Row, Col } from 'antd';
-import {} from '@core/services/api';
+import { ClassList } from '@core/services/api';
 import Admin_ClassModal from '@components/Modal/Admin_ClassModal';
 import { FormOutlined, DeleteOutlined } from '@ant-design/icons';
 const { Option } = Select;
 
 function index() {
   const [totalRecord, setTotalRecord] = useState<number>(0);
-  const [selectThang, setSelectThang] = useState<boolean>(true);
   const [pageSize] = useState<number>(10);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [search, setSearch] = useState<string>('');
@@ -25,15 +24,15 @@ function index() {
   }, [sort, showModal]);
 
   const getCategoryList = async () => {
-    // CategoryList(currentPage - 1, pageSize)
-    //   .then((resp: any) => {
-    //     const data = resp.data;
-    //     setCategoryData(data?.Data);
-    //     setTotalRecord(data?.TotalRecord);
-    //   })
-    //   .catch((error: any) => {
-    //     console.log('error', error);
-    //   });
+    ClassList({})
+      .then((resp: any) => {
+        const data = resp.data.responseData;
+        setCategoryData(data?.Data);
+        setTotalRecord(data?.TotalRecord);
+      })
+      .catch((error: any) => {
+        console.log('error', error);
+      });
   };
 
   const columns = [
@@ -81,10 +80,6 @@ function index() {
 
   const handleSearchChange = ({ target }: any) => {
     setSearch(target.value);
-  };
-
-  const handleCheckboxChange = () => {
-    setSelectThang((prev) => !prev);
   };
 
   const handleAddNew = () => {
@@ -145,7 +140,7 @@ function index() {
           footer={null}
           className="edit-profile-modal"
         >
-          <Admin_ClassModal categoryId={categoryId} />
+          <Admin_ClassModal classId={categoryId} />
         </Modal>
       </div>
     </Layout>

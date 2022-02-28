@@ -5,12 +5,8 @@ export const CONTEXT = {
 };
 
 export const CONTROLLERS = {
-  ACCOUNTS: 'accounts',
-  PRODUCTS: 'products',
-  ROLE: 'roles',
-  LOG: 'logging',
-  ORDER: 'order',
-  CATEGORY: 'category',
+  CLASS: 'manage-clazz',
+  STUDENT: 'manage-student',
 };
 
 export const ENDPOINTS = {
@@ -18,11 +14,7 @@ export const ENDPOINTS = {
   SIGNUP: `signup`,
   LOGOUT: `logout`,
 
-  PRODUCTS: `${CONTEXT.API}/${CONTROLLERS.PRODUCTS}`,
-  PRODUCTS_EDIT: `${CONTEXT.API}/${CONTROLLERS.PRODUCTS}/edit`,
-  LISTS: `${CONTEXT.ADMIN}/${CONTROLLERS.ROLE}/list`,
-  LOGING: `${CONTEXT.API}/${CONTROLLERS.LOG}/paging`,
-  ORDER: `${CONTEXT.API}/${CONTROLLERS.ORDER}`,
-  ROLES: `${CONTEXT.API}/${CONTROLLERS.ROLE}`,
-  CATEGORY: `${CONTEXT.API}/${CONTROLLERS.CATEGORY}`,
+  STUDENT_LIST: `${CONTROLLERS.STUDENT}/list`,
+  CLASS_LIST: `${CONTROLLERS.CLASS}/list`,
+  CREATE_CLASS: `${CONTROLLERS.CLASS}/create`,
 };
