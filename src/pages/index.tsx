@@ -9,7 +9,6 @@ function Index() {
 
   useEffect(() => {
     const role = localStorage.getItem('roles');
-    console.log('localStorageData', role);
 
     if (role === USER_ROLE.admin) {
       router.push('/admin/dashboard');

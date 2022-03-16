@@ -39,7 +39,7 @@ const LayoutPage: React.FC<SEOProps> = ({ children, ...rest }) => {
   // let socket: any = io(process.env.REALTIME_BASE_URL || 'https://cnw-realtime.herokuapp.com');
 
   useEffect(() => {
-    const path = router.pathname.split('/')[1].toUpperCase();
+    const path = router.pathname.split('/')[1];
 
     if (path === USER_ROLE.student) setMenuItem(student_menu);
     else if (path === USER_ROLE.admin) setMenuItem(admin_menu);

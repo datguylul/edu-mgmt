@@ -3,7 +3,7 @@ import Layout from 'Layouts';
 import withAuth from '@hocs/withAuth';
 import { Table, Modal, Checkbox, Pagination, DatePicker, Input, Button, Select, Space, Row, Col } from 'antd';
 import { ClassList } from '@core/services/api';
-import Admin_ClassModal from '@components/Modal/Admin_ClassModal';
+import ClassModal from 'components/Modal/ClassModal';
 import { FormOutlined, DeleteOutlined } from '@ant-design/icons';
 const { Option } = Select;
 
@@ -14,7 +14,7 @@ function index() {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [search, setSearch] = useState<string>('');
   const [sort, setSort] = useState<string>('id_asc');
-  const [categoryData, setCategoryData] = useState([]);
+  const [classData, setClassData] = useState([]);
   const [classId, setClassId] = useState<string>('');
   const [showModal, setShowModal] = React.useState<boolean>(false);
 
@@ -25,11 +25,10 @@ function index() {
   }, [sort, showModal]);
 
   const getClassList = async () => {
-    ClassList({})
+    ClassList(search, sort, currentPage, pageSize)
       .then((resp: any) => {
-        const data = resp.data.responseData;
-        setCategoryData(data?.Data);
-        setTotalRecord(data?.TotalRecord);
+        setClassData(resp.data?.Data?.Data ?? []);
+        setTotalRecord(resp.data?.TotalRecord);
       })
       .catch((error: any) => {
         console.log('error', error);
@@ -38,28 +37,20 @@ function index() {
 
   const columns = [
     {
-      title: 'Mã phân loại',
-      dataIndex: 'CategoryCode',
+      title: 'Mã lớp',
+      dataIndex: 'ShowClassId',
     },
     {
-      title: 'Tên',
-      dataIndex: 'Title',
-    },
-    {
-      title: 'Link hiển thị',
-      dataIndex: 'Slug',
-    },
-    {
-      title: 'Nội dung',
-      dataIndex: 'Content',
+      title: 'Tên lớp',
+      dataIndex: 'ClassName',
     },
     {
       title: 'Tùy chọn',
       key: 'action',
       render: (text: any, record: any) => (
         <Space size="middle">
-          <FormOutlined onClick={() => openDetailModal(record.CategoryId)} />
-          <DeleteOutlined onClick={() => openDetailModal(record.CategoryId)} />
+          <FormOutlined onClick={() => openDetailModal(record.ClassId)} />
+          <DeleteOutlined onClick={() => openDetailModal(record.ClassId)} />
           {/* <a >Chi tiết</a> */}
         </Space>
       ),
@@ -127,7 +118,7 @@ function index() {
         </Row>
       </div>
       <div>
-        <Table columns={columns} dataSource={categoryData} pagination={false} />
+        <Table columns={columns} dataSource={classData} pagination={false} />
         <Pagination
           defaultPageSize={pageSize}
           defaultCurrent={currentPage}
@@ -138,14 +129,14 @@ function index() {
         <Modal
           width={755}
           bodyStyle={{ height: 'max-content' }}
-          title={'Loại sản phẩm'}
+          title={'Chi tiết lớp'}
           visible={showModal}
           onCancel={() => setShowModal(false)}
           destroyOnClose
           footer={null}
           className="edit-profile-modal"
         >
-          <Admin_ClassModal classId={classId} />
+          <ClassModal classId={classId} />
         </Modal>
       </div>
     </Layout>

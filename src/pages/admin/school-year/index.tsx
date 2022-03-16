@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import Layout from 'Layouts';
 import withAuth from '@hocs/withAuth';
 import { Table, Modal, Checkbox, Pagination, DatePicker, Input, Button, Select, Space, Row, Col } from 'antd';
-import { ClassList } from '@core/services/api';
-import Admin_ClassModal from 'components/Modal/ClassModal';
+import { SchoolYearList } from '@core/services/api';
+import SchoolYearModal from 'components/Modal/SchoolYearModal';
 import { FormOutlined, DeleteOutlined } from '@ant-design/icons';
 const { Option } = Select;
 
@@ -14,20 +14,20 @@ function index() {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [search, setSearch] = useState<string>('');
   const [sort, setSort] = useState<string>('id_asc');
-  const [classData, setClassData] = useState([]);
-  const [classId, setClassId] = useState<string>('');
+  const [schoolYearData, setSchoolYearData] = useState([]);
+  const [schoolYearId, setSchoolYearId] = useState<string>('');
   const [showModal, setShowModal] = React.useState<boolean>(false);
 
   useEffect(() => {
     if (!showModal) {
-      getClassList();
+      getSchoolYearList();
     }
   }, [sort, showModal]);
 
-  const getClassList = async () => {
-    ClassList(search, sort, currentPage, pageSize)
+  const getSchoolYearList = async () => {
+    SchoolYearList(search, sort, currentPage, pageSize)
       .then((resp: any) => {
-        setClassData(resp.data?.Data?.Data ?? []);
+        setSchoolYearData(resp.data?.Data?.Data ?? []);
         setTotalRecord(resp.data?.TotalRecord);
       })
       .catch((error: any) => {
@@ -37,27 +37,32 @@ function index() {
 
   const columns = [
     {
-      title: 'Mã lớp',
-      dataIndex: 'ShowClassId',
+      title: 'Tên năm học',
+      dataIndex: 'SchoolYearName',
     },
     {
-      title: 'Tên lớp được giao',
-      dataIndex: 'ClassName',
+      title: 'Thời gian',
+      dataIndex: 'SchoolYearDate',
+    },
+    {
+      title: 'Năm hoạt động',
+      dataIndex: 'ActiveYear',
     },
     {
       title: 'Tùy chọn',
       key: 'action',
       render: (text: any, record: any) => (
         <Space size="middle">
-          <FormOutlined onClick={() => openDetailModal(record.ClassId)} />
-          {/* <DeleteOutlined onClick={() => openDetailModal(record.ClassId)} /> */}
+          <FormOutlined onClick={() => openDetailModal(record.SchoolYearId)} />
+          <DeleteOutlined onClick={() => openDetailModal(record.SchoolYearId)} />
+          {/* <a >Chi tiết</a> */}
         </Space>
       ),
     },
   ];
 
   const openDetailModal = (id: string) => {
-    setClassId(id);
+    setSchoolYearId(id);
     setShowModal(true);
   };
 
@@ -78,7 +83,7 @@ function index() {
   };
 
   const handleAddNew = () => {
-    setClassId('');
+    setSchoolYearId('');
     setShowModal(true);
   };
 
@@ -90,7 +95,7 @@ function index() {
             <Input placeholder={'Tìm kiếm'} onChange={handleSearchChange} width="50%" />
           </Col>
           <Col span={6}>
-            <Button type="primary" onClick={getClassList}>
+            <Button type="primary" onClick={getSchoolYearList}>
               Tìm kiếm
             </Button>
           </Col>
@@ -117,7 +122,7 @@ function index() {
         </Row>
       </div>
       <div>
-        <Table columns={columns} dataSource={classData} pagination={false} />
+        <Table columns={columns} dataSource={schoolYearData} pagination={false} />
         <Pagination
           defaultPageSize={pageSize}
           defaultCurrent={currentPage}
@@ -135,7 +140,7 @@ function index() {
           footer={null}
           className="edit-profile-modal"
         >
-          <Admin_ClassModal classId={classId} />
+          <SchoolYearModal schoolYearId={schoolYearId} />
         </Modal>
       </div>
     </Layout>

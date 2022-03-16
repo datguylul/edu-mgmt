@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import Layout from 'Layouts';
 import withAuth from '@hocs/withAuth';
 import { Table, Modal, Checkbox, Pagination, DatePicker, Input, Button, Select, Space, Row, Col } from 'antd';
-import { ClassList } from '@core/services/api';
-import Admin_ClassModal from 'components/Modal/ClassModal';
+import { UserList } from '@core/services/api';
+import UserModal from 'components/Modal/UserModal';
 import { FormOutlined, DeleteOutlined } from '@ant-design/icons';
 const { Option } = Select;
 
@@ -14,20 +14,20 @@ function index() {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [search, setSearch] = useState<string>('');
   const [sort, setSort] = useState<string>('id_asc');
-  const [classData, setClassData] = useState([]);
-  const [classId, setClassId] = useState<string>('');
+  const [teacherData, setUserData] = useState([]);
+  const [userId, setUserId] = useState<string>('');
   const [showModal, setShowModal] = React.useState<boolean>(false);
 
   useEffect(() => {
     if (!showModal) {
-      getClassList();
+      getUserList();
     }
   }, [sort, showModal]);
 
-  const getClassList = async () => {
-    ClassList(search, sort, currentPage, pageSize)
+  const getUserList = async () => {
+    UserList(search, sort, currentPage, pageSize)
       .then((resp: any) => {
-        setClassData(resp.data?.Data?.Data ?? []);
+        setUserData(resp.data?.Data?.Data ?? []);
         setTotalRecord(resp.data?.TotalRecord);
       })
       .catch((error: any) => {
@@ -37,27 +37,32 @@ function index() {
 
   const columns = [
     {
-      title: 'Mã lớp',
-      dataIndex: 'ShowClassId',
+      title: 'Mã hệ thống',
+      dataIndex: 'SystemUserId',
     },
     {
-      title: 'Tên lớp được giao',
-      dataIndex: 'ClassName',
+      title: 'Tên người dùng',
+      dataIndex: 'Username',
+    },
+    {
+      title: 'Tên đăng nhập',
+      dataIndex: 'UserUsername',
     },
     {
       title: 'Tùy chọn',
       key: 'action',
       render: (text: any, record: any) => (
         <Space size="middle">
-          <FormOutlined onClick={() => openDetailModal(record.ClassId)} />
-          {/* <DeleteOutlined onClick={() => openDetailModal(record.ClassId)} /> */}
+          <FormOutlined onClick={() => openDetailModal(record.SystemUserId)} />
+          <DeleteOutlined onClick={() => openDetailModal(record.SystemUserId)} />
+          {/* <a >Chi tiết</a> */}
         </Space>
       ),
     },
   ];
 
   const openDetailModal = (id: string) => {
-    setClassId(id);
+    setUserId(id);
     setShowModal(true);
   };
 
@@ -78,19 +83,19 @@ function index() {
   };
 
   const handleAddNew = () => {
-    setClassId('');
+    setUserId('');
     setShowModal(true);
   };
 
   return (
-    <Layout title={'Danh sách lớp'}>
+    <Layout title={'Danh sách người dùng'}>
       <div>
         <Row>
           <Col span={18}>
             <Input placeholder={'Tìm kiếm'} onChange={handleSearchChange} width="50%" />
           </Col>
           <Col span={6}>
-            <Button type="primary" onClick={getClassList}>
+            <Button type="primary" onClick={getUserList}>
               Tìm kiếm
             </Button>
           </Col>
@@ -117,7 +122,7 @@ function index() {
         </Row>
       </div>
       <div>
-        <Table columns={columns} dataSource={classData} pagination={false} />
+        <Table columns={columns} dataSource={teacherData} pagination={false} />
         <Pagination
           defaultPageSize={pageSize}
           defaultCurrent={currentPage}
@@ -128,18 +133,18 @@ function index() {
         <Modal
           width={755}
           bodyStyle={{ height: 'max-content' }}
-          title={'Chi tiết lớp'}
+          title={'Chi tiết giáo viên'}
           visible={showModal}
           onCancel={() => setShowModal(false)}
           destroyOnClose
           footer={null}
           className="edit-profile-modal"
         >
-          <Admin_ClassModal classId={classId} />
+          <UserModal userId={userId} />
         </Modal>
       </div>
     </Layout>
   );
 }
 
-export default withAuth(index);
+export default index;

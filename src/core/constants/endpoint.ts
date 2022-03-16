@@ -5,16 +5,19 @@ export const CONTEXT = {
 };
 
 export const CONTROLLERS = {
-  CLASS: 'manage-clazz',
-  STUDENT: 'manage-student',
+  USER: 'user',
+  CLASS: 'class',
+  STUDENT: 'student',
+  TEACHER: 'teacher',
+  SCHOOL_YEAR: 'school-year',
 };
 
 export const ENDPOINTS = {
-  LOGIN: `login`,
-  SIGNUP: `signup`,
-  LOGOUT: `logout`,
+  LOGIN: `${CONTEXT.API}\\${CONTROLLERS.USER}/login`,
 
-  STUDENT_LIST: `${CONTROLLERS.STUDENT}/list`,
-  CLASS_LIST: `${CONTROLLERS.CLASS}/list`,
-  CREATE_CLASS: `${CONTROLLERS.CLASS}/create`,
+  USER: `${CONTEXT.API}\\${CONTROLLERS.USER}`,
+  TEACHER: `${CONTEXT.API}\\${CONTROLLERS.TEACHER}`,
+  CLASS: `${CONTEXT.API}\\${CONTROLLERS.CLASS}`,
+  STUDENT: `${CONTEXT.API}\\${CONTROLLERS.STUDENT}`,
+  SCHOOL_YEAR: `${CONTEXT.API}\\${CONTROLLERS.SCHOOL_YEAR}`,
 };

@@ -3,7 +3,7 @@ import Layout from 'Layouts';
 import withAuth from '@hocs/withAuth';
 import { Table, Modal, Checkbox, Pagination, DatePicker, Input, Button, Select, Space, Row, Col } from 'antd';
 import {} from '@core/services/api';
-import Admin_ClassModal from '@components/Modal/Admin_ClassModal';
+import ClassModal from 'components/Modal/ClassModal';
 import { FormOutlined, DeleteOutlined } from '@ant-design/icons';
 const { Option } = Select;
 
@@ -15,7 +15,7 @@ function index() {
   const [search, setSearch] = useState<string>('');
   const [sort, setSort] = useState<string>('id_asc');
   const [categoryData, setCategoryData] = useState([]);
-  const [categoryId, setCategoryId] = useState<string>('');
+  const [classId, setClassId] = useState<string>('');
   const [showModal, setShowModal] = React.useState<boolean>(false);
 
   useEffect(() => {
@@ -67,7 +67,7 @@ function index() {
   ];
 
   const openDetailModal = (id: string) => {
-    setCategoryId(id);
+    setClassId(id);
     setShowModal(true);
   };
 
@@ -88,7 +88,7 @@ function index() {
   };
 
   const handleAddNew = () => {
-    setCategoryId('');
+    setClassId('');
     setShowModal(true);
   };
 
@@ -145,7 +145,7 @@ function index() {
           footer={null}
           className="edit-profile-modal"
         >
-          <Admin_ClassModal categoryId={categoryId} />
+          <ClassModal classId={classId} />
         </Modal>
       </div>
     </Layout>

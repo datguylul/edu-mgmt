@@ -7,6 +7,11 @@ export const admin_menu: MenuItemType[] = [
     link: { href: '/admin/dashboard' },
   },
   {
+    title: 'Năm học',
+    icon: { name: 'folder-outline' },
+    link: { href: '/admin/school-year' },
+  },
+  {
     title: 'Lớp',
     icon: { name: 'folder-outline' },
     link: { href: '/admin/class' },
@@ -20,6 +25,11 @@ export const admin_menu: MenuItemType[] = [
     title: 'Giáo viên',
     icon: { name: 'folder-outline' },
     link: { href: '/admin/teacher' },
+  },
+  {
+    title: 'Tài khoản người dùng',
+    icon: { name: 'folder-outline' },
+    link: { href: '/admin/user' },
   },
   {
     title: 'Đăng Xuất',

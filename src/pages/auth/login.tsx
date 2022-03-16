@@ -11,6 +11,7 @@ import withoutAuth from '@hocs/withoutAuth';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import _ from 'lodash';
 
 const schema = yup
   .object({
@@ -37,15 +38,13 @@ function Login() {
     login(data)
       .then((res) => {
         const data = res.data;
-        // if (data?.error) {
-        //   setMessage('Tài khoản không hợp lệ hoặc có lỗi');
-        // }
-
-        if (data?.responseData) {
+        if (data.Success) {
           setAuthenticated(true);
-          Cookie.set('accessToken', data?.responseData?.token, { expires: 7 });
-          localStorage.setItem('roles', data?.responseData?.roles[0]);
-          localStorage.setItem('username', data?.responseData?.username);
+          Cookie.set('accessToken', data.Data?.token, { expires: 7 });
+          localStorage.setItem('roles', data.Data?.roles[0]?.RoleName);
+          localStorage.setItem('username', data.Data.account.Username);
+        } else {
+          setMessage(data.Message);
         }
       })
       .catch((error) => {
@@ -72,14 +71,14 @@ function Login() {
 
           <div>
             {message && (
-              <h2
+              <h4
                 style={{
                   color: 'red',
                   textAlign: 'center',
                 }}
               >
                 {message}
-              </h2>
+              </h4>
             )}
           </div>
 

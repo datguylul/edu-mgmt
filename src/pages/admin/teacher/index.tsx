@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import Layout from 'Layouts';
 import withAuth from '@hocs/withAuth';
 import { Table, Modal, Checkbox, Pagination, DatePicker, Input, Button, Select, Space, Row, Col } from 'antd';
-import {} from '@core/services/api';
-import Admin_ClassModal from '@components/Modal/Admin_ClassModal';
+import { TeacherList } from '@core/services/api';
+import TeacherModal from 'components/Modal/TeacherModal';
 import { FormOutlined, DeleteOutlined } from '@ant-design/icons';
 const { Option } = Select;
 
@@ -14,52 +14,67 @@ function index() {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [search, setSearch] = useState<string>('');
   const [sort, setSort] = useState<string>('id_asc');
-  const [categoryData, setCategoryData] = useState([]);
-  const [categoryId, setCategoryId] = useState<string>('');
+  const [teacherData, setTeacherData] = useState([]);
+  const [teacherId, setTeacherId] = useState<string>('');
   const [showModal, setShowModal] = React.useState<boolean>(false);
 
   useEffect(() => {
     if (!showModal) {
-      getCategoryList();
+      getTeacherList();
     }
   }, [sort, showModal]);
 
-  const getCategoryList = async () => {
-    // CategoryList(currentPage - 1, pageSize)
-    //   .then((resp: any) => {
-    //     const data = resp.data;
-    //     setCategoryData(data?.Data);
-    //     setTotalRecord(data?.TotalRecord);
-    //   })
-    //   .catch((error: any) => {
-    //     console.log('error', error);
-    //   });
+  const getTeacherList = async () => {
+    TeacherList(search, sort, currentPage, pageSize)
+      .then((resp: any) => {
+        setTeacherData(resp.data?.Data?.Data ?? []);
+        setTotalRecord(resp.data?.TotalRecord);
+      })
+      .catch((error: any) => {
+        console.log('error', error);
+      });
   };
 
   const columns = [
     {
-      title: 'Mã phân loại',
-      dataIndex: 'CategoryCode',
+      title: 'Mã giáo viên',
+      dataIndex: 'ShowTeacherId',
     },
     {
       title: 'Tên',
-      dataIndex: 'Title',
+      dataIndex: 'TeacherName',
     },
     {
-      title: 'Link hiển thị',
-      dataIndex: 'Slug',
+      title: 'Giới tính',
+      dataIndex: 'TeacherGender',
     },
     {
-      title: 'Nội dung',
-      dataIndex: 'Content',
+      title: 'Ngày sinh',
+      dataIndex: 'TeacherDOB',
+    },
+    {
+      title: 'SĐT',
+      dataIndex: 'TeacherPhone',
+    },
+    {
+      title: 'Email',
+      dataIndex: 'TeacherEmail',
+    },
+    {
+      title: 'Địa chỉ',
+      dataIndex: 'TeacherAddress',
+    },
+    {
+      title: 'Mô tả',
+      dataIndex: 'TeacherDescription',
     },
     {
       title: 'Tùy chọn',
       key: 'action',
       render: (text: any, record: any) => (
         <Space size="middle">
-          <FormOutlined onClick={() => openDetailModal(record.CategoryId)} />
-          <DeleteOutlined onClick={() => openDetailModal(record.CategoryId)} />
+          <FormOutlined onClick={() => openDetailModal(record.TeacherId)} />
+          <DeleteOutlined onClick={() => openDetailModal(record.TeacherId)} />
           {/* <a >Chi tiết</a> */}
         </Space>
       ),
@@ -67,7 +82,7 @@ function index() {
   ];
 
   const openDetailModal = (id: string) => {
-    setCategoryId(id);
+    setTeacherId(id);
     setShowModal(true);
   };
 
@@ -88,19 +103,19 @@ function index() {
   };
 
   const handleAddNew = () => {
-    setCategoryId('');
+    setTeacherId('');
     setShowModal(true);
   };
 
   return (
-    <Layout title={'Danh sách học sinh'}>
+    <Layout title={'Danh sách giáo viên'}>
       <div>
         <Row>
           <Col span={18}>
             <Input placeholder={'Tìm kiếm'} onChange={handleSearchChange} width="50%" />
           </Col>
           <Col span={6}>
-            <Button type="primary" onClick={getCategoryList}>
+            <Button type="primary" onClick={getTeacherList}>
               Tìm kiếm
             </Button>
           </Col>
@@ -127,7 +142,7 @@ function index() {
         </Row>
       </div>
       <div>
-        <Table columns={columns} dataSource={categoryData} pagination={false} />
+        <Table columns={columns} dataSource={teacherData} pagination={false} />
         <Pagination
           defaultPageSize={pageSize}
           defaultCurrent={currentPage}
@@ -138,18 +153,18 @@ function index() {
         <Modal
           width={755}
           bodyStyle={{ height: 'max-content' }}
-          title={'Loại sản phẩm'}
+          title={'Chi tiết giáo viên'}
           visible={showModal}
           onCancel={() => setShowModal(false)}
           destroyOnClose
           footer={null}
           className="edit-profile-modal"
         >
-          <Admin_ClassModal categoryId={categoryId} />
+          <TeacherModal teacherId={teacherId} />
         </Modal>
       </div>
     </Layout>
   );
 }
 
-export default withAuth(index);
+export default index;
