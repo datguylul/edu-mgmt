@@ -5,11 +5,12 @@ import styled, { DefaultTheme } from 'styled-components';
 import Select from '@paljs/ui/Select';
 import { LayoutHeader } from '@paljs/ui/Layout';
 import { EvaIcon } from '@paljs/ui/Icon';
-import { Button } from '@paljs/ui/Button';
 import { Actions } from '@paljs/ui/Actions';
 import ContextMenu from '@paljs/ui/ContextMenu';
 import User from '@paljs/ui/User';
 import { breakpointDown } from '@paljs/ui/breakpoints';
+import { Button } from 'antd';
+import { LeftOutlined } from '@ant-design/icons';
 
 const HeaderStyle = styled.div`
   display: flex;
@@ -50,6 +51,7 @@ const SelectStyled = styled(Select)`
 `;
 
 interface HeaderProps {
+  backButton?: boolean;
   toggleSidebar: () => void;
   theme: {
     set: (value: DefaultTheme['name']) => void;
@@ -101,44 +103,50 @@ const Header: React.FC<HeaderProps> = (props) => {
   return (
     <LayoutHeader fixed>
       <HeaderStyle>
-        <Actions
-          size="Medium"
-          actions={[
-            {
-              icon: { name: 'menu-2-outline' },
-              url: {
-                onClick: props.toggleSidebar,
+        {props.backButton ? (
+          <Actions
+            size="Medium"
+            actions={[
+              {
+                icon: { name: 'home-outline' },
+                url: {
+                  onClick: () => router.push('/'),
+                },
               },
-            },
-            // {
-            //   content: (
-            //     <Link href="/">
-            //       <a className="logo"></a>
-            //     </Link>
-            //   ),
-            // },
-            {
-              content: (
-                <SelectStyled
-                  instanceId="react-select-input"
-                  isSearchable={false}
-                  shape="SemiRound"
-                  placeholder="Themes"
-                  value={themeOptions().find((item) => item.value === props.theme.value)}
-                  options={themeOptions()}
-                  onChange={({ value }: { value: DefaultTheme['name'] }) => props.theme.set(value)}
-                />
-              ),
-            },
-            // {
-            //   content: (
-            //     <Button size="Small" onClick={() => props.changeDir()}>
-            //       {props.dir}
-            //     </Button>
-            //   ),
-            // },
-          ]}
-        />
+              {
+                icon: { name: 'chevron-left-outline' },
+                url: {
+                  onClick: () => router.back(),
+                },
+              },
+            ]}
+          />
+        ) : (
+          <Actions
+            size="Medium"
+            actions={[
+              {
+                icon: { name: 'menu-2-outline' },
+                url: {
+                  onClick: props.toggleSidebar,
+                },
+              },
+              {
+                content: (
+                  <SelectStyled
+                    instanceId="react-select-input"
+                    isSearchable={false}
+                    shape="SemiRound"
+                    placeholder="Themes"
+                    value={themeOptions().find((item) => item.value === props.theme.value)}
+                    options={themeOptions()}
+                    onChange={({ value }: { value: DefaultTheme['name'] }) => props.theme.set(value)}
+                  />
+                ),
+              },
+            ]}
+          />
+        )}
         <Actions
           size="Small"
           className="right"
@@ -151,8 +159,8 @@ const Header: React.FC<HeaderProps> = (props) => {
                   placement="bottom"
                   currentPath={router.pathname}
                   items={[
-                    { title: 'Profile', link: { href: '/modal-overlays/tooltip' } },
-                    { title: 'Log out', link: { href: '/logout' } },
+                    { title: 'Người dùng', link: { href: '/modal-overlays/tooltip' } },
+                    { title: 'Đăng xuất', link: { href: '/logout' } },
                   ]}
                   Link={Link}
                 >

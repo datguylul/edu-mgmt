@@ -62,13 +62,17 @@ const ClassModal: React.FC<IModalInfo> = ({
   };
 
   const fillForm = (data: any) => {
+    const year = data?.ClassYear.split('-');
+
     form.setFieldsValue({
       ClassName: data?.ClassName,
-      ShowClassId: data?.ShowClassId,
+      ClassYear: moment(year[0] + '-1-1'),
     });
   };
 
   const handleSubmit = (values: any) => {
+    values.ClassYear = values['ClassYear']?.format('YYYY');
+
     if (classId && classId !== '') {
       setLoading(true);
       EditClass(classId, values)
@@ -106,12 +110,6 @@ const ClassModal: React.FC<IModalInfo> = ({
     }
   };
 
-  const handleTitleChange = ({ target }: any) => {
-    form.setFieldsValue({
-      ShowClassId: target.value,
-    });
-  };
-
   useEffect(() => {
     if (classId && classId !== '') {
       LoadDetail();
@@ -120,9 +118,6 @@ const ClassModal: React.FC<IModalInfo> = ({
 
   return (
     <Form {...formItemLayout} form={form} name="register" onFinish={handleSubmit} scrollToFirstError>
-      <Form.Item name="ShowClassId" label="Mã lớp">
-        <Input disabled={true} />
-      </Form.Item>
       <Form.Item
         name="ClassName"
         label="Tên lớp"
@@ -133,15 +128,15 @@ const ClassModal: React.FC<IModalInfo> = ({
           },
         ]}
       >
-        <Input onChange={handleTitleChange} />
+        <Input />
       </Form.Item>
-      {/* <Form.Item
-          name="ShowClassId"
-          label=""
-          rules={[{ type: 'object' as const, required: true, message: 'Please select time!' }]}
-        >
-          <DatePicker picker="year" />
-        </Form.Item> */}
+      <Form.Item
+        name="ClassYear"
+        label="Năm học"
+        rules={[{ type: 'object' as const, required: true, message: 'Chọn năm học!' }]}
+      >
+        <DatePicker picker="year" />
+      </Form.Item>
       <Form.Item {...tailFormItemLayout}>
         <Space>
           <Button type="primary" htmlType="submit" loading={loading} disabled={loading}>

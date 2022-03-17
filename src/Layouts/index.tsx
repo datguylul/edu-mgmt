@@ -36,15 +36,18 @@ const LayoutPage: React.FC<SEOProps> = ({ children, ...rest }) => {
   const menuRef = useRef<MenuRefObject>(null);
   const [seeHeader, setSeeHeader] = useState(true);
   const [menuItem, setMenuItem] = useState<MenuItemType[]>([]);
+  const [isAdmin, setAdmin] = useState<boolean>(false);
   // let socket: any = io(process.env.REALTIME_BASE_URL || 'https://cnw-realtime.herokuapp.com');
 
   useEffect(() => {
     const path = router.pathname.split('/')[1];
 
-    if (path === USER_ROLE.student) setMenuItem(student_menu);
-    else if (path === USER_ROLE.admin) setMenuItem(admin_menu);
-    else if (path === USER_ROLE.teacher) setMenuItem(teacher_menu);
-    else setMenuItem(default_menu);
+    setAdmin(path === USER_ROLE.admin);
+
+    // if (path === USER_ROLE.student) setMenuItem(student_menu);
+    // else if (path === USER_ROLE.admin) setMenuItem(admin_menu);
+    // else if (path === USER_ROLE.teacher) setMenuItem(teacher_menu);
+    // else setMenuItem(default_menu);
     // if (socket) {
     //   socket.on('order-placed-admin', (orderId: string) => {
     //     // console.log('order-placed-admin', message)
@@ -87,6 +90,7 @@ const LayoutPage: React.FC<SEOProps> = ({ children, ...rest }) => {
           <Layout evaIcons={icons} dir={dir} className={!authLayout ? 'auth-layout' : ''}>
             {!authLayout && (
               <Header
+                backButton={rest.backButton}
                 dir={dir}
                 changeDir={changeDir}
                 theme={{ set: changeTheme, value: theme }}
@@ -94,7 +98,7 @@ const LayoutPage: React.FC<SEOProps> = ({ children, ...rest }) => {
               />
             )}
             <LayoutContainer>
-              {!authLayout && (
+              {!authLayout && isAdmin && (
                 <Sidebar
                   getState={getState}
                   ref={sidebarRef}
@@ -124,7 +128,7 @@ const LayoutPage: React.FC<SEOProps> = ({ children, ...rest }) => {
                       className="sidebar-menu"
                       Link={Link}
                       ref={menuRef}
-                      items={menuItem}
+                      items={admin_menu}
                       currentPath={router.pathname}
                       toggleSidebar={() => sidebarRef.current?.hide()}
                     />

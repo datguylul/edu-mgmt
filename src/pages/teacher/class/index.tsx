@@ -37,12 +37,12 @@ function index() {
 
   const columns = [
     {
-      title: 'Mã lớp',
-      dataIndex: 'ShowClassId',
+      title: 'Tên lớp',
+      dataIndex: 'ClassName',
     },
     {
-      title: 'Tên lớp được giao',
-      dataIndex: 'ClassName',
+      title: 'Năm học',
+      dataIndex: 'ClassYear',
     },
     {
       title: 'Tùy chọn',
@@ -50,7 +50,7 @@ function index() {
       render: (text: any, record: any) => (
         <Space size="middle">
           <FormOutlined onClick={() => openDetailModal(record.ClassId)} />
-          {/* <DeleteOutlined onClick={() => openDetailModal(record.ClassId)} /> */}
+          <DeleteOutlined onClick={() => openDetailModal(record.ClassId)} />
         </Space>
       ),
     },
@@ -83,7 +83,7 @@ function index() {
   };
 
   return (
-    <Layout title={'Danh sách lớp'}>
+    <Layout title={'Danh sách lớp'} backButton>
       <div>
         <Row>
           <Col span={18}>
