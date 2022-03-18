@@ -83,7 +83,7 @@ function index() {
   };
 
   return (
-    <Layout title={'Danh sách lớp'} backButton>
+    <Layout title={'Danh sách lớp'} backButton backButtonUrl="/teacher/dashboard">
       <div>
         <Row>
           <Col span={18}>

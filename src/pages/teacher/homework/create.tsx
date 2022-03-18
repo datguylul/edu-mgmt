@@ -132,7 +132,7 @@ const create = () => {
   };
 
   return (
-    <Layout title="Thêm mới bài tập" backButton>
+    <Layout title="Thêm mới bài tập" backButton backButtonUrl="/teacher/homework">
       <Form {...formItemLayout} form={form} name="register" onFinish={handleSubmit} scrollToFirstError>
         <Form.Item
           name="HomeWorkName"

@@ -52,6 +52,8 @@ const SelectStyled = styled(Select)`
 
 interface HeaderProps {
   backButton?: boolean;
+  homeBtnUrl?: string;
+  backButtonUrl?: string;
   toggleSidebar: () => void;
   theme: {
     set: (value: DefaultTheme['name']) => void;
@@ -110,13 +112,13 @@ const Header: React.FC<HeaderProps> = (props) => {
               {
                 icon: { name: 'home-outline' },
                 url: {
-                  onClick: () => router.push('/'),
+                  onClick: () => router.push(props.homeBtnUrl ?? '/'),
                 },
               },
               {
                 icon: { name: 'chevron-left-outline' },
                 url: {
-                  onClick: () => router.back(),
+                  onClick: () => router.push(props.backButtonUrl ?? '/'),
                 },
               },
             ]}

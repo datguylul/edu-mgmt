@@ -91,6 +91,7 @@ const LayoutPage: React.FC<SEOProps> = ({ children, ...rest }) => {
             {!authLayout && (
               <Header
                 backButton={rest.backButton}
+                backButtonUrl={rest.backButtonUrl}
                 dir={dir}
                 changeDir={changeDir}
                 theme={{ set: changeTheme, value: theme }}

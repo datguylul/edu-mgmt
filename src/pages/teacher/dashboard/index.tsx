@@ -65,5 +65,5 @@ const Home = () => {
     </Layout>
   );
 };
-// export default withAuth(Home);
-export default Home;
+export default withAuth(Home);
+// export default Home;

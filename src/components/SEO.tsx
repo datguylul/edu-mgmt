@@ -37,6 +37,8 @@ const SEO: React.FC<SEOProps> = ({ description, keywords, title }) => (
 
 export interface SEOProps {
   backButton?: boolean;
+  homeBtnUrl?: string;
+  backButtonUrl?: string;
   description?: string;
   lang?: string;
   meta?: any[];
@@ -46,6 +48,8 @@ export interface SEOProps {
 
 SEO.defaultProps = {
   backButton: false,
+  homeBtnUrl: '/',
+  backButtonUrl: '/',
   description: '',
   keywords: [
     'admin-dashboard',

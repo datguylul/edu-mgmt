@@ -32,5 +32,7 @@ export const CreateUser = (params: object) => post(ENDPOINTS.USER + 'create-user
 
 export const HomeWorkList = (search: string, sort: string, page: number, record: number) =>
   get(ENDPOINTS.HOME_WORK + `?search=${search}&sort=${sort}&page=${page}&record=${record}`);
+export const HomeWorkListByClass = (classId: string, page: number, record: number) =>
+  get(ENDPOINTS.HOME_WORK + `\\by-class\\${classId}` + `?page=${page}&record=${record}`);
 export const HomeWorkDetail = (id: string) => get(ENDPOINTS.HOME_WORK + `\\detail\\${id}`);
 export const CreateHomeWork = (params: object) => post(ENDPOINTS.HOME_WORK + '\\create', params);
