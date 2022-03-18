@@ -9,7 +9,7 @@ export const CONTROLLERS = {
   CLASS: 'class',
   STUDENT: 'student',
   TEACHER: 'teacher',
-  SCHOOL_YEAR: 'school-year',
+  HOME_WORK: 'home-work',
 };
 
 export const ENDPOINTS = {
@@ -19,5 +19,5 @@ export const ENDPOINTS = {
   TEACHER: `${CONTEXT.API}\\${CONTROLLERS.TEACHER}`,
   CLASS: `${CONTEXT.API}\\${CONTROLLERS.CLASS}`,
   STUDENT: `${CONTEXT.API}\\${CONTROLLERS.STUDENT}`,
-  SCHOOL_YEAR: `${CONTEXT.API}\\${CONTROLLERS.SCHOOL_YEAR}`,
+  HOME_WORK: `${CONTEXT.API}\\${CONTROLLERS.HOME_WORK}`,
 };

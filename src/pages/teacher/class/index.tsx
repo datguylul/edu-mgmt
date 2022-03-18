@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Layout from 'Layouts';
 import withAuth from '@hocs/withAuth';
-import { Table, Modal, Checkbox, Pagination, DatePicker, Input, Button, Select, Space, Row, Col } from 'antd';
+import { Table, Modal, Card, Pagination, DatePicker, Input, Button, Select, Space, Row, Col } from 'antd';
 import { ClassList } from '@core/services/api';
 import Admin_ClassModal from 'components/Modal/ClassModal';
 import { FormOutlined, DeleteOutlined } from '@ant-design/icons';

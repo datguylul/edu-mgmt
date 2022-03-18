@@ -25,13 +25,12 @@ export const TeacherDetail = (id: string) => get(ENDPOINTS.TEACHER + `\\detail\\
 export const CreateTeacher = (params: object) => post(ENDPOINTS.TEACHER, params);
 export const EditTeacher = (id: string, params: object) => put(ENDPOINTS.TEACHER + `\\edit\\${id}`, params);
 
-export const SchoolYearList = (search: string, sort: string, page: number, record: number) =>
-  get(ENDPOINTS.SCHOOL_YEAR + `?search=${search}&sort=${sort}&page=${page}&record=${record}`);
-export const SchoolYearDetail = (id: string) => get(ENDPOINTS.SCHOOL_YEAR + `\\detail\\${id}`);
-export const CreateSchoolYear = (params: object) => post(ENDPOINTS.SCHOOL_YEAR, params);
-export const EditSchoolYear = (id: string, params: object) => put(ENDPOINTS.SCHOOL_YEAR + `\\edit\\${id}`, params);
-
 export const UserList = (search: string, sort: string, page: number, record: number) =>
   get(ENDPOINTS.USER + `?search=${search}&sort=${sort}&page=${page}&record=${record}`);
 export const UserDetail = (id: string) => get(ENDPOINTS.USER + `\\detail\\${id}`);
 export const CreateUser = (params: object) => post(ENDPOINTS.USER + 'create-user', params);
+
+export const HomeWorkList = (search: string, sort: string, page: number, record: number) =>
+  get(ENDPOINTS.HOME_WORK + `?search=${search}&sort=${sort}&page=${page}&record=${record}`);
+export const HomeWorkDetail = (id: string) => get(ENDPOINTS.HOME_WORK + `\\detail\\${id}`);
+export const CreateHomeWork = (params: object) => post(ENDPOINTS.HOME_WORK + '\\create', params);
