@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Layout from 'Layouts';
 import withAuth from '@hocs/withAuth';
-import { Form, Input, Button, Space, DatePicker, Upload, Checkbox } from 'antd';
+import { Form, Input, Button, Space, DatePicker, Upload, Checkbox, Switch } from 'antd';
 import moment from 'moment';
 import { openNotification } from '@utils/Noti';
 import { UploadOutlined, InboxOutlined } from '@ant-design/icons';
@@ -70,6 +70,8 @@ const create = () => {
       HomeWorkName: values.HomeWorkName.trim(),
       HomeWorkDescribe: describeContent,
       ClassList: values.ClassList,
+      OnlyAssignStudent: values.OnlyAssignStudent,
+      RequiredLogin: values.RequiredLogin,
     };
 
     if (values.DueDate) {
@@ -85,8 +87,6 @@ const create = () => {
       });
       params.FileList = files;
     }
-
-    // console.log('values', params);
 
     CreateHomeWork(params)
       .then((res) => {
@@ -181,6 +181,12 @@ const create = () => {
               />
             </React.Suspense>
           )}
+        </Form.Item>
+        <Form.Item label="Chỉ học sinh có trong danh sách" name="OnlyAssignStudent">
+          <Switch />
+        </Form.Item>
+        <Form.Item label="Bắt đăng nhập" name="RequiredLogin">
+          <Switch />
         </Form.Item>
         <Form.Item label="Lớp giao bài" name="ClassList">
           <Checkbox.Group options={classData} defaultValue={['Apple']} onChange={() => {}} />

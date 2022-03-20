@@ -1,13 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Layout from 'Layouts';
 import withAuth from '@hocs/withAuth';
-import { Form, Input, Button, Space, DatePicker, Upload, Checkbox } from 'antd';
+import { Form, Input, Button, Space, DatePicker, Switch, Checkbox } from 'antd';
 import moment from 'moment';
 import { openNotification } from '@utils/Noti';
-import { UploadOutlined, InboxOutlined } from '@ant-design/icons';
 import { handleCloudinaryUpload } from 'core/services/cloudinaryUpload';
 import { ClassList, CreateHomeWork, HomeWorkDetail } from '@core/services/api';
 import { useRouter } from 'next/router';
+import fileSaver from 'file-saver';
 
 const Jodit = React.lazy(() => {
   return import('jodit-react');
@@ -81,6 +81,8 @@ const index = () => {
       HomeWorkType: data?.homeWork?.HomeWorkType,
       DueDate: moment(data?.homeWork?.DueDate),
       CreatedDate: moment(data?.homeWork?.CreatedDate),
+      RequiredLogin: data?.homeWork?.RequiredLogin,
+      OnlyAssignStudent: data?.homeWork?.OnlyAssignStudent,
     });
     setFileList(data.files);
     setDescribeContent(data?.homeWork?.HomeWorkDescribe);
@@ -171,6 +173,10 @@ const index = () => {
     setFileList(removedFiles);
   };
 
+  const saveManual = (item: any) => {
+    fileSaver.saveAs(item.FileUploadUrl, item.FileUploadName);
+  };
+
   return (
     <Layout title="Chi tiết bài tập" backButton backButtonUrl="/teacher/homework">
       {homeWorkId && homeWorkId !== undefined && (
@@ -209,7 +215,7 @@ const index = () => {
           <Form.Item label="File bài tập">
             {fileList.map((item: any) => {
               return (
-                <a href={item.FileUploadUrl} key={item.FileUploadId}>
+                <a key={item.FileUploadId} download={item.FileUploadName} onClick={() => saveManual(item)}>
                   {item.FileUploadName}
                 </a>
               );
@@ -234,6 +240,12 @@ const index = () => {
                 />
               </React.Suspense>
             )}
+          </Form.Item>
+          <Form.Item label="Chỉ học sinh có trong danh sách" name="OnlyAssignStudent">
+            <Switch />
+          </Form.Item>
+          <Form.Item label="Bắt đăng nhập" name="RequiredLogin">
+            <Switch />
           </Form.Item>
           <Form.Item label="Lớp giao bài" name="ClassList">
             <Checkbox.Group options={classData} defaultValue={['Apple']} onChange={() => {}} />
