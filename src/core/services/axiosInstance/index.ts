@@ -12,4 +12,4 @@ const getInstance = (URL: string) => {
   return instance;
 };
 
-export const apiClient = getInstance(process.env.API_BASE_URL!);
+export const apiClient = getInstance(process.env.HOST_URL!);

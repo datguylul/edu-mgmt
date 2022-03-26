@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 
 import { useAuth } from '@contexts/AuthContext';
 import withAuth from '@hocs/withAuth';
-import { logOut } from '@core/services/api';
+// import { logOut } from '@core/services/api';
 // import { UserContext } from '@contexts/UserContext';
 import Cookie from 'js-cookie';
 

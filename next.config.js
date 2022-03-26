@@ -3,7 +3,7 @@ module.exports = {
     domains: ['product.hstatic.net', 'st4.depositphotos.com', 'res.cloudinary.com'],
   },
   env: {
-    HOST: "https://edu-management-be.herokuapp.com/",
+    HOST_URL: "https://edu-mgmt-be.somee.com/",
     API_BASE_URL: "https://localhost:44323/",
   },
   typescript: {

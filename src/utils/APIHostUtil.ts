@@ -3,7 +3,7 @@ interface HostName {
 }
 
 const APIHostName: HostName = {
-  URL: process.env.API_BASE_URL!,
+  URL: process.env.HOST!,
 };
 
 export function getAPIHostName() {
