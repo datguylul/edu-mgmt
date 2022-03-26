@@ -151,7 +151,7 @@ const index = () => {
     setUploading(true);
     handleCloudinaryUpload(file)
       .then((res: any) => {
-        file.FileUploadUrl = res.url;
+        file.FileUploadUrl = res.secure_url;
         file.FileUploadName = res.original_filename;
         const files = [...fileList, file];
         setFileList(files as any);
