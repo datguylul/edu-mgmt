@@ -58,7 +58,7 @@ function Login() {
 
   return (
     <Layout title="Đăng nhập">
-      <Auth title="Đăng Nhập" subTitle="Đăng nhập ngay!">
+      <Auth title="Đăng Nhập">
         <form onSubmit={handleSubmit(onSubmit)}>
           <InputGroup fullWidth>
             <input type="text" placeholder="Username" {...register('username')} />
@@ -87,12 +87,12 @@ function Login() {
           </Button>
         </form>
         {/* <Socials /> */}
-        {/* <p>
-          Don&apos;t have account?{' '}
+        <p>
+          Đăng ký ngay{' '}
           <Link href="/auth/register">
-            <a>Register</a>
+            <a>Đăng ký</a>
           </Link>
-        </p> */}
+        </p>
       </Auth>
     </Layout>
   );

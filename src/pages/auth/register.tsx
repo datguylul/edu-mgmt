@@ -7,56 +7,142 @@ import Link from 'next/link';
 import { signUp } from '@core/services/api';
 import Auth from 'components/Auth';
 import Layout from 'Layouts';
-import Socials from 'components/Auth/Socials';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+import _ from 'lodash';
+import { Tabs } from 'antd';
+import { USER_ROLE_ID } from '@core/constants/userRoleId';
+import router from 'next/router';
+
+const { TabPane } = Tabs;
 
 const Input = styled(InputGroup)`
   margin-bottom: 2rem;
 `;
 
+const schema = yup
+  .object({
+    UserName: yup.string().required('Họ tên không thể trống'),
+    UserPhone: yup.string().required('Số điện thoại không thể trống'),
+    UserPassword: yup.string().required('Mật khẩu không thể trống').min(6, 'Mật khẩu ít nhất 6 kí tự'),
+    ConfirmUserPassword: yup
+      .string()
+      .required('Xác nhận mật khẩu không thể trống')
+      .oneOf([yup.ref('UserPassword')], 'Xác nhận mật khẩu không giống'),
+  })
+  .required();
+
 export default function Register() {
-  const [userName, setUserName] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
-  const onCheckbox = () => {
-    // v will be true or false
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(schema),
+  });
+  const [message, setMessage] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
+  const [userLoginType, setUserLoginType] = useState<number>(USER_ROLE_ID.teacher);
+
+  const onSubmit = (data: any) => {
+    setLoading(true);
+
+    const params = {
+      ...data,
+      signUpUserType: userLoginType,
+    };
+
+    signUp(params)
+      .then((res) => {
+        const data = res.data;
+        if (data.Success) {
+          router.push('/auth/login');
+        } else {
+          setMessage(data.Message);
+        }
+      })
+      .catch((error) => {
+        console.log('error', error);
+        setMessage('Tài khoản không hợp lệ hoặc có lỗi');
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
-  const handleSignUp = (e: any) => {
-    e.preventDefault();
-    signUp({
-      userName: userName,
-      password: password,
-    });
-  };
+
+  function tabChange(key: string) {
+    setUserLoginType(parseInt(key));
+  }
+
   return (
-    <Layout title="Register">
-      <Auth title="Create new account">
-        <form>
-          <Input fullWidth>
-            <input type="text" placeholder="Username" onChange={(e) => setUserName(e.target.value)} />
-          </Input>
-          <Input fullWidth>
-            <input type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)} />
-          </Input>
-          <Input fullWidth>
-            <input type="password" placeholder="Confirm Password" />
-          </Input>
-          <Checkbox checked onChange={onCheckbox}>
-            Agree to{' '}
-            <Link href="/">
-              <a>Terms & Conditions</a>
-            </Link>
-          </Checkbox>
-          <Button onClick={handleSignUp} shape="SemiRound" fullWidth>
+    <Layout title="Đăng ký">
+      <Auth title="Tạo tài khoản với tư cách">
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <Tabs defaultActiveKey="1" onChange={tabChange}>
+            <TabPane tab="Giáo viên" key={USER_ROLE_ID.teacher}>
+              <Input fullWidth>
+                <input type="text" placeholder="Họ Tên giáo viên" {...register('UserName')} />
+              </Input>
+              <p style={styles.errorText}>{errors.UserName?.message}</p>
+              <Input fullWidth>
+                <input type="text" placeholder="Số điện thoại" {...register('UserPhone')} />
+              </Input>
+              <p style={styles.errorText}>{errors.UserPhone?.message}</p>
+              <Input fullWidth>
+                <input type="text" placeholder="Email" {...register('UserEmail')} />
+              </Input>
+              <p style={styles.errorText}>{errors.UserEmail?.message}</p>
+              <Input fullWidth>
+                <input type="password" placeholder="Mật khẩu" {...register('UserPassword')} />
+              </Input>
+              <p style={styles.errorText}>{errors.UserPassword?.message}</p>
+              <Input fullWidth>
+                <input type="password" placeholder="Xác nhận mật khẩu" {...register('ConfirmUserPassword')} />
+              </Input>
+              <p style={styles.errorText}>{errors.ConfirmUserPassword?.message}</p>
+            </TabPane>
+            <TabPane tab="Học sinh" key={USER_ROLE_ID.student}>
+              <Input fullWidth>
+                <input type="text" placeholder="Họ Tên học sinh" {...register('UserName')} />
+              </Input>
+              <p style={styles.errorText}>{errors.UserName?.message}</p>
+              <Input fullWidth>
+                <input type="text" placeholder="Số điện thoại (học sinh hoặc phụ huynh)" {...register('UserPhone')} />
+              </Input>
+              <p style={styles.errorText}>{errors.UserPhone?.message}</p>
+              <Input fullWidth>
+                <input type="password" placeholder="Mật khẩu" {...register('UserPassword')} />
+              </Input>
+              <p style={styles.errorText}>{errors.UserPassword?.message}</p>
+              <Input fullWidth>
+                <input type="password" placeholder="Xác nhận mật khẩu" {...register('ConfirmUserPassword')} />
+              </Input>
+              <p style={styles.errorText}>{errors.ConfirmUserPassword?.message}</p>
+            </TabPane>
+          </Tabs>
+
+          <div>{message && <h4 style={[styles.errorText, styles.centerText]}>{message}</h4>}</div>
+          <Button type="submit" shape="SemiRound" fullWidth disabled={loading}>
             Register
           </Button>
         </form>
-        <Socials />
         <p>
-          Already have an account?{' '}
+          Đã có tài khoản?{' '}
           <Link href="/auth/login">
-            <a>Log In</a>
+            <a>Đăng nhập</a>
           </Link>
         </p>
       </Auth>
     </Layout>
   );
 }
+
+const styles = {
+  errorText: {
+    color: 'red',
+  },
+  centerText: {
+    textAlign: 'center',
+  },
+};
