@@ -12,12 +12,14 @@ export const ClassList = (search: string, sort: string, page: number, record: nu
 export const ClassDetail = (id: string) => get(ENDPOINTS.CLASS + `\\detail\\${id}`);
 export const CreateClass = (params: object) => post(ENDPOINTS.CLASS, params);
 export const EditClass = (id: string, params: object) => put(ENDPOINTS.CLASS + `\\edit\\${id}`, params);
+export const ClassAddStudent = (params: object) => post(ENDPOINTS.CLASS_ADD_STUDENT, params);
 
 export const StudentList = (search: string, sort: string, page: number, record: number) =>
   get(ENDPOINTS.STUDENT + `?search=${search}&sort=${sort}&page=${page}&record=${record}`);
 export const StudentDetail = (id: string) => get(ENDPOINTS.STUDENT + `\\detail\\${id}`);
 export const CreateStudent = (params: object) => post(ENDPOINTS.STUDENT, params);
 export const EditStudent = (id: string, params: object) => put(ENDPOINTS.STUDENT + `\\edit\\${id}`, params);
+export const StudentReadExcel = (params: FormData) => post(ENDPOINTS.STUDENT_READ_EXCEL, params);
 
 export const TeacherList = (search: string, sort: string, page: number, record: number) =>
   get(ENDPOINTS.TEACHER + `?search=${search}&sort=${sort}&page=${page}&record=${record}`);

@@ -3,8 +3,9 @@ import Layout from 'Layouts';
 import withAuth from '@hocs/withAuth';
 import { Table, Modal, Card, Pagination, DatePicker, Input, Button, Select, Space, Row, Col } from 'antd';
 import { ClassList } from '@core/services/api';
-import Admin_ClassModal from 'components/Modal/ClassModal';
-import { FormOutlined, DeleteOutlined } from '@ant-design/icons';
+import ClassModal from 'components/Modal/ClassModal';
+import { InfoOutlined, FormOutlined, DeleteOutlined } from '@ant-design/icons';
+import router from 'next/router';
 const { Option } = Select;
 
 function index() {
@@ -49,8 +50,9 @@ function index() {
       key: 'action',
       render: (text: any, record: any) => (
         <Space size="middle">
-          <FormOutlined onClick={() => openDetailModal(record.ClassId)} />
+          <InfoOutlined onClick={() => openDetailModal(record.ClassId)} />
           <DeleteOutlined onClick={() => openDetailModal(record.ClassId)} />
+          <FormOutlined onClick={() => router.push(`/teacher/class/${record.ClassId}`)} />
         </Space>
       ),
     },
@@ -135,7 +137,7 @@ function index() {
           footer={null}
           className="edit-profile-modal"
         >
-          <Admin_ClassModal classId={classId} />
+          <ClassModal classId={classId} />
         </Modal>
       </div>
     </Layout>

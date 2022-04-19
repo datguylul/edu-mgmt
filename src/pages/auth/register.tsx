@@ -56,10 +56,10 @@ export default function Register() {
     signUp(params)
       .then((res) => {
         const data = res.data;
-        if (data.Success) {
+        if (data?.Success && data?.Data) {
           router.push('/auth/login');
         } else {
-          setMessage(data.Message);
+          setMessage(data?.Message);
         }
       })
       .catch((error) => {

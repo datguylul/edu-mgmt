@@ -7,7 +7,7 @@ import { openNotification } from '@utils/Noti';
 import { handleCloudinaryUpload } from 'core/services/cloudinaryUpload';
 import { ClassList, CreateHomeWork, HomeWorkDetail } from '@core/services/api';
 import { useRouter } from 'next/router';
-import fileSaver from 'file-saver';
+import { saveFile } from '@utils/FileUtil';
 
 const Jodit = React.lazy(() => {
   return import('jodit-react');
@@ -74,8 +74,6 @@ const index = () => {
   };
 
   const fillForm = (data: any) => {
-    console.log('data', data);
-
     form.setFieldsValue({
       HomeWorkName: data?.homeWork?.HomeWorkName,
       HomeWorkType: data?.homeWork?.HomeWorkType,
@@ -174,7 +172,7 @@ const index = () => {
   };
 
   const saveManual = (item: any) => {
-    fileSaver.saveAs(item.FileUploadUrl, item.FileUploadName);
+    saveFile(item.FileUploadUrl, item.FileUploadName);
   };
 
   return (
