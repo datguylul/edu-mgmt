@@ -13,6 +13,7 @@ export const ClassDetail = (id: string) => get(ENDPOINTS.CLASS + `\\detail\\${id
 export const CreateClass = (params: object) => post(ENDPOINTS.CLASS, params);
 export const EditClass = (id: string, params: object) => put(ENDPOINTS.CLASS + `\\edit\\${id}`, params);
 export const ClassAddStudent = (params: object) => post(ENDPOINTS.CLASS_ADD_STUDENT, params);
+export const ClassFindStudent = (params: object) => post(ENDPOINTS.CLASS_FIND_STUDENT, params);
 
 export const StudentList = (search: string, sort: string, page: number, record: number) =>
   get(ENDPOINTS.STUDENT + `?search=${search}&sort=${sort}&page=${page}&record=${record}`);
