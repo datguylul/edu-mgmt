@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Layout from 'Layouts';
 import withAuth from '@hocs/withAuth';
-import { Form, Input, Button, Space, DatePicker, Switch, Checkbox } from 'antd';
+import { Form, Input, Button, Space, DatePicker, Switch, Checkbox, Row, Col } from 'antd';
 import moment from 'moment';
 import { openNotification } from '@utils/Noti';
 import { handleCloudinaryUpload } from 'core/services/cloudinaryUpload';
@@ -110,6 +110,8 @@ const index = () => {
       HomeWorkName: values.HomeWorkName.trim(),
       HomeWorkDescribe: describeContent,
       ClassList: values.ClassList,
+      OnlyAssignStudent: values.OnlyAssignStudent,
+      RequiredLogin: values.RequiredLogin,
     };
 
     if (values.DueDate) {
@@ -127,6 +129,7 @@ const index = () => {
     }
 
     // console.log('values', params);
+    // return;
 
     CreateHomeWork(params)
       .then((res) => {
@@ -211,13 +214,17 @@ const index = () => {
             <DatePicker showTime />
           </Form.Item>
           <Form.Item label="File bài tập">
-            {fileList.map((item: any) => {
-              return (
-                <a key={item.FileUploadId} download={item.FileUploadName} onClick={() => saveManual(item)}>
-                  {item.FileUploadName}
-                </a>
-              );
-            })}
+            <Col span={18}>
+              {fileList?.map((item: any) => {
+                return (
+                  <Col span={18}>
+                    <a key={item.FileUploadId} download={item.FileUploadName} onClick={() => saveManual(item)}>
+                      {item.FileUploadName}
+                    </a>
+                  </Col>
+                );
+              })}
+            </Col>
           </Form.Item>
           {/* <Form.Item label="File bài tập">
             <Upload multiple={true} beforeUpload={(file) => handleUpload(file)} name="logo" onRemove={handleRemoveFile}>

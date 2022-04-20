@@ -3,8 +3,9 @@ import { Table, Modal, Card, Pagination, DatePicker, Input, Button, Select, Spac
 import { HomeWorkListByClass } from '@core/services/api';
 import moment from 'moment';
 import { openNotification } from '@utils/Noti';
-import { FormOutlined, DeleteOutlined } from '@ant-design/icons';
+import { FormOutlined, DeleteOutlined, CopyOutlined } from '@ant-design/icons';
 import Router from 'next/router';
+import absoluteUrl from 'next-absolute-url';
 
 const { Option } = Select;
 
@@ -49,10 +50,22 @@ const ClassModal: React.FC<IModalInfo> = ({
         <Space size="middle">
           <FormOutlined onClick={() => handleRedirect(`/teacher/homework/detail/${record.HomeWorkId}`)} />
           <DeleteOutlined onClick={() => {}} />
+          <CopyOutlined onClick={() => handleCopyLink(record.HomeWorkId)} />
         </Space>
       ),
     },
   ];
+
+  const handleCopyLink = (id: string) => {
+    const { origin } = absoluteUrl();
+    const url = `${origin}/homework/${id}`;
+    openNotification('Copy Link bài tập thành công');
+    if ('clipboard' in navigator) {
+      return navigator.clipboard.writeText(url);
+    } else {
+      return document.execCommand('copy', true, url);
+    }
+  };
 
   const handleRedirect = (pathname: string) => {
     Router.push(pathname);
