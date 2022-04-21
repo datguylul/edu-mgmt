@@ -31,6 +31,7 @@ export const EditTeacher = (id: string, params: object) => put(ENDPOINTS.TEACHER
 export const UserList = (search: string, sort: string, page: number, record: number) =>
   get(ENDPOINTS.USER + `?search=${search}&sort=${sort}&page=${page}&record=${record}`);
 export const UserDetail = (id: string) => get(ENDPOINTS.USER + `\\detail\\${id}`);
+export const UserDetailNonId = () => get(ENDPOINTS.USER + `\\detail`);
 export const CreateUser = (params: object) => post(ENDPOINTS.USER + 'create-user', params);
 
 export const HomeWorkList = (search: string, sort: string, page: number, record: number) =>

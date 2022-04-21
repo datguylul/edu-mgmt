@@ -12,22 +12,28 @@ const TeacherMenu = [
     urlDirect: '/teacher/homework',
     icon: <BookOutlined style={{ fontSize: '150%' }} twoToneColor="#eb2f96" />,
   },
+  // {
+  //   id: 2,
+  //   title: 'Đề thi',
+  //   urlDirect: '/teacher/test',
+  //   icon: <HighlightOutlined style={{ fontSize: '150%' }} twoToneColor="#eb2f96" />,
+  // },
   {
     id: 2,
-    title: 'Đề thi',
-    urlDirect: '/teacher/test',
-    icon: <HighlightOutlined style={{ fontSize: '150%' }} twoToneColor="#eb2f96" />,
-  },
-  {
-    id: 3,
     title: 'Danh sách lớp',
     urlDirect: '/teacher/class',
     icon: <AuditOutlined style={{ fontSize: '150%' }} twoToneColor="#eb2f96" />,
   },
+  // {
+  //   id: 3,
+  //   title: 'Học sinh',
+  //   urlDirect: '/teacher/student',
+  //   icon: <UserOutlined style={{ fontSize: '150%' }} twoToneColor="#eb2f96" />,
+  // },
   {
     id: 4,
-    title: 'Học sinh',
-    urlDirect: '/teacher/student',
+    title: 'Thông tin tài khoản',
+    urlDirect: '/teacher/profile',
     icon: <UserOutlined style={{ fontSize: '150%' }} twoToneColor="#eb2f96" />,
   },
 ];
@@ -51,7 +57,7 @@ const Home = () => {
                       cursor: 'pointer',
                     }}
                   >
-                    <Card title={item.title} extra={<a href={item.urlDirect}>More</a>} style={{ width: 300 }}>
+                    <Card title={item.title} style={{ width: 300 }}>
                       {item.icon}
                     </Card>
                   </div>
