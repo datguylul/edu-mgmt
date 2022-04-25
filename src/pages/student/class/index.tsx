@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import Layout from 'Layouts';
 import withAuth from '@hocs/withAuth';
-import { Table, Modal, Checkbox, Pagination, DatePicker, Input, Button, Select, Space, Row, Col } from 'antd';
-import {} from '@core/services/api';
+import { Table, Modal, Card, Pagination, DatePicker, Input, Button, Select, Space, Row, Col } from 'antd';
+import { ClassList } from '@core/services/api';
 import ClassModal from 'components/Modal/ClassModal';
-import { FormOutlined, DeleteOutlined } from '@ant-design/icons';
+import { InfoOutlined, FormOutlined, DeleteOutlined } from '@ant-design/icons';
+import router from 'next/router';
+import { CLASS_STATUS } from '@core/constants';
 const { Option } = Select;
+
+const ClassStatusList = [CLASS_STATUS.active, CLASS_STATUS.finish, CLASS_STATUS.suspended];
 
 function index() {
   const [totalRecord, setTotalRecord] = useState<number>(0);
@@ -14,53 +18,45 @@ function index() {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [search, setSearch] = useState<string>('');
   const [sort, setSort] = useState<string>('id_asc');
-  const [categoryData, setCategoryData] = useState([]);
+  const [classStatus, setClassStatus] = useState<number>(CLASS_STATUS.active.value);
+  const [classData, setClassData] = useState([]);
   const [classId, setClassId] = useState<string>('');
   const [showModal, setShowModal] = React.useState<boolean>(false);
 
   useEffect(() => {
     if (!showModal) {
-      getCategoryList();
+      getClassList();
     }
-  }, [sort, showModal]);
+  }, [classStatus, showModal]);
 
-  const getCategoryList = async () => {
-    // CategoryList(currentPage - 1, pageSize)
-    //   .then((resp: any) => {
-    //     const data = resp.data;
-    //     setCategoryData(data?.Data);
-    //     setTotalRecord(data?.TotalRecord);
-    //   })
-    //   .catch((error: any) => {
-    //     console.log('error', error);
-    //   });
+  const getClassList = async () => {
+    ClassList(search, classStatus, currentPage, pageSize)
+      .then((resp: any) => {
+        setClassData(resp.data?.Data?.Data ?? []);
+        setTotalRecord(resp.data?.TotalRecord);
+      })
+      .catch((error: any) => {
+        console.log('error', error);
+      });
   };
 
   const columns = [
     {
-      title: 'Mã phân loại',
-      dataIndex: 'CategoryCode',
+      title: 'Tên lớp',
+      dataIndex: 'ClassName',
     },
     {
-      title: 'Tên',
-      dataIndex: 'Title',
-    },
-    {
-      title: 'Link hiển thị',
-      dataIndex: 'Slug',
-    },
-    {
-      title: 'Nội dung',
-      dataIndex: 'Content',
+      title: 'Năm học',
+      dataIndex: 'ClassYear',
     },
     {
       title: 'Tùy chọn',
       key: 'action',
       render: (text: any, record: any) => (
         <Space size="middle">
-          <FormOutlined onClick={() => openDetailModal(record.CategoryId)} />
-          <DeleteOutlined onClick={() => openDetailModal(record.CategoryId)} />
-          {/* <a >Chi tiết</a> */}
+          <InfoOutlined onClick={() => openDetailModal(record.ClassId)} />
+          <DeleteOutlined onClick={() => openDetailModal(record.ClassId)} />
+          <FormOutlined onClick={() => router.push(`/teacher/class/${record.ClassId}`)} />
         </Space>
       ),
     },
@@ -76,7 +72,7 @@ function index() {
   };
 
   const handleSelectChange = (value: any) => {
-    setSort(value);
+    setClassStatus(value);
   };
 
   const handleSearchChange = ({ target }: any) => {
@@ -93,14 +89,14 @@ function index() {
   };
 
   return (
-    <Layout title={'Danh sách học sinh'} backButton backButtonUrl="/teacher/dashboard">
+    <Layout title={'Danh sách lớp'} backButton backButtonUrl="/teacher/dashboard">
       <div>
         <Row>
           <Col span={18}>
             <Input placeholder={'Tìm kiếm'} onChange={handleSearchChange} width="50%" />
           </Col>
           <Col span={6}>
-            <Button type="primary" onClick={getCategoryList}>
+            <Button type="primary" onClick={getClassList}>
               Tìm kiếm
             </Button>
           </Col>
@@ -112,22 +108,16 @@ function index() {
             </Button>
           </Col>
           <Col span={12}>
-            <Select defaultValue={'ID 0-9'} style={{ width: 120 }} onChange={handleSelectChange}>
-              <Option value={'work_name_asc'}>Công Việc A-Z</Option>
-              <Option value={'work_name_desc'}>Công Việc Z-A</Option>
-              <Option value={'empl_name_asc'}>Tên A-Z</Option>
-              <Option value={'empl_name_desc'}>Tên Z-A</Option>
-              <Option value={'id_asc'}>ID 0-9</Option>
-              <Option value={'id_desc'}>ID 9-0</Option>
-              {/* {sortSelect.map((item, index) => {
-            <Option value={item.name} key={index}>{item.title}</Option>
-          })} */}
+            <Select defaultValue={1} style={{ width: 120 }} onChange={handleSelectChange}>
+              {ClassStatusList.map((item: any) => (
+                <Option value={item.value}>{item.label}</Option>
+              ))}
             </Select>
           </Col>
         </Row>
       </div>
       <div>
-        <Table columns={columns} dataSource={categoryData} pagination={false} />
+        <Table columns={columns} dataSource={classData} pagination={false} />
         <Pagination
           defaultPageSize={pageSize}
           defaultCurrent={currentPage}
@@ -138,7 +128,7 @@ function index() {
         <Modal
           width={755}
           bodyStyle={{ height: 'max-content' }}
-          title={'Loại sản phẩm'}
+          title={'Chi tiết lớp'}
           visible={showModal}
           onCancel={() => setShowModal(false)}
           destroyOnClose

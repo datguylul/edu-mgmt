@@ -21,7 +21,7 @@ const HomeWork = () => {
   }, []);
 
   const getClassList = async () => {
-    ClassList('', '', 1, 10)
+    ClassList('', 1, 1, 10)
       .then((resp: any) => {
         const getActiveClass = resp.data?.Data?.Data?.filter((item: any) => item.ClassStatus === 1);
         setClassData(getActiveClass ?? []);

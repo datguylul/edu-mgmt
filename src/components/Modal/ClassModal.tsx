@@ -3,6 +3,7 @@ import { Form, Input, Button, Space, Select, DatePicker } from 'antd';
 import { ClassDetail, CreateClass, EditClass } from '@core/services/api';
 import moment from 'moment';
 import { openNotification } from '@utils/Noti';
+import { CLASS_STATUS } from '@core/constants';
 
 const { Option } = Select;
 
@@ -36,6 +37,8 @@ const tailFormItemLayout = {
   },
 };
 
+const ClassStatusList = [CLASS_STATUS.active, CLASS_STATUS.finish, CLASS_STATUS.suspended];
+
 const ClassModal: React.FC<IModalInfo> = ({
   classId = null,
   onCloseModal = () => {},
@@ -64,9 +67,12 @@ const ClassModal: React.FC<IModalInfo> = ({
   const fillForm = (data: any) => {
     const year = data?.ClassYear.split('-');
 
+    const status = ClassStatusList.find((x) => x.value === data?.ClassStatus);
+
     form.setFieldsValue({
       ClassName: data?.ClassName,
       ClassYear: moment(year[0] + '-1-1'),
+      ClassStatus: status?.value,
     });
   };
 
@@ -75,7 +81,7 @@ const ClassModal: React.FC<IModalInfo> = ({
 
     if (classId && classId !== '') {
       setLoading(true);
-      EditClass(classId, values)
+      EditClass(classId!, values)
         .then((resp) => {
           if (resp.data.Success) {
             openNotification('Cập nhật lớp', 'Cập nhật lớp thành công');
@@ -136,6 +142,13 @@ const ClassModal: React.FC<IModalInfo> = ({
         rules={[{ type: 'object' as const, required: true, message: 'Chọn năm học!' }]}
       >
         <DatePicker picker="year" />
+      </Form.Item>
+      <Form.Item name="ClassStatus" label="Trạng thái">
+        <Select>
+          {ClassStatusList.map((item: any) => (
+            <Option value={item?.value}>{item.label}</Option>
+          ))}
+        </Select>
       </Form.Item>
       <Form.Item {...tailFormItemLayout}>
         <Space>

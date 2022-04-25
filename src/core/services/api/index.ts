@@ -7,8 +7,8 @@ export const login = (loginInfo: {}) => post(ENDPOINTS.LOGIN, loginInfo);
 export const signUp = (signUpInfo: {}) => post(ENDPOINTS.SIGN_UP, signUpInfo);
 // export const logOut = () => post(ENDPOINTS.LOGOUT);
 
-export const ClassList = (search: string, sort: string, page: number, record: number) =>
-  get(ENDPOINTS.CLASS + `?search=${search}&sort=${sort}&page=${page}&record=${record}`);
+export const ClassList = (search: string, classStatus: number, page: number, record: number) =>
+  get(ENDPOINTS.CLASS + `?search=${search}&classStatus=${classStatus}&page=${page}&record=${record}`);
 export const ClassDetail = (id: string) => get(ENDPOINTS.CLASS + `\\detail\\${id}`);
 export const CreateClass = (params: object) => post(ENDPOINTS.CLASS, params);
 export const EditClass = (id: string, params: object) => put(ENDPOINTS.CLASS + `\\edit\\${id}`, params);

@@ -6,7 +6,10 @@ import { ClassList } from '@core/services/api';
 import ClassModal from 'components/Modal/ClassModal';
 import { InfoOutlined, FormOutlined, DeleteOutlined } from '@ant-design/icons';
 import router from 'next/router';
+import { CLASS_STATUS } from '@core/constants';
 const { Option } = Select;
+
+const ClassStatusList = [CLASS_STATUS.active, CLASS_STATUS.finish, CLASS_STATUS.suspended];
 
 function index() {
   const [totalRecord, setTotalRecord] = useState<number>(0);
@@ -15,6 +18,7 @@ function index() {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [search, setSearch] = useState<string>('');
   const [sort, setSort] = useState<string>('id_asc');
+  const [classStatus, setClassStatus] = useState<number>(CLASS_STATUS.active.value);
   const [classData, setClassData] = useState([]);
   const [classId, setClassId] = useState<string>('');
   const [showModal, setShowModal] = React.useState<boolean>(false);
@@ -23,10 +27,10 @@ function index() {
     if (!showModal) {
       getClassList();
     }
-  }, [sort, showModal]);
+  }, [classStatus, showModal]);
 
   const getClassList = async () => {
-    ClassList(search, sort, currentPage, pageSize)
+    ClassList(search, classStatus, currentPage, pageSize)
       .then((resp: any) => {
         setClassData(resp.data?.Data?.Data ?? []);
         setTotalRecord(resp.data?.TotalRecord);
@@ -68,7 +72,7 @@ function index() {
   };
 
   const handleSelectChange = (value: any) => {
-    setSort(value);
+    setClassStatus(value);
   };
 
   const handleSearchChange = ({ target }: any) => {
@@ -104,16 +108,10 @@ function index() {
             </Button>
           </Col>
           <Col span={12}>
-            <Select defaultValue={'ID 0-9'} style={{ width: 120 }} onChange={handleSelectChange}>
-              <Option value={'work_name_asc'}>Công Việc A-Z</Option>
-              <Option value={'work_name_desc'}>Công Việc Z-A</Option>
-              <Option value={'empl_name_asc'}>Tên A-Z</Option>
-              <Option value={'empl_name_desc'}>Tên Z-A</Option>
-              <Option value={'id_asc'}>ID 0-9</Option>
-              <Option value={'id_desc'}>ID 9-0</Option>
-              {/* {sortSelect.map((item, index) => {
-            <Option value={item.name} key={index}>{item.title}</Option>
-          })} */}
+            <Select defaultValue={1} style={{ width: 120 }} onChange={handleSelectChange}>
+              {ClassStatusList.map((item: any) => (
+                <Option value={item.value}>{item.label}</Option>
+              ))}
             </Select>
           </Col>
         </Row>
