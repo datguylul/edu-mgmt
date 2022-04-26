@@ -4,7 +4,7 @@ import withAuth from '@hocs/withAuth';
 import { Row, Col, Button, Card, Modal } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { ClassList } from '@core/services/api';
-import ClassHomeWorkModal from 'components/Modal/ClassHomeWorkModal';
+import StudentHomeWorkModal from 'components/Modal/student/StudentHomeWorkModal';
 import Router from 'next/router';
 
 const HomeWork = () => {
@@ -37,22 +37,7 @@ const HomeWork = () => {
   };
 
   return (
-    <Layout title="Bài tập" backButton backButtonUrl="/teacher/dashboard">
-      <div>
-        <Row>
-          <Col span={18}></Col>
-          <Col span={6}>
-            <Button
-              type="primary"
-              size="large"
-              icon={<PlusOutlined />}
-              onClick={() => handleRedirect('/teacher/homework/create')}
-            >
-              Thêm mới
-            </Button>
-          </Col>
-        </Row>
-      </div>
+    <Layout title="Bài tập" backButton backButtonUrl="/student/dashboard">
       <div>
         <Row>
           <Col span={24}>
@@ -88,7 +73,7 @@ const HomeWork = () => {
         footer={null}
         className="edit-profile-modal"
       >
-        <ClassHomeWorkModal classId={classId} />
+        <StudentHomeWorkModal classId={classId} />
       </Modal>
     </Layout>
   );

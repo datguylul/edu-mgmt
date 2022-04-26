@@ -36,7 +36,7 @@ const tailFormItemLayout = {
   },
 };
 
-const ClassModal: React.FC<IModalInfo> = ({ userId = null, onCloseModal = () => {}, onSubmitAndReload = () => {} }) => {
+const UserModal: React.FC<IModalInfo> = ({ userId = null, onCloseModal = () => {}, onSubmitAndReload = () => {} }) => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
 
@@ -123,4 +123,4 @@ const ClassModal: React.FC<IModalInfo> = ({ userId = null, onCloseModal = () => 
   );
 };
 
-export default ClassModal;
+export default UserModal;

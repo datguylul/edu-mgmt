@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Table, Modal, Card, Pagination, DatePicker, Input, Button, Select, Space, Row, Col } from 'antd';
-import { HomeWorkListByClass } from '@core/services/api';
+import { HomeWorkListByClass, HomeWorkEditStatus } from '@core/services/api';
 import moment from 'moment';
 import { openNotification } from '@utils/Noti';
 import { FormOutlined, DeleteOutlined, CopyOutlined } from '@ant-design/icons';
@@ -8,6 +8,9 @@ import Router from 'next/router';
 import absoluteUrl from 'next-absolute-url';
 
 const { Option } = Select;
+import { HOME_WORK_STATUS } from '@core/constants';
+
+const HomeWorkStatusList = [HOME_WORK_STATUS.active, HOME_WORK_STATUS.finish];
 
 interface IModalInfo {
   classId?: string;
@@ -15,7 +18,7 @@ interface IModalInfo {
   onSubmitAndReload?: () => void;
 }
 
-const ClassModal: React.FC<IModalInfo> = ({
+const ClassHomeWorkModal: React.FC<IModalInfo> = ({
   classId = null,
   onCloseModal = () => {},
   onSubmitAndReload = () => {},
@@ -25,6 +28,7 @@ const ClassModal: React.FC<IModalInfo> = ({
   const [pageSize] = useState<number>(10);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [homeWorkData, setHomeWorkData] = useState([]);
+  const [HomeWorkStatus, setHomeWorkStatus] = useState(HOME_WORK_STATUS.active.value);
 
   const columns = [
     {
@@ -44,6 +48,23 @@ const ClassModal: React.FC<IModalInfo> = ({
       dataIndex: 'DueDate',
     },
     {
+      title: 'Trạng thái',
+      dataIndex: 'HomeWorkStatus',
+      render: (text: any, record: any) => (
+        <Space size="middle">
+          <Select
+            defaultValue={HomeWorkStatusList.find((x) => x.value === record.HomeWorkStatus)?.value}
+            style={{ width: 120 }}
+            onChange={(value) => handleSelectHomeWorkStatusChange(value, record.HomeWorkId)}
+          >
+            {HomeWorkStatusList.map((item: any) => (
+              <Option value={item.value}>{item.label}</Option>
+            ))}
+          </Select>
+        </Space>
+      ),
+    },
+    {
       title: 'Tùy chọn',
       key: 'action',
       render: (text: any, record: any) => (
@@ -55,6 +76,21 @@ const ClassModal: React.FC<IModalInfo> = ({
       ),
     },
   ];
+
+  const handleSelectHomeWorkStatusChange = (value: any, homeWorkId: string) => {
+    const params = {
+      HomeWorkId: homeWorkId,
+      HomeWorkStatus: value,
+    };
+
+    HomeWorkEditStatus(params)
+      .then((res) => {
+        LoadDetail();
+      })
+      .catch((error) => {
+        console.log('error', error);
+      });
+  };
 
   const handleCopyLink = (id: string) => {
     const { origin } = absoluteUrl();
@@ -73,9 +109,10 @@ const ClassModal: React.FC<IModalInfo> = ({
 
   const LoadDetail = () => {
     setLoading(true);
-    HomeWorkListByClass(classId!, currentPage, pageSize)
+    HomeWorkListByClass(classId!, HomeWorkStatus, currentPage, pageSize)
       .then((resp) => {
-        setHomeWorkData(resp.data?.Data?.Data);
+        setHomeWorkData([]);
+        setHomeWorkData(resp.data?.Data?.Data || []);
         setTotalRecord(resp.data?.TotalRecord);
       })
       .catch((error) => {
@@ -90,26 +127,24 @@ const ClassModal: React.FC<IModalInfo> = ({
     if (classId && classId !== '') {
       LoadDetail();
     }
-  }, [classId]);
+  }, [classId, HomeWorkStatus]);
 
   return (
     <>
       <div>
         <Row>
-          {/* <Col span={18}>
-            <Input placeholder={'Tìm kiếm'} onChange={handleSearchChange} width="50%" />
-          </Col>
-          <Col span={6}>
-            <Button type="primary" onClick={LoadDetail}>
-              Tìm kiếm
-            </Button>
-          </Col> */}
-        </Row>
-        <Row>
           <Col span={12}>
             <Button type="primary" onClick={() => handleRedirect('/teacher/homework/create')}>
               Thêm mới
             </Button>
+          </Col>
+
+          <Col span={12}>
+            <Select defaultValue={1} style={{ width: 120 }} onChange={setHomeWorkStatus}>
+              {HomeWorkStatusList.map((item: any) => (
+                <Select.Option value={item.value}>{item.label}</Select.Option>
+              ))}
+            </Select>
           </Col>
         </Row>
       </div>
@@ -127,4 +162,4 @@ const ClassModal: React.FC<IModalInfo> = ({
   );
 };
 
-export default ClassModal;
+export default ClassHomeWorkModal;

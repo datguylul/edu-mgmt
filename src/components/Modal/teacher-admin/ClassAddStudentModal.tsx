@@ -71,6 +71,7 @@ const ClassAddStudentModal: React.FC<IModalInfo> = ({
   };
 
   const handleSubmit = (values: any) => {
+    values.StudentDOB = values['StudentDOB'].format('DD/MM/YYYY');
     const params = {
       classId: classId,
       studentList: [values],
@@ -150,7 +151,7 @@ const ClassAddStudentModal: React.FC<IModalInfo> = ({
 
   return (
     <Tabs defaultActiveKey="1" onChange={() => {}}>
-      <TabPane tab="Thêm thủ công" key="2">
+      <TabPane tab="Thêm thủ công" key="1">
         <Form {...formItemLayout} form={form} name="register" onFinish={handleSubmit} scrollToFirstError>
           <Form.Item
             name="StudentName"
@@ -165,20 +166,26 @@ const ClassAddStudentModal: React.FC<IModalInfo> = ({
             <Input />
           </Form.Item>
           <Form.Item name="StudentGender" label="Giới tính">
+            <Select placeholder="Giới tinh">
+              <Option value="Nam">Nam</Option>
+              <Option value="Nữ">Nữ</Option>
+            </Select>
+          </Form.Item>
+          <Form.Item
+            name="StudentPhone"
+            label="SĐT"
+            rules={[
+              {
+                required: true,
+                message: 'Số điện thoại học sinh không thể trống',
+              },
+            ]}
+          >
             <Input />
           </Form.Item>
-          <Form.Item name="StudentDOB" label="Ngày sinh">
-            <Input />
+          <Form.Item name="StudentDOB" label="Ngày sinh" rules={[{ required: true, message: 'Chọn ngày sinh!' }]}>
+            <DatePicker />
           </Form.Item>
-          <Form.Item name="StudentPhone" label="SĐT">
-            <Input />
-          </Form.Item>
-          {/* <Form.Item
-        name="StudentDOB"
-        label="Ngày sinh"
-      >
-        <DatePicker />
-      </Form.Item> */}
           <Form.Item {...tailFormItemLayout}>
             <Space>
               <Button type="primary" htmlType="submit" loading={loading} disabled={loading}>
@@ -191,7 +198,7 @@ const ClassAddStudentModal: React.FC<IModalInfo> = ({
           </Form.Item>
         </Form>
       </TabPane>
-      <TabPane tab="Nhập từ file" key="1">
+      <TabPane tab="Nhập từ file" key="2">
         <div>
           <p>
             File mẫu:{' '}

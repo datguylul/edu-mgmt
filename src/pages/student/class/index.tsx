@@ -3,7 +3,6 @@ import Layout from 'Layouts';
 import withAuth from '@hocs/withAuth';
 import { Table, Modal, Card, Pagination, DatePicker, Input, Button, Select, Space, Row, Col } from 'antd';
 import { ClassList } from '@core/services/api';
-import ClassModal from 'components/Modal/ClassModal';
 import { InfoOutlined, FormOutlined, DeleteOutlined } from '@ant-design/icons';
 import router from 'next/router';
 import { CLASS_STATUS } from '@core/constants';
@@ -17,17 +16,12 @@ function index() {
   const [pageSize] = useState<number>(10);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [search, setSearch] = useState<string>('');
-  const [sort, setSort] = useState<string>('id_asc');
   const [classStatus, setClassStatus] = useState<number>(CLASS_STATUS.active.value);
   const [classData, setClassData] = useState([]);
-  const [classId, setClassId] = useState<string>('');
-  const [showModal, setShowModal] = React.useState<boolean>(false);
 
   useEffect(() => {
-    if (!showModal) {
-      getClassList();
-    }
-  }, [classStatus, showModal]);
+    getClassList();
+  }, [classStatus]);
 
   const getClassList = async () => {
     ClassList(search, classStatus, currentPage, pageSize)
@@ -50,22 +44,10 @@ function index() {
       dataIndex: 'ClassYear',
     },
     {
-      title: 'Tùy chọn',
-      key: 'action',
-      render: (text: any, record: any) => (
-        <Space size="middle">
-          <InfoOutlined onClick={() => openDetailModal(record.ClassId)} />
-          <DeleteOutlined onClick={() => openDetailModal(record.ClassId)} />
-          <FormOutlined onClick={() => router.push(`/teacher/class/${record.ClassId}`)} />
-        </Space>
-      ),
+      title: 'Giáo viên',
+      dataIndex: 'Teacher',
     },
   ];
-
-  const openDetailModal = (id: string) => {
-    setClassId(id);
-    setShowModal(true);
-  };
 
   const onPagingChange = (page: number) => {
     setCurrentPage(page);
@@ -83,13 +65,8 @@ function index() {
     setSelectThang((prev) => !prev);
   };
 
-  const handleAddNew = () => {
-    setClassId('');
-    setShowModal(true);
-  };
-
   return (
-    <Layout title={'Danh sách lớp'} backButton backButtonUrl="/teacher/dashboard">
+    <Layout title={'Danh sách lớp'} backButton backButtonUrl="/student/dashboard">
       <div>
         <Row>
           <Col span={18}>
@@ -102,11 +79,6 @@ function index() {
           </Col>
         </Row>
         <Row>
-          <Col span={12}>
-            <Button type="primary" onClick={handleAddNew}>
-              Thêm mới
-            </Button>
-          </Col>
           <Col span={12}>
             <Select defaultValue={1} style={{ width: 120 }} onChange={handleSelectChange}>
               {ClassStatusList.map((item: any) => (
@@ -125,18 +97,6 @@ function index() {
           current={currentPage}
           total={totalRecord}
         />
-        <Modal
-          width={755}
-          bodyStyle={{ height: 'max-content' }}
-          title={'Chi tiết lớp'}
-          visible={showModal}
-          onCancel={() => setShowModal(false)}
-          destroyOnClose
-          footer={null}
-          className="edit-profile-modal"
-        >
-          <ClassModal classId={classId} />
-        </Modal>
       </div>
     </Layout>
   );

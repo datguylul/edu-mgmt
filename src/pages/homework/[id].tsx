@@ -5,10 +5,11 @@ import { Form, Input, Button, Space, DatePicker, Row, Col, Checkbox, Divider, Se
 import moment from 'moment';
 import { openNotification } from '@utils/Noti';
 import { handleCloudinaryUpload } from 'core/services/cloudinaryUpload';
-import { HomeWorkDetail, ClassFindStudent } from '@core/services/api';
+import { HomeWorkDetail, UserDetailNonId, HomeWorkCheck } from '@core/services/api';
 import { useRouter } from 'next/router';
 import { saveFile } from '@utils/FileUtil';
 import Parser from 'html-react-parser';
+import { USER_ROLE } from '@core/constants/role';
 
 const index = () => {
   const router = useRouter();
@@ -22,6 +23,10 @@ const index = () => {
   const [studentCheck, setStudentCheck] = useState<boolean>(false);
 
   useEffect(() => {
+    const role = localStorage.getItem('roles');
+    if (role === USER_ROLE.student) {
+      getUserDetail();
+    }
     getHomeWorkDetail();
   }, []);
 
@@ -42,6 +47,24 @@ const index = () => {
           setLoading(false);
         });
     }
+  };
+
+  const getUserDetail = () => {
+    UserDetailNonId()
+      .then((res) => {
+        fillForm(res?.data?.Data?.student);
+      })
+      .catch((error) => {
+        console.log('error', error);
+      });
+  };
+
+  const fillForm = (data: any) => {
+    form.setFieldsValue({
+      studentDob: data?.StudentDob,
+      studentName: data?.StudentName,
+      studentPhone: data?.StudentPhone,
+    });
   };
 
   const handleUpload = (file: any) => {
@@ -74,9 +97,13 @@ const index = () => {
     saveFile(item.FileUploadUrl, item.FileUploadName);
   };
 
+  const handleViewFile = (item: any) => {
+    // router.push();
+  };
+
   const HomeWorkDetailContent = () => {
     return (
-      <>
+      <React.Fragment>
         {homeWorkData?.homeWork?.HomeWorkName && <h1>Bài tập: {homeWorkData?.homeWork?.HomeWorkName}</h1>}
         {homeWorkData?.homeWork?.HomeWorkType && <h5>Loại bài tập: {homeWorkData?.homeWork?.HomeWorkType}</h5>}
         {homeWorkData?.class && homeWorkData?.class.length > 0 && (
@@ -102,11 +129,23 @@ const index = () => {
             <Col span={18}>
               {homeWorkData?.files?.map((item: any) => {
                 return (
-                  <Col span={18}>
-                    <a key={item.FileUploadId} download={item.FileUploadName} onClick={() => saveManual(item)}>
+                  <>
+                    <Row>
+                      <Col span={12}>
+                        {/* <a key={item.FileUploadId} download={item.FileUploadName} onClick={() => saveManual(item)}>
                       {item.FileUploadName}
-                    </a>
-                  </Col>
+                    </a> */}
+                        <a key={item.FileUploadId}>{item.FileUploadName}</a>
+                      </Col>
+                      <Col span={12}>
+                        <a target="_blank" href={`/file/${item.FileUploadId}`} rel="noopener noreferrer">
+                          <Button type="primary">Xem</Button>
+                        </a>
+                        <Button onClick={() => saveManual(item)}>Tải xuống</Button>
+                      </Col>
+                    </Row>
+                    <br></br>
+                  </>
                 );
               })}
             </Col>
@@ -132,7 +171,7 @@ const index = () => {
           </Row>
         )}
         <Divider />
-      </>
+      </React.Fragment>
     );
   };
 
@@ -141,17 +180,26 @@ const index = () => {
 
   const StudentInfoContent = () => {
     const onFinish = (values: any) => {
-      ClassFindStudent(values)
+      const params = {
+        ...values,
+        homeWorkId: homeWorkId,
+      };
+      setLoading(true);
+
+      HomeWorkCheck(params)
         .then((res) => {
-          if (homeWorkData?.homeWork?.OnlyAssignStudent === true && res.data?.Data?.student === null) {
-            openNotification('Bài tập yêu cầu học sinh có trong danh sách', 'Liên hệ với giáo viên để được trợ giúp');
-          } else {
+          if (res.data.Success) {
             setStudentInfo(res.data?.Data?.student);
             setStudentCheck(true);
+          } else {
+            openNotification('Thông báo', res.data.Message);
           }
         })
         .catch((error) => {
           console.log('error', error);
+        })
+        .finally(() => {
+          setLoading(false);
         });
     };
 
@@ -164,6 +212,7 @@ const index = () => {
         <h1>Nhập thông tin học sinh:</h1>
         <Form
           name="basic"
+          form={form}
           labelCol={{ span: 8 }}
           wrapperCol={{ span: 16 }}
           initialValues={{ remember: true }}
@@ -199,7 +248,7 @@ const index = () => {
           </Form.Item>
 
           <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-            <Button type="primary" htmlType="submit">
+            <Button type="primary" htmlType="submit" disabled={loading} loading={loading}>
               Submit
             </Button>
           </Form.Item>
@@ -210,7 +259,8 @@ const index = () => {
 
   return (
     <Layout title="Chi tiết bài tập" backButton backButtonUrl="/teacher/homework">
-      {studentCheck ? HomeWorkDetailContent() : StudentInfoContent()}
+      {/* {studentCheck ? HomeWorkDetailContent() : StudentInfoContent()} */}
+      {HomeWorkDetailContent()}
     </Layout>
   );
 };

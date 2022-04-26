@@ -5,7 +5,7 @@ import moment from 'moment';
 import { openNotification } from '@utils/Noti';
 import { useRouter } from 'next/router';
 import Layout from 'Layouts';
-import ClassAddStudentModal from 'components/Modal/ClassAddStudentModal';
+import ClassAddStudentModal from 'components/Modal/teacher-admin/ClassAddStudentModal';
 import { CLASS_STATUS } from '@core/constants';
 
 const ClassStatusList = [CLASS_STATUS.active, CLASS_STATUS.finish, CLASS_STATUS.suspended];
@@ -37,7 +37,7 @@ const tailFormItemLayout = {
   },
 };
 
-const ClassModal: React.FC<Props> = ({}) => {
+const index: React.FC<Props> = ({}) => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -198,4 +198,4 @@ const ClassModal: React.FC<Props> = ({}) => {
   );
 };
 
-export default ClassModal;
+export default index;

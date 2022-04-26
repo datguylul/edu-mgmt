@@ -11,10 +11,10 @@ function index() {
   const [form] = Form.useForm();
 
   useEffect(() => {
-    getTeacherDetail();
+    getStudentDetail();
   }, []);
 
-  const getTeacherDetail = () => {
+  const getStudentDetail = () => {
     UserDetailNonId()
       .then((res) => {
         fillForm(res?.data?.Data);
@@ -26,18 +26,16 @@ function index() {
 
   const fillForm = (data: any) => {
     form.setFieldsValue({
-      TeacherDob: data?.teacher?.TeacherDob,
-      TeacherEmail: data?.teacher?.TeacherEmail,
-      TeacherGender: data?.teacher?.TeacherGender,
-      TeacherId: data?.teacher?.TeacherId,
-      TeacherName: data?.teacher?.TeacherName,
-      TeacherPhone: data?.teacher?.TeacherPhone,
+      StudentDob: data?.student?.StudentDob,
+      StudentGender: data?.student?.StudentGender,
+      StudentName: data?.student?.StudentName,
+      StudentPhone: data?.student?.StudentPhone,
       UserUsername: data?.account?.UserUsername,
     });
   };
 
   return (
-    <Layout title={'Thông tin tài khoản'} backButton backButtonUrl="/teacher/dashboard">
+    <Layout title={'Thông tin tài khoản'} backButton backButtonUrl="/student/dashboard">
       <Form
         name="basic"
         form={form}
@@ -51,19 +49,16 @@ function index() {
         <Form.Item label="Tên đăng nhập" name="UserUsername">
           <Input />
         </Form.Item>
-        <Form.Item label="Họ tên" name="TeacherName">
+        <Form.Item label="Họ tên" name="StudentName">
           <Input />
         </Form.Item>
-        <Form.Item label="Sđt" name="TeacherPhone">
+        <Form.Item label="Sđt" name="StudentPhone">
           <Input />
         </Form.Item>
-        <Form.Item label="Giới tính" name="TeacherGender">
+        <Form.Item label="Giới tính" name="StudentGender">
           <Input />
         </Form.Item>
-        <Form.Item label="Ngày sinh" name="TeacherDob">
-          <Input />
-        </Form.Item>
-        <Form.Item label="Email" name="TeacherEmail">
+        <Form.Item label="Ngày sinh" name="StudentDob">
           <Input />
         </Form.Item>
 

@@ -47,7 +47,7 @@ const create = () => {
   const [classData, setClassData] = useState([]);
 
   useEffect(() => {
-    ClassList('', 'asc', 0, 10)
+    ClassList('', 1, 0, 10)
       .then((resp: any) => {
         const classes = resp.data?.Data?.Data.map((item: any) => ({
           ...item,
@@ -110,13 +110,13 @@ const create = () => {
     handleCloudinaryUpload(file)
       .then((res: any) => {
         file.FileUploadUrl = res.secure_url;
-        file.FileUploadName = res.original_filename;
+        file.FileUploadName = file.name;
         const files = [...fileList, file];
         setFileList(files as any);
       })
       .catch((err: any) => {
         console.error(err);
-        openNotification('Upload Ảnh', 'Đã có lỗi');
+        openNotification('Upload File', 'Đã có lỗi');
       })
       .finally(() => {
         setUploading(false);

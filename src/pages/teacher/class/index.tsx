@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import Layout from 'Layouts';
 import withAuth from '@hocs/withAuth';
 import { Table, Modal, Card, Pagination, DatePicker, Input, Button, Select, Space, Row, Col } from 'antd';
-import { ClassList } from '@core/services/api';
-import ClassModal from 'components/Modal/ClassModal';
+import { ClassList, ClassEditStatus } from '@core/services/api';
+import ClassModal from 'components/Modal/teacher-admin/ClassModal';
 import { InfoOutlined, FormOutlined, DeleteOutlined } from '@ant-design/icons';
 import router from 'next/router';
 import { CLASS_STATUS } from '@core/constants';
@@ -32,6 +32,7 @@ function index() {
   const getClassList = async () => {
     ClassList(search, classStatus, currentPage, pageSize)
       .then((resp: any) => {
+        setClassData([]);
         setClassData(resp.data?.Data?.Data ?? []);
         setTotalRecord(resp.data?.TotalRecord);
       })
@@ -48,6 +49,27 @@ function index() {
     {
       title: 'Năm học',
       dataIndex: 'ClassYear',
+    },
+    {
+      title: 'Năm học',
+      dataIndex: 'ClassYear',
+    },
+    {
+      title: 'Trạng thái',
+      dataIndex: 'ClassStatus',
+      render: (text: any, record: any) => (
+        <Space size="middle">
+          <Select
+            defaultValue={ClassStatusList.find((x) => x.value === record.ClassStatus)?.value}
+            style={{ width: 120 }}
+            onChange={(value) => handleSelectClassStatusChange(value, record.ClassId)}
+          >
+            {ClassStatusList.map((item: any) => (
+              <Option value={item.value}>{item.label}</Option>
+            ))}
+          </Select>
+        </Space>
+      ),
     },
     {
       title: 'Tùy chọn',
@@ -79,8 +101,18 @@ function index() {
     setSearch(target.value);
   };
 
-  const handleCheckboxChange = () => {
-    setSelectThang((prev) => !prev);
+  const handleSelectClassStatusChange = (value: any, classId: string) => {
+    const params = {
+      ClassId: classId,
+      ClassStatus: value,
+    };
+    ClassEditStatus(params)
+      .then((res) => {
+        getClassList();
+      })
+      .catch((error) => {
+        console.log('error', error);
+      });
   };
 
   const handleAddNew = () => {

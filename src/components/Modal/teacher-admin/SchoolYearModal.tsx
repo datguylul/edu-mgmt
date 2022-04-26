@@ -36,7 +36,7 @@ const tailFormItemLayout = {
   },
 };
 
-const ClassModal: React.FC<IModalInfo> = ({
+const SchoolYearModal: React.FC<IModalInfo> = ({
   schoolYearId = null,
   onCloseModal = () => {},
   onSubmitAndReload = () => {},
@@ -165,4 +165,4 @@ const ClassModal: React.FC<IModalInfo> = ({
   );
 };
 
-export default ClassModal;
+export default SchoolYearModal;

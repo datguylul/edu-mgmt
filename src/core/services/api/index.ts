@@ -14,6 +14,7 @@ export const CreateClass = (params: object) => post(ENDPOINTS.CLASS, params);
 export const EditClass = (id: string, params: object) => put(ENDPOINTS.CLASS + `\\edit\\${id}`, params);
 export const ClassAddStudent = (params: object) => post(ENDPOINTS.CLASS_ADD_STUDENT, params);
 export const ClassFindStudent = (params: object) => post(ENDPOINTS.CLASS_FIND_STUDENT, params);
+export const ClassEditStatus = (params: object) => put(ENDPOINTS.CLASS_EDIT_STATUS, params);
 
 export const StudentList = (search: string, sort: string, page: number, record: number) =>
   get(ENDPOINTS.STUDENT + `?search=${search}&sort=${sort}&page=${page}&record=${record}`);
@@ -36,7 +37,9 @@ export const CreateUser = (params: object) => post(ENDPOINTS.USER + 'create-user
 
 export const HomeWorkList = (search: string, sort: string, page: number, record: number) =>
   get(ENDPOINTS.HOME_WORK + `?search=${search}&sort=${sort}&page=${page}&record=${record}`);
-export const HomeWorkListByClass = (classId: string, page: number, record: number) =>
-  get(ENDPOINTS.HOME_WORK + `\\by-class\\${classId}` + `?page=${page}&record=${record}`);
+export const HomeWorkListByClass = (classId: string, HomeWorkStatus: number, page: number, record: number) =>
+  get(ENDPOINTS.HOME_WORK + `\\by-class\\${classId}` + `?page=${page}&status=${HomeWorkStatus}&record=${record}`);
 export const HomeWorkDetail = (id: string) => get(ENDPOINTS.HOME_WORK + `\\detail\\${id}`);
 export const CreateHomeWork = (params: object) => post(ENDPOINTS.HOME_WORK + '\\create', params);
+export const HomeWorkEditStatus = (params: object) => put(ENDPOINTS.HOMEWORK_EDIT_STATUS, params);
+export const HomeWorkCheck = (params: object) => post(ENDPOINTS.HOMEWORK_CHECK, params);

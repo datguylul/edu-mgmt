@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import Layout from 'Layouts';
 import withAuth from '@hocs/withAuth';
-import { Row, Col, Button, Card, Modal } from 'antd';
+import { Row, Col, Button, Card, Modal, Select } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { ClassList } from '@core/services/api';
-import ClassHomeWorkModal from 'components/Modal/ClassHomeWorkModal';
+import ClassHomeWorkModal from 'components/Modal/teacher-admin/ClassHomeWorkModal';
 import Router from 'next/router';
 
 const HomeWork = () => {

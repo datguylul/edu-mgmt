@@ -3,7 +3,7 @@ import Layout from 'Layouts';
 import withAuth from '@hocs/withAuth';
 import { Table, Modal, Checkbox, Pagination, DatePicker, Input, Button, Select, Space, Row, Col } from 'antd';
 import { ClassList } from '@core/services/api';
-import ClassModal from 'components/Modal/ClassModal';
+import ClassModal from 'components/Modal/teacher-admin/ClassModal';
 import { FormOutlined, DeleteOutlined } from '@ant-design/icons';
 const { Option } = Select;
 
