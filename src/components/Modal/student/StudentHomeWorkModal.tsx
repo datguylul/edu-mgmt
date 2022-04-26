@@ -17,8 +17,8 @@ interface IModalInfo {
 
 const StudentHomeWorkModal: React.FC<IModalInfo> = ({
   classId = null,
-  onCloseModal = () => { },
-  onSubmitAndReload = () => { },
+  onCloseModal = () => {},
+  onSubmitAndReload = () => {},
 }) => {
   const [loading, setLoading] = useState(false);
   const [totalRecord, setTotalRecord] = useState<number>(0);
@@ -32,7 +32,7 @@ const StudentHomeWorkModal: React.FC<IModalInfo> = ({
       dataIndex: 'HomeWorkName',
       render: (text: any, record: any) => (
         <Space size="middle">
-          <a target="_blank" rel="noopener noreferrer" href={`/homework/${record.HomeWorkId}`} >
+          <a target="_blank" rel="noopener noreferrer" href={`/homework/${record.HomeWorkId}`}>
             {text}
           </a>
         </Space>
@@ -93,15 +93,6 @@ const StudentHomeWorkModal: React.FC<IModalInfo> = ({
   };
 
   useEffect(() => {
-    if () {
-      UserDetailNonId()
-      .then((res) => {
-        fillForm(res?.data?.Data);
-      })
-      .catch((error) => {
-        console.log('error', error);
-      });
-    }
     if (classId && classId !== '') {
       LoadDetail();
     }
