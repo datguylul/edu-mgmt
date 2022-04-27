@@ -259,8 +259,8 @@ const index = () => {
 
   return (
     <Layout title="Chi tiết bài tập" backButton backButtonUrl="/teacher/homework">
-      {/* {studentCheck ? HomeWorkDetailContent() : StudentInfoContent()} */}
-      {HomeWorkDetailContent()}
+      {studentCheck ? HomeWorkDetailContent() : StudentInfoContent()}
+      {/* {HomeWorkDetailContent()} */}
     </Layout>
   );
 };

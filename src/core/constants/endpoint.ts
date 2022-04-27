@@ -10,6 +10,7 @@ export const CONTROLLERS = {
   STUDENT: 'student',
   TEACHER: 'teacher',
   HOME_WORK: 'home-work',
+  FILE: 'file',
 };
 
 export const ENDPOINTS = {
@@ -21,6 +22,7 @@ export const ENDPOINTS = {
   CLASS: `${CONTEXT.API}\\${CONTROLLERS.CLASS}`,
   STUDENT: `${CONTEXT.API}\\${CONTROLLERS.STUDENT}`,
   HOME_WORK: `${CONTEXT.API}\\${CONTROLLERS.HOME_WORK}`,
+  FILE: `${CONTEXT.API}\\${CONTROLLERS.FILE}`,
 
   CLASS_ADD_STUDENT: `${CONTEXT.API}\\${CONTROLLERS.CLASS}/add-student`,
   CLASS_FIND_STUDENT: `${CONTEXT.API}\\${CONTROLLERS.CLASS}/find-student`,

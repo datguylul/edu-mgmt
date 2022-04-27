@@ -43,3 +43,5 @@ export const HomeWorkDetail = (id: string) => get(ENDPOINTS.HOME_WORK + `\\detai
 export const CreateHomeWork = (params: object) => post(ENDPOINTS.HOME_WORK + '\\create', params);
 export const HomeWorkEditStatus = (params: object) => put(ENDPOINTS.HOMEWORK_EDIT_STATUS, params);
 export const HomeWorkCheck = (params: object) => post(ENDPOINTS.HOMEWORK_CHECK, params);
+
+export const FileDetail = (id: string) => get(ENDPOINTS.FILE + `\\detail\\${id}`);
