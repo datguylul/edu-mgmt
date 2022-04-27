@@ -15,6 +15,8 @@ export const EditClass = (id: string, params: object) => put(ENDPOINTS.CLASS + `
 export const ClassAddStudent = (params: object) => post(ENDPOINTS.CLASS_ADD_STUDENT, params);
 export const ClassFindStudent = (params: object) => post(ENDPOINTS.CLASS_FIND_STUDENT, params);
 export const ClassEditStatus = (params: object) => put(ENDPOINTS.CLASS_EDIT_STATUS, params);
+export const ClassEditStudent = (id: string, params: object) => put(ENDPOINTS.CLASS_EDIT_STUDENT + `\\${id}`, params);
+export const ClassRemoveStudent = (params: object) => put(ENDPOINTS.CLASS_REMOVE_STUDENT, params);
 
 export const StudentList = (search: string, sort: string, page: number, record: number) =>
   get(ENDPOINTS.STUDENT + `?search=${search}&sort=${sort}&page=${page}&record=${record}`);

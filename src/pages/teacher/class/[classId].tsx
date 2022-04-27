@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { Modal, Table, Form, Input, Button, Space, Select, DatePicker } from 'antd';
-import { ClassDetail, EditClass } from '@core/services/api';
+import { ClassDetail, EditClass, ClassRemoveStudent } from '@core/services/api';
 import moment from 'moment';
 import { openNotification } from '@utils/Noti';
 import { useRouter } from 'next/router';
 import Layout from 'Layouts';
 import ClassAddStudentModal from 'components/Modal/teacher-admin/ClassAddStudentModal';
+import StudentDetailModal from 'components/Modal/teacher-admin/StudentDetailModal';
 import { CLASS_STATUS } from '@core/constants';
+import { InfoOutlined, FormOutlined, DeleteOutlined } from '@ant-design/icons';
 
 const ClassStatusList = [CLASS_STATUS.active, CLASS_STATUS.finish, CLASS_STATUS.suspended];
 const { Option } = Select;
@@ -43,6 +45,8 @@ const index: React.FC<Props> = ({}) => {
   const router = useRouter();
   const { classId } = router.query;
   const [studentData, setStudentData] = useState([]);
+  const [isAddModal, setIsAddModal] = useState(true);
+  const [studentId, setStudentId] = useState<string>('');
   const [showModal, setShowModal] = React.useState<boolean>(false);
 
   const LoadDetail = () => {
@@ -115,17 +119,56 @@ const index: React.FC<Props> = ({}) => {
     {
       title: 'Tùy chọn',
       key: 'action',
+      render: (text: any, record: any) => (
+        <Space size="middle">
+          <DeleteOutlined onClick={() => handleDeleteStudent(record.StudentId)} />
+          <FormOutlined onClick={() => openStudentDetailModal(record.StudentId)} />
+        </Space>
+      ),
     },
   ];
+
+  const handleDeleteStudent = (studentId = '') => {
+    const params = {
+      classId: classId,
+      studentList: [studentId],
+    };
+    ClassRemoveStudent(params)
+      .then((res) => {
+        console.log('res', res.data);
+      })
+      .catch((error) => {
+        console.log('error', error);
+      })
+      .finally(() => {
+        LoadDetail();
+      });
+  };
+
+  const openStudentDetailModal = (studentId = '') => {
+    setStudentId(studentId);
+    setIsAddModal(false);
+    setShowModal(true);
+  };
+
+  const handleOpenAddStudentModal = () => {
+    setIsAddModal(true);
+    setShowModal(true);
+  };
+
   useEffect(() => {
     LoadDetail();
   }, []);
 
   useEffect(() => {
-    if (showModal) {
+    if (!showModal) {
       LoadDetail();
     }
   }, [showModal]);
+
+  const onCloseModal = () => {
+    setShowModal(false);
+  };
 
   return (
     <Layout title={'Danh sách lớp'} backButton backButtonUrl="/teacher/class">
@@ -167,6 +210,9 @@ const index: React.FC<Props> = ({}) => {
         </Form>
       </div>
       <div>
+        <Button type="primary" htmlType="submit" onClick={handleOpenAddStudentModal}>
+          {'Thêm học sinh'}
+        </Button>
         <Table columns={columns} dataSource={studentData} pagination={false} />
         {/* <Pagination
           defaultPageSize={pageSize}
@@ -178,20 +224,21 @@ const index: React.FC<Props> = ({}) => {
       </div>
 
       <div>
-        <Button type="primary" htmlType="submit" onClick={() => setShowModal(true)}>
-          {'Thêm học sinh'}
-        </Button>
         <Modal
           width={755}
           bodyStyle={{ height: 'max-content' }}
-          title={'Thêm học sinh lớp'}
+          title={isAddModal ? 'Thêm học sinh lớp' : 'Học sinh'}
           visible={showModal}
           onCancel={() => setShowModal(false)}
           destroyOnClose
           footer={null}
           className="edit-profile-modal"
         >
-          <ClassAddStudentModal classId={classId as string} />
+          {isAddModal ? (
+            <ClassAddStudentModal classId={classId as string} onCloseModal={onCloseModal} />
+          ) : (
+            <StudentDetailModal classId={classId as string} studentId={studentId} onCloseModal={onCloseModal} />
+          )}
         </Modal>
       </div>
     </Layout>
