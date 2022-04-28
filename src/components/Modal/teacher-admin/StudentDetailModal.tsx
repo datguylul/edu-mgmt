@@ -137,7 +137,7 @@ const StudentDetailModal: React.FC<IModalInfo> = ({
         <Input />
       </Form.Item>
       <Form.Item name="StudentDob" label="Ngày sinh" rules={[{ required: true, message: 'Chọn ngày sinh!' }]}>
-        <DatePicker defaultValue={moment('2015/01/01', dateFormat)} format={dateFormat} />
+        <DatePicker format={dateFormat} />
       </Form.Item>
       <Form.Item {...tailFormItemLayout}>
         <Space>

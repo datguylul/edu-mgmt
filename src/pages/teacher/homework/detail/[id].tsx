@@ -1,13 +1,14 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Layout from 'Layouts';
 import withAuth from '@hocs/withAuth';
-import { Form, Input, Button, Space, DatePicker, Switch, Checkbox, Row, Col } from 'antd';
+import { Form, Input, Button, Space, DatePicker, Switch, Checkbox, Table, Col, Typography } from 'antd';
 import moment from 'moment';
 import { openNotification } from '@utils/Noti';
 import { handleCloudinaryUpload } from 'core/services/cloudinaryUpload';
 import { ClassList, CreateHomeWork, HomeWorkDetail } from '@core/services/api';
 import { useRouter } from 'next/router';
 import { saveFile } from '@utils/FileUtil';
+import { InfoOutlined, FormOutlined, DeleteOutlined } from '@ant-design/icons';
 
 const Jodit = React.lazy(() => {
   return import('jodit-react');
@@ -36,7 +37,6 @@ const tailFormItemLayout = {
     },
   },
 };
-
 const index = () => {
   const router = useRouter();
   const { id: homeWorkId } = router.query;
@@ -48,6 +48,7 @@ const index = () => {
   const [describeContent, setDescribeContent] = useState('');
   const isSSR = typeof window === 'undefined';
   const [classData, setClassData] = useState([]);
+  const [homeWorkData, setHomeWorkData] = useState<any>(null);
 
   useEffect(() => {
     getHomeWorkDetail();
@@ -61,11 +62,13 @@ const index = () => {
         .then((res: any) => {
           const data = res.data?.Data;
           if (data) {
+            setHomeWorkData(data);
             fillForm(data);
           }
         })
         .catch((error: any) => {
           console.log('error', error);
+          openNotification('Thông tin bài tập', 'Đã có lỗi khi lấy thông tin bài tập');
         })
         .finally(() => {
           setLoading(false);
@@ -87,7 +90,7 @@ const index = () => {
   };
 
   const getClassList = async () => {
-    ClassList('', 'asc', 0, 10)
+    ClassList('', 1, 0, 10)
       .then((resp: any) => {
         const classes = resp.data?.Data?.Data.map((item: any) => ({
           ...item,
@@ -128,8 +131,8 @@ const index = () => {
       params.FileList = files;
     }
 
-    // console.log('values', params);
-    // return;
+    console.log('values', params);
+    return;
 
     CreateHomeWork(params)
       .then((res) => {
@@ -178,95 +181,137 @@ const index = () => {
     saveFile(item.FileUploadUrl, item.FileUploadName);
   };
 
+  const columns = [
+    {
+      title: 'Họ tên',
+      dataIndex: 'StudentName',
+    },
+    {
+      title: 'Sdt',
+      dataIndex: 'StudentPhone',
+    },
+    {
+      title: 'Ngày sinh',
+      dataIndex: 'StudentDob',
+    },
+    {
+      title: 'Giới tính',
+      dataIndex: 'StudentGender',
+    },
+    {
+      title: 'Điểm đã chấm',
+      dataIndex: 'FinalScore',
+    },
+    {
+      title: 'Tùy chọn',
+      key: 'action',
+      render: (text: any, record: any) => (
+        <Space size="middle">
+          <InfoOutlined onClick={() => {}} />
+        </Space>
+      ),
+    },
+  ];
+
   return (
     <Layout title="Chi tiết bài tập" backButton backButtonUrl="/teacher/homework">
       {homeWorkId && homeWorkId !== undefined && (
-        <Form {...formItemLayout} form={form} name="register" onFinish={handleSubmit} scrollToFirstError>
-          <Form.Item name="CreatedDate" label="Ngày tạo" preserve={true}>
-            <DatePicker showTime disabled={true} />
-          </Form.Item>
-          <Form.Item
-            name="HomeWorkName"
-            label="Tên bài tập"
-            rules={[
-              {
-                required: true,
-                message: 'Tên bài tập không thể trống',
-              },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            //  extra="Là bài "
-            name="HomeWorkType"
-            label="Loại bài tập"
-            rules={[
-              {
-                required: true,
-                message: 'Loại bài tập không thể trống',
-              },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item name="DueDate" label="Hạn nộp">
-            <DatePicker showTime />
-          </Form.Item>
-          <Form.Item label="File bài tập">
-            <Col span={18}>
-              {fileList?.map((item: any) => {
-                return (
-                  <Col span={18}>
-                    <a key={item.FileUploadId} download={item.FileUploadName} onClick={() => saveManual(item)}>
-                      {item.FileUploadName}
-                    </a>
-                  </Col>
-                );
-              })}
-            </Col>
-          </Form.Item>
-          {/* <Form.Item label="File bài tập">
+        <React.Fragment>
+          <div>
+            <Form {...formItemLayout} form={form} name="register" onFinish={handleSubmit} scrollToFirstError>
+              <Form.Item name="CreatedDate" label="Ngày tạo" preserve={true}>
+                <DatePicker showTime disabled={true} />
+              </Form.Item>
+              <Form.Item
+                name="HomeWorkName"
+                label="Tên bài tập"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Tên bài tập không thể trống',
+                  },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+              <Form.Item
+                name="HomeWorkType"
+                label="Loại bài tập"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Loại bài tập không thể trống',
+                  },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+              <Form.Item name="DueDate" label="Hạn nộp">
+                <DatePicker showTime disabledDate={(d) => !d || d.isBefore(homeWorkData?.homeWork?.CreatedDate)} />
+              </Form.Item>
+              <Form.Item label="File bài tập">
+                <Col span={18}>
+                  {fileList?.map((item: any) => {
+                    return (
+                      <Col span={18}>
+                        <a key={item.FileUploadId} download={item.FileUploadName} onClick={() => saveManual(item)}>
+                          {item.FileUploadName}
+                        </a>
+                      </Col>
+                    );
+                  })}
+                </Col>
+              </Form.Item>
+              {/* <Form.Item label="File bài tập">
             <Upload multiple={true} beforeUpload={(file) => handleUpload(file)} name="logo" onRemove={handleRemoveFile}>
               <Button disabled={uploading || loading} loading={uploading || loading} icon={<UploadOutlined />}>
                 Chọn File
               </Button>
             </Upload>
           </Form.Item> */}
-          <Form.Item label="Đề bài / Mô tả">
-            {!isSSR && (
-              <React.Suspense fallback={<div>Đang tải soạn thảo</div>}>
-                <Jodit
-                  ref={editor}
-                  value={describeContent}
-                  config={{ readonly: false }}
-                  onBlur={(newContent) => setDescribeContent(newContent)}
-                  onChange={(newContent) => {}}
-                />
-              </React.Suspense>
-            )}
-          </Form.Item>
-          <Form.Item label="Chỉ học sinh có trong danh sách" name="OnlyAssignStudent">
-            <Switch />
-          </Form.Item>
-          <Form.Item label="Bắt đăng nhập" name="RequiredLogin">
-            <Switch />
-          </Form.Item>
-          <Form.Item label="Lớp giao bài" name="ClassList">
-            <Checkbox.Group options={classData} defaultValue={['Apple']} onChange={() => {}} />
-          </Form.Item>
+              <Form.Item label="Đề bài / Mô tả">
+                {!isSSR && (
+                  <React.Suspense fallback={<div>Đang tải soạn thảo</div>}>
+                    <Jodit
+                      ref={editor}
+                      value={describeContent}
+                      config={{ readonly: false }}
+                      onBlur={(newContent) => setDescribeContent(newContent)}
+                      onChange={(newContent) => {}}
+                    />
+                  </React.Suspense>
+                )}
+              </Form.Item>
+              <Form.Item label="Chỉ học sinh có trong danh sách" name="OnlyAssignStudent">
+                <Switch />
+              </Form.Item>
+              <Form.Item label="Bắt đăng nhập" name="RequiredLogin">
+                <Switch />
+              </Form.Item>
+              <Form.Item label="Lớp giao bài" name="ClassList">
+                <Checkbox.Group options={classData} defaultValue={['Apple']} onChange={() => {}} />
+              </Form.Item>
 
-          <Form.Item {...tailFormItemLayout}>
-            <Space>
-              <Button type="primary" htmlType="submit" loading={loading} disabled={loading}>
-                {'Cập nhật'}
-              </Button>
-              <Button htmlType="button" onClick={() => router.push('/teacher/homework/')}>
-                Hủy
-              </Button>
-            </Space>
-          </Form.Item>
-        </Form>
+              <Form.Item {...tailFormItemLayout}>
+                <Space>
+                  <Button type="primary" htmlType="submit" loading={loading} disabled={loading}>
+                    {'Cập nhật'}
+                  </Button>
+                  <Button htmlType="button" onClick={() => router.push('/teacher/homework/')}>
+                    Hủy
+                  </Button>
+                </Space>
+              </Form.Item>
+            </Form>
+          </div>
+
+          {homeWorkData?.studentList && homeWorkData?.studentList.length > 0 && (
+            <div>
+              <Typography.Title level={4}>Bài học sinh nộp</Typography.Title>
+              <Table columns={columns} dataSource={homeWorkData?.studentList || []} pagination={false} />
+            </div>
+          )}
+        </React.Fragment>
       )}
     </Layout>
   );
