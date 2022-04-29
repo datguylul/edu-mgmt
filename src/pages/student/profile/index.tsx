@@ -26,10 +26,10 @@ function index() {
 
   const fillForm = (data: any) => {
     form.setFieldsValue({
-      StudentDob: data?.student?.StudentDob,
-      StudentGender: data?.student?.StudentGender,
-      StudentName: data?.student?.StudentName,
-      StudentPhone: data?.student?.StudentPhone,
+      UserDob: data?.account?.UserDob,
+      UserGender: data?.account?.UserGender,
+      Fullname: data?.account?.Fullname,
+      UserPhone: data?.account?.UserPhone,
       UserUsername: data?.account?.UserUsername,
     });
   };
@@ -47,18 +47,18 @@ function index() {
         autoComplete="off"
       >
         <Form.Item label="Tên đăng nhập" name="UserUsername">
+          <Input disabled={true} />
+        </Form.Item>
+        <Form.Item label="Họ tên" name="Fullname">
           <Input />
         </Form.Item>
-        <Form.Item label="Họ tên" name="StudentName">
+        <Form.Item label="Sđt" name="UserPhone">
           <Input />
         </Form.Item>
-        <Form.Item label="Sđt" name="StudentPhone">
+        <Form.Item label="Giới tính" name="UserGender">
           <Input />
         </Form.Item>
-        <Form.Item label="Giới tính" name="StudentGender">
-          <Input />
-        </Form.Item>
-        <Form.Item label="Ngày sinh" name="StudentDob">
+        <Form.Item label="Ngày sinh" name="UserDob">
           <Input />
         </Form.Item>
 

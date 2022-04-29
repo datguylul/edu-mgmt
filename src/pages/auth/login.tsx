@@ -42,7 +42,7 @@ function Login() {
           setAuthenticated(true);
           Cookie.set('accessToken', data.Data?.token, { expires: 7 });
           localStorage.setItem('roles', data.Data?.roles[0]?.RoleName);
-          localStorage.setItem('username', data.Data.account.Username);
+          localStorage.setItem('username', data.Data.account.Fullname);
         } else {
           setMessage(data.Message);
         }

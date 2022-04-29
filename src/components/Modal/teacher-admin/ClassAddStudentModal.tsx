@@ -28,7 +28,8 @@ const formItemLayout = {
 };
 
 const fileExample = {
-  fileUrl: 'https://res.cloudinary.com/dhi8xksch/raw/upload/v1650360615/tpt96vjetzt7ap6h2qug.xlsx',
+  id: 'ityus3zhytcz0pthgomg.xlsx',
+  fileUrl: 'https://res.cloudinary.com/dhi8xksch/raw/upload/v1651215105/ityus3zhytcz0pthgomg.xlsx',
   fileName: 'file_mau.xlsx',
 };
 

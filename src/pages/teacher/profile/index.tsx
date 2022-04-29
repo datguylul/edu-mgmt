@@ -26,12 +26,12 @@ function index() {
 
   const fillForm = (data: any) => {
     form.setFieldsValue({
-      TeacherDob: data?.teacher?.TeacherDob,
+      UserDob: data?.account?.UserDob,
       TeacherEmail: data?.teacher?.TeacherEmail,
-      TeacherGender: data?.teacher?.TeacherGender,
-      TeacherId: data?.teacher?.TeacherId,
-      TeacherName: data?.teacher?.TeacherName,
-      TeacherPhone: data?.teacher?.TeacherPhone,
+      UserGender: data?.account?.UserGender,
+      TeacherId: data?.account?.TeacherId,
+      Fullname: data?.account?.Fullname,
+      UserPhone: data?.account?.UserPhone,
       UserUsername: data?.account?.UserUsername,
     });
   };
@@ -49,18 +49,18 @@ function index() {
         autoComplete="off"
       >
         <Form.Item label="Tên đăng nhập" name="UserUsername">
+          <Input disabled={true} />
+        </Form.Item>
+        <Form.Item label="Họ tên" name="Fullname">
           <Input />
         </Form.Item>
-        <Form.Item label="Họ tên" name="TeacherName">
+        <Form.Item label="Sđt" name="UserPhone">
           <Input />
         </Form.Item>
-        <Form.Item label="Sđt" name="TeacherPhone">
+        <Form.Item label="Giới tính" name="UserGender">
           <Input />
         </Form.Item>
-        <Form.Item label="Giới tính" name="TeacherGender">
-          <Input />
-        </Form.Item>
-        <Form.Item label="Ngày sinh" name="TeacherDob">
+        <Form.Item label="Ngày sinh" name="UserDob">
           <Input />
         </Form.Item>
         <Form.Item label="Email" name="TeacherEmail">

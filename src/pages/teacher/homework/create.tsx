@@ -7,6 +7,7 @@ import { openNotification } from '@utils/Noti';
 import { UploadOutlined, InboxOutlined } from '@ant-design/icons';
 import { handleCloudinaryUpload } from 'core/services/cloudinaryUpload';
 import { ClassList, CreateHomeWork } from '@core/services/api';
+import router from 'next/router';
 
 const Jodit = React.lazy(() => {
   return import('jodit-react');
@@ -68,7 +69,7 @@ const create = () => {
     const params: any = {
       HomeWorkType: values.HomeWorkType.trim(),
       HomeWorkName: values.HomeWorkName.trim(),
-      HomeWorkDescribe: describeContent,
+      homeWorkContent: describeContent,
       ClassList: values.ClassList,
       OnlyAssignStudent: values.OnlyAssignStudent,
       RequiredLogin: values.RequiredLogin,
@@ -77,6 +78,7 @@ const create = () => {
     if (values.DueDate) {
       params.DueDate = moment(values.DueDate).unix();
     }
+
     if (fileList.length > 0) {
       const files: any = [];
       fileList.forEach((item: any) => {
@@ -92,6 +94,7 @@ const create = () => {
       .then((res) => {
         if (res.data.Success) {
           openNotification('Tạo bài tập', 'Tạo bài tập thành công');
+          router.push('/teacher/homework');
         } else {
           openNotification('Tạo bài tập', res.data?.Message);
         }
@@ -160,7 +163,7 @@ const create = () => {
           <Input />
         </Form.Item>
         <Form.Item name="DueDate" label="Hạn nộp">
-          <DatePicker showTime />
+          <DatePicker showTime disabledDate={(d) => !d || d.isBefore(Date.now())} />
         </Form.Item>
         <Form.Item label="File bài tập">
           <Upload multiple={true} beforeUpload={(file) => handleUpload(file)} name="logo" onRemove={handleRemoveFile}>
@@ -185,11 +188,20 @@ const create = () => {
         <Form.Item label="Chỉ học sinh có trong danh sách" name="OnlyAssignStudent">
           <Switch />
         </Form.Item>
-        <Form.Item label="Bắt đăng nhập" name="RequiredLogin">
+        {/* <Form.Item label="Bắt đăng nhập" name="RequiredLogin">
           <Switch />
-        </Form.Item>
-        <Form.Item label="Lớp giao bài" name="ClassList">
-          <Checkbox.Group options={classData} defaultValue={['Apple']} onChange={() => {}} />
+        </Form.Item> */}
+        <Form.Item
+          label="Lớp giao bài"
+          name="ClassList"
+          rules={[
+            {
+              required: true,
+              message: 'Chọn lớp',
+            },
+          ]}
+        >
+          <Checkbox.Group options={classData} />
         </Form.Item>
 
         <Form.Item {...tailFormItemLayout}>

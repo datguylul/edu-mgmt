@@ -1,14 +1,14 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Layout from 'Layouts';
 import withAuth from '@hocs/withAuth';
-import { Form, Input, Button, Space, DatePicker, Switch, Checkbox, Table, Col, Typography } from 'antd';
+import { Form, Input, Button, Space, DatePicker, Switch, Checkbox, Table, Col, Typography, Upload } from 'antd';
 import moment from 'moment';
 import { openNotification } from '@utils/Noti';
 import { handleCloudinaryUpload } from 'core/services/cloudinaryUpload';
-import { ClassList, CreateHomeWork, HomeWorkDetail } from '@core/services/api';
+import { ClassList, HomeWorkEdit, HomeWorkDetail } from '@core/services/api';
 import { useRouter } from 'next/router';
 import { saveFile } from '@utils/FileUtil';
-import { InfoOutlined, FormOutlined, DeleteOutlined } from '@ant-design/icons';
+import { InfoOutlined, FormOutlined, DeleteOutlined, UploadOutlined } from '@ant-design/icons';
 
 const Jodit = React.lazy(() => {
   return import('jodit-react');
@@ -49,10 +49,11 @@ const index = () => {
   const isSSR = typeof window === 'undefined';
   const [classData, setClassData] = useState([]);
   const [homeWorkData, setHomeWorkData] = useState<any>(null);
+  const [classCheckedList, setClassCheckedList] = useState<object>([]);
 
   useEffect(() => {
-    getHomeWorkDetail();
     getClassList();
+    getHomeWorkDetail();
   }, []);
 
   const getHomeWorkDetail = async () => {
@@ -80,24 +81,30 @@ const index = () => {
     form.setFieldsValue({
       HomeWorkName: data?.homeWork?.HomeWorkName,
       HomeWorkType: data?.homeWork?.HomeWorkType,
-      DueDate: moment(data?.homeWork?.DueDate),
       CreatedDate: moment(data?.homeWork?.CreatedDate),
+      DueDate: moment(data?.homeWork?.DueDate),
       RequiredLogin: data?.homeWork?.RequiredLogin,
       OnlyAssignStudent: data?.homeWork?.OnlyAssignStudent,
     });
+
+    let checkedClass: string[] = [];
+    data?.class.forEach((item: any) => {
+      checkedClass.push(item.ClassId);
+    });
+    setClassCheckedList(checkedClass);
+
     setFileList(data.files);
-    setDescribeContent(data?.homeWork?.HomeWorkDescribe);
+    setDescribeContent(data?.homeWork?.HomeWorkContent);
   };
 
   const getClassList = async () => {
     ClassList('', 1, 0, 10)
       .then((resp: any) => {
         const classes = resp.data?.Data?.Data.map((item: any) => ({
-          ...item,
-          label: item.ClassName + ` (${item.ClassYear})`,
+          // label: item.ClassName + ` (${item.ClassYear})`,
+          label: item.ClassName,
           value: item.ClassId,
         }));
-        // let classes = objArray.map(({ foo }) => foo)
 
         setClassData(classes);
       })
@@ -111,7 +118,7 @@ const index = () => {
     const params: any = {
       HomeWorkType: values.HomeWorkType.trim(),
       HomeWorkName: values.HomeWorkName.trim(),
-      HomeWorkDescribe: describeContent,
+      homeWorkContent: describeContent,
       ClassList: values.ClassList,
       OnlyAssignStudent: values.OnlyAssignStudent,
       RequiredLogin: values.RequiredLogin,
@@ -131,15 +138,13 @@ const index = () => {
       params.FileList = files;
     }
 
-    console.log('values', params);
-    return;
-
-    CreateHomeWork(params)
+    HomeWorkEdit(homeWorkId as string, params)
       .then((res) => {
         if (res.data.Success) {
-          openNotification('Tạo bài tập', 'Tạo bài tập thành công');
+          openNotification('Sửa bài tập', 'Sửa bài tập thành công');
+          router.push('/teacher/homework');
         } else {
-          openNotification('Tạo bài tập', res.data?.Message);
+          openNotification('Sửa bài tập', res.data?.Message);
         }
       })
       .catch((error) => {
@@ -152,6 +157,9 @@ const index = () => {
   };
 
   const handleUpload = (file: any) => {
+    console.log('file', file);
+
+    return;
     setUploading(true);
     handleCloudinaryUpload(file)
       .then((res: any) => {
@@ -249,6 +257,9 @@ const index = () => {
               <Form.Item name="DueDate" label="Hạn nộp">
                 <DatePicker showTime disabledDate={(d) => !d || d.isBefore(homeWorkData?.homeWork?.CreatedDate)} />
               </Form.Item>
+              {/* <Form.Item label="File bài tập">
+
+              </Form.Item> */}
               <Form.Item label="File bài tập">
                 <Col span={18}>
                   {fileList?.map((item: any) => {
@@ -261,14 +272,17 @@ const index = () => {
                     );
                   })}
                 </Col>
+                <Upload
+                  multiple={true}
+                  beforeUpload={(file) => handleUpload(file)}
+                  name="logo"
+                  onRemove={handleRemoveFile}
+                >
+                  <Button disabled={uploading || loading} loading={uploading || loading} icon={<UploadOutlined />}>
+                    Chọn File
+                  </Button>
+                </Upload>
               </Form.Item>
-              {/* <Form.Item label="File bài tập">
-            <Upload multiple={true} beforeUpload={(file) => handleUpload(file)} name="logo" onRemove={handleRemoveFile}>
-              <Button disabled={uploading || loading} loading={uploading || loading} icon={<UploadOutlined />}>
-                Chọn File
-              </Button>
-            </Upload>
-          </Form.Item> */}
               <Form.Item label="Đề bài / Mô tả">
                 {!isSSR && (
                   <React.Suspense fallback={<div>Đang tải soạn thảo</div>}>
@@ -277,19 +291,31 @@ const index = () => {
                       value={describeContent}
                       config={{ readonly: false }}
                       onBlur={(newContent) => setDescribeContent(newContent)}
-                      onChange={(newContent) => {}}
                     />
                   </React.Suspense>
                 )}
               </Form.Item>
-              <Form.Item label="Chỉ học sinh có trong danh sách" name="OnlyAssignStudent">
+              <Form.Item
+                label="Chỉ học sinh có trong danh sách"
+                name="OnlyAssignStudent"
+                valuePropName={homeWorkData?.homeWork?.OnlyAssignStudent && 'checked'}
+              >
                 <Switch />
               </Form.Item>
-              <Form.Item label="Bắt đăng nhập" name="RequiredLogin">
+              {/* <Form.Item label="Bắt đăng nhập" name="RequiredLogin">
                 <Switch />
-              </Form.Item>
-              <Form.Item label="Lớp giao bài" name="ClassList">
-                <Checkbox.Group options={classData} defaultValue={['Apple']} onChange={() => {}} />
+              </Form.Item> */}
+              <Form.Item
+                label="Lớp giao bài"
+                name="ClassList"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Chọn lớp',
+                  },
+                ]}
+              >
+                <Checkbox.Group options={classData} />
               </Form.Item>
 
               <Form.Item {...tailFormItemLayout}>

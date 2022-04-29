@@ -52,7 +52,7 @@ const index = () => {
   const getUserDetail = () => {
     UserDetailNonId()
       .then((res) => {
-        fillForm(res?.data?.Data?.student);
+        fillForm(res?.data?.Data?.account);
       })
       .catch((error) => {
         console.log('error', error);
@@ -61,9 +61,9 @@ const index = () => {
 
   const fillForm = (data: any) => {
     form.setFieldsValue({
-      studentDob: data?.StudentDob,
-      studentName: data?.StudentName,
-      studentPhone: data?.StudentPhone,
+      studentDob: data?.UserDob,
+      studentName: data?.Fullname,
+      studentPhone: data?.UserPhone,
     });
   };
 
