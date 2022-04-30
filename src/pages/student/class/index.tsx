@@ -44,8 +44,14 @@ function index() {
       dataIndex: 'ClassYear',
     },
     {
-      title: 'Giáo viên',
+      title: 'Tên giáo viên',
       dataIndex: 'Teacher',
+      render: (text: any, record: any) => <Space size="middle">{record?.Teacher?.TeacherName}</Space>,
+    },
+    {
+      title: 'SDT giáo viên',
+      dataIndex: 'Teacher',
+      render: (text: any, record: any) => <Space size="middle">{record?.Teacher?.TeacherPhone}</Space>,
     },
   ];
 

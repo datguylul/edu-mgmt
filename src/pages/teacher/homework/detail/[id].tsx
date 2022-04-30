@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Layout from 'Layouts';
 import withAuth from '@hocs/withAuth';
-import { Form, Input, Button, Space, DatePicker, Switch, Checkbox, Table, Col, Typography, Upload } from 'antd';
+import { Form, Input, Button, Space, DatePicker, Switch, Checkbox, Table, Col, Typography, Upload, Select } from 'antd';
 import moment from 'moment';
 import { openNotification } from '@utils/Noti';
 import { handleCloudinaryUpload } from 'core/services/cloudinaryUpload';
@@ -9,6 +9,11 @@ import { ClassList, HomeWorkEdit, HomeWorkDetail } from '@core/services/api';
 import { useRouter } from 'next/router';
 import { saveFile } from '@utils/FileUtil';
 import { InfoOutlined, FormOutlined, DeleteOutlined, UploadOutlined } from '@ant-design/icons';
+import { HOME_WORK_STATUS } from '@core/constants';
+
+const { Option } = Select;
+
+const HomeWorkStatusList = [HOME_WORK_STATUS.active, HOME_WORK_STATUS.finish];
 
 const Jodit = React.lazy(() => {
   return import('jodit-react');
@@ -78,6 +83,8 @@ const index = () => {
   };
 
   const fillForm = (data: any) => {
+    const status = HomeWorkStatusList.find((x) => x.value === data?.homeWork?.HomeWorkStatus);
+
     form.setFieldsValue({
       HomeWorkName: data?.homeWork?.HomeWorkName,
       HomeWorkType: data?.homeWork?.HomeWorkType,
@@ -85,6 +92,7 @@ const index = () => {
       DueDate: moment(data?.homeWork?.DueDate),
       RequiredLogin: data?.homeWork?.RequiredLogin,
       OnlyAssignStudent: data?.homeWork?.OnlyAssignStudent,
+      HomeWorkStatus: status?.value,
     });
 
     let checkedClass: string[] = [];
@@ -122,6 +130,7 @@ const index = () => {
       ClassList: values.ClassList,
       OnlyAssignStudent: values.OnlyAssignStudent,
       RequiredLogin: values.RequiredLogin,
+      HomeWorkStatus: values.HomeWorkStatus,
     };
 
     if (values.DueDate) {
@@ -229,6 +238,13 @@ const index = () => {
             <Form {...formItemLayout} form={form} name="register" onFinish={handleSubmit} scrollToFirstError>
               <Form.Item name="CreatedDate" label="Ngày tạo" preserve={true}>
                 <DatePicker showTime disabled={true} />
+              </Form.Item>
+              <Form.Item label="Trạng thái" name="HomeWorkStatus">
+                <Select defaultValue={1} style={{ width: 120 }}>
+                  {HomeWorkStatusList.map((item: any) => (
+                    <Select.Option value={item.value}>{item.label}</Select.Option>
+                  ))}
+                </Select>
               </Form.Item>
               <Form.Item
                 name="HomeWorkName"

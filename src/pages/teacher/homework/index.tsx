@@ -3,7 +3,7 @@ import Layout from 'Layouts';
 import withAuth from '@hocs/withAuth';
 import { Row, Col, Button, Card, Modal, Select } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
-import { ClassList } from '@core/services/api';
+import { ClassListWithHomeWork } from '@core/services/api';
 import ClassHomeWorkModal from 'components/Modal/teacher-admin/ClassHomeWorkModal';
 import Router from 'next/router';
 
@@ -21,7 +21,7 @@ const HomeWork = () => {
   }, []);
 
   const getClassList = async () => {
-    ClassList('', 1, 1, 10)
+    ClassListWithHomeWork('', 1, 1, 10)
       .then((resp: any) => {
         const getActiveClass = resp.data?.Data?.Data?.filter((item: any) => item.ClassStatus === 1);
         setClassData(getActiveClass ?? []);
