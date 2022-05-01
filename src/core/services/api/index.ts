@@ -52,3 +52,6 @@ export const HomeWorkCheck = (params: object) => post(ENDPOINTS.HOMEWORK_CHECK, 
 export const FileDetail = (id: string) => get(ENDPOINTS.FILE + `\\detail\\${id}`);
 
 export const AnswerSubmit = (params: object) => post(ENDPOINTS.ANSWER_SUBMIT, params);
+export const AnswerDetail = (id: string) => get(ENDPOINTS.ANSWER + `\\detail\\${id}`);
+
+export const ResultSubmit = (params: object) => post(ENDPOINTS.RESULT, params);

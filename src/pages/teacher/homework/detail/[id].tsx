@@ -1,7 +1,21 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Layout from 'Layouts';
 import withAuth from '@hocs/withAuth';
-import { Form, Input, Button, Space, DatePicker, Switch, Checkbox, Table, Col, Typography, Upload, Select } from 'antd';
+import {
+  Form,
+  Input,
+  Button,
+  Space,
+  DatePicker,
+  Switch,
+  Checkbox,
+  Table,
+  Col,
+  Typography,
+  Upload,
+  Select,
+  Modal,
+} from 'antd';
 import moment from 'moment';
 import { openNotification } from '@utils/Noti';
 import { handleCloudinaryUpload } from 'core/services/cloudinaryUpload';
@@ -10,6 +24,7 @@ import { useRouter } from 'next/router';
 import { saveFile } from '@utils/FileUtil';
 import { InfoOutlined, FormOutlined, DeleteOutlined, UploadOutlined } from '@ant-design/icons';
 import { HOME_WORK_STATUS } from '@core/constants';
+import AnswerModal from 'components/Modal/teacher-admin/AnswerModal';
 
 const { Option } = Select;
 
@@ -55,11 +70,18 @@ const index = () => {
   const [classData, setClassData] = useState([]);
   const [homeWorkData, setHomeWorkData] = useState<any>(null);
   const [classCheckedList, setClassCheckedList] = useState<object>([]);
+  const [showModal, setShowModal] = React.useState<boolean>(false);
+  const [answerId, setAnswerId] = useState<string>('');
 
   useEffect(() => {
     getClassList();
-    getHomeWorkDetail();
   }, []);
+
+  useEffect(() => {
+    if (!showModal) {
+      getHomeWorkDetail();
+    }
+  }, [showModal]);
 
   const getHomeWorkDetail = async () => {
     if (homeWorkId && homeWorkId !== undefined) {
@@ -224,11 +246,16 @@ const index = () => {
       key: 'action',
       render: (text: any, record: any) => (
         <Space size="middle">
-          <InfoOutlined onClick={() => {}} />
+          <InfoOutlined onClick={() => handleOpenAnswerModal(record?.AnswerId)} />
         </Space>
       ),
     },
   ];
+
+  const handleOpenAnswerModal = (id: any) => {
+    setAnswerId(id);
+    setShowModal(true);
+  };
 
   return (
     <Layout title="Chi tiết bài tập" backButton backButtonUrl="/teacher/homework">
@@ -353,6 +380,18 @@ const index = () => {
               <Table columns={columns} dataSource={homeWorkData?.studentList || []} pagination={false} />
             </div>
           )}
+          <Modal
+            width={755}
+            bodyStyle={{ height: 'max-content' }}
+            title={'Chi tiết lớp'}
+            visible={showModal}
+            onCancel={() => setShowModal(false)}
+            destroyOnClose
+            footer={null}
+            className="edit-profile-modal"
+          >
+            <AnswerModal answerId={answerId} />
+          </Modal>
         </React.Fragment>
       )}
     </Layout>
