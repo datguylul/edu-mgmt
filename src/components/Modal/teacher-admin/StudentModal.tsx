@@ -81,14 +81,14 @@ const StudentModal: React.FC<IModalInfo> = ({
       EditStudent(studentId, values)
         .then((resp) => {
           if (resp.data.Success) {
-            openNotification('Cập nhật học sinh', 'Cập nhật học sinh thành công');
+            openNotification('Cập nhật học sinh', 'Cập nhật học sinh thành công', 'success');
           } else {
-            openNotification('Cập nhật học sinh', resp.data.Message);
+            openNotification('Cập nhật học sinh', resp.data.Message, 'error');
           }
         })
         .catch((error) => {
           console.log('error', error);
-          openNotification('Cập nhật học sinh', 'Cập nhật học sinh thất bại');
+          openNotification('Cập nhật học sinh', 'Cập nhật học sinh thất bại', 'error');
         })
         .finally(() => {
           setLoading(false);

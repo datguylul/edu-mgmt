@@ -81,14 +81,14 @@ const index: React.FC<Props> = ({}) => {
     EditClass(classId as string, values)
       .then((resp) => {
         if (resp.data.Success) {
-          openNotification('Cập nhật lớp', 'Cập nhật lớp thành công');
+          openNotification('Cập nhật lớp', 'Cập nhật lớp thành công', 'success');
         } else {
-          openNotification('Cập nhật lớp', resp.data.Message);
+          openNotification('Cập nhật lớp', resp.data.Message, 'error');
         }
       })
       .catch((error) => {
         console.log('error', error);
-        openNotification('Cập nhật lớp', 'Cập nhật lớp thất bại');
+        openNotification('Cập nhật lớp', 'Cập nhật lớp thất bại', 'error');
       })
       .finally(() => {
         setLoading(false);

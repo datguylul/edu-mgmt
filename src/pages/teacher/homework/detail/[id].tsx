@@ -74,7 +74,7 @@ const index = () => {
         })
         .catch((error: any) => {
           console.log('error', error);
-          openNotification('Thông tin bài tập', 'Đã có lỗi khi lấy thông tin bài tập');
+          openNotification('Thông tin bài tập', 'Đã có lỗi khi lấy thông tin bài tập', 'error');
         })
         .finally(() => {
           setLoading(false);
@@ -150,15 +150,15 @@ const index = () => {
     HomeWorkEdit(homeWorkId as string, params)
       .then((res) => {
         if (res.data.Success) {
-          openNotification('Sửa bài tập', 'Sửa bài tập thành công');
+          openNotification('Sửa bài tập', 'Sửa bài tập thành công', 'success');
           router.push('/teacher/homework');
         } else {
-          openNotification('Sửa bài tập', res.data?.Message);
+          openNotification('Sửa bài tập', res.data?.Message, 'error');
         }
       })
       .catch((error) => {
         console.error(error);
-        openNotification('Tạo bài tập', 'Đã có lỗi');
+        openNotification('Tạo bài tập', 'Đã có lỗi', 'error');
       })
       .finally(() => {
         setLoading(false);
@@ -179,7 +179,7 @@ const index = () => {
       })
       .catch((err: any) => {
         console.error(err);
-        openNotification('Upload Ảnh', 'Đã có lỗi');
+        openNotification('Upload File', 'Đã có lỗi', 'error');
       })
       .finally(() => {
         setUploading(false);

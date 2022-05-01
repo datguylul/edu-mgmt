@@ -90,14 +90,14 @@ const StudentDetailModal: React.FC<IModalInfo> = ({
       .then((resp) => {
         console.log('resp', resp.data);
         if (resp.data.Success) {
-          openNotification('Thêm học sinh', 'Thêm học sinh thành công');
+          openNotification('Thêm học sinh', 'Thêm học sinh thành công', 'success');
         } else {
-          openNotification('Thêm học sinh', resp.data.Message);
+          openNotification('Thêm học sinh', resp.data.Message, 'error');
         }
       })
       .catch((error) => {
         console.log('error', error);
-        openNotification('Thêm học sinh', 'Thêm học sinh thất bại');
+        openNotification('Thêm học sinh', 'Thêm học sinh thất bại', 'error');
       })
       .finally(() => {
         setLoading(false);

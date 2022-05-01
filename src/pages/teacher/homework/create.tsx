@@ -93,15 +93,15 @@ const create = () => {
     CreateHomeWork(params)
       .then((res) => {
         if (res.data.Success) {
-          openNotification('Tạo bài tập', 'Tạo bài tập thành công');
+          openNotification('Tạo bài tập', 'Tạo bài tập thành công', 'success');
           router.push('/teacher/homework');
         } else {
-          openNotification('Tạo bài tập', res.data?.Message);
+          openNotification('Tạo bài tập', res.data?.Message, 'error');
         }
       })
       .catch((error) => {
         console.error(error);
-        openNotification('Tạo bài tập', 'Đã có lỗi');
+        openNotification('Tạo bài tập', 'Đã có lỗi', 'error');
       })
       .finally(() => {
         setLoading(false);
@@ -119,7 +119,7 @@ const create = () => {
       })
       .catch((err: any) => {
         console.error(err);
-        openNotification('Upload File', 'Đã có lỗi');
+        openNotification('Upload File', 'Đã có lỗi', 'error');
       })
       .finally(() => {
         setUploading(false);

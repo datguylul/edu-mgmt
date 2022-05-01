@@ -65,7 +65,7 @@ const StudentHomeWorkModal: React.FC<IModalInfo> = ({
   const handleCopyLink = (id: string) => {
     const { origin } = absoluteUrl();
     const url = `${origin}/homework/${id}`;
-    openNotification('Copy Link bài tập thành công');
+    openNotification('Copy link', 'Copy Link bài tập thành công', 'success');
     if ('clipboard' in navigator) {
       return navigator.clipboard.writeText(url);
     } else {

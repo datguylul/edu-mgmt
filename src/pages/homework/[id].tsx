@@ -91,11 +91,12 @@ const index = () => {
             setClassId(res.data?.Data?.class?.ClassId || null);
             setStudentCheck(true);
           } else {
-            openNotification('Thông báo', res.data.Message);
+            openNotification('Thông báo', res.data.Message, 'error');
           }
         })
         .catch((error) => {
-          console.log('error', error);
+          console.log('error', error, 'error');
+          openNotification('Đã có lỗi', 'Thử lại sau', 'error');
         })
         .finally(() => {
           setLoading(false);
@@ -157,7 +158,7 @@ const index = () => {
   };
 
   return (
-    <Layout title="Chi tiết bài tập" backButton backButtonUrl="/teacher/homework">
+    <Layout title="Chi tiết bài tập" backButton backButtonUrl="/">
       {studentCheck ? (
         <HomeWorkDetailContent homeWorkData={homeWorkData} studentInfo={studentInfo} classId={classId} />
       ) : (
@@ -190,7 +191,7 @@ const HomeWorkDetailContent = ({ homeWorkData = null, studentInfo = null, classI
       })
       .catch((err: any) => {
         console.error(err);
-        openNotification('Upload Ảnh', 'Đã có lỗi');
+        openNotification('Upload File', 'Đã có lỗi', 'error');
       })
       .finally(() => {
         setUploading(false);
@@ -215,7 +216,7 @@ const HomeWorkDetailContent = ({ homeWorkData = null, studentInfo = null, classI
 
   const handleSubmit = () => {
     if (!classId || classId === '') {
-      openNotification('Nộp bài tập', 'Đã có lỗi vui vòng thử lại sau');
+      openNotification('Nộp bài tập', 'Đã có lỗi vui lòng thử lại sau', 'error');
     }
     // setLoading(true);
     const params: any = {
@@ -246,14 +247,14 @@ const HomeWorkDetailContent = ({ homeWorkData = null, studentInfo = null, classI
       .then((res) => {
         if (res.data?.Success) {
           setSubmitDone(true);
-          openNotification('Nộp bài tập', 'Nộp bài thành công');
+          openNotification('Nộp bài tập', 'Nộp bài thành công', 'success');
         } else {
-          openNotification('Nộp bài tập', res.data?.Message);
+          openNotification('Nộp bài tập', res.data?.Message, 'error');
         }
       })
       .catch((error) => {
         console.log('error', error);
-        openNotification('Nộp bài tập', 'Đã có lỗi vui vòng thử lại sau');
+        openNotification('Nộp bài tập', 'Đã có lỗi vui lòng thử lại sau', 'error');
       })
       .finally(() => {
         setLoading(false);

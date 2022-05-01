@@ -75,14 +75,14 @@ const SchoolYearModal: React.FC<IModalInfo> = ({
       EditSchoolYear(schoolYearId, values)
         .then((resp) => {
           if (resp.data.Success) {
-            openNotification('Cập nhật năm học', 'Cập nhật năm học thành công');
+            openNotification('Cập nhật năm học', 'Cập nhật năm học thành công', 'success');
           } else {
-            openNotification('Cập nhật năm học', resp.data.Message);
+            openNotification('Cập nhật năm học', resp.data.Message, 'error');
           }
         })
         .catch((error) => {
           console.log('error', error);
-          openNotification('Cập nhật năm học', 'Cập nhật năm học thất bại');
+          openNotification('Cập nhật năm học', 'Cập nhật năm học thất bại', 'error');
         })
         .finally(() => {
           setLoading(false);
@@ -92,14 +92,14 @@ const SchoolYearModal: React.FC<IModalInfo> = ({
       CreateSchoolYear(values)
         .then((resp) => {
           if (resp.data.Success) {
-            openNotification('Thêm mới năm học', 'Thêm mới năm học thành công');
+            openNotification('Thêm mới năm học', 'Thêm mới năm học thành công', 'success');
           } else {
-            openNotification('Thêm mới năm học', resp.data.Message);
+            openNotification('Thêm mới năm học', resp.data.Message, 'error');
           }
         })
         .catch((error) => {
           console.log('error', error);
-          openNotification('Thêm mới năm học', 'Thêm mới năm học thất bại');
+          openNotification('Thêm mới năm học', 'Thêm mới năm học thất bại', 'error');
         })
         .finally(() => {
           setLoading(false);

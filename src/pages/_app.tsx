@@ -1,4 +1,5 @@
 import 'antd/dist/antd.css';
+import 'react-loading-skeleton/dist/skeleton.css';
 
 import { useEffect } from 'react';
 import { AuthProvider } from '@contexts/AuthContext';

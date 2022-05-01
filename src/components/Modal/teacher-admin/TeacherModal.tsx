@@ -81,14 +81,14 @@ const TeacherModal: React.FC<IModalInfo> = ({
       EditTeacher(teacherId, values)
         .then((resp) => {
           if (resp.data.Success) {
-            openNotification('Cập nhật giáo viên', 'Cập nhật giáo viên thành công');
+            openNotification('Cập nhật giáo viên', 'Cập nhật giáo viên thành công', 'success');
           } else {
-            openNotification('Cập nhật giáo viên', resp.data.Message);
+            openNotification('Cập nhật giáo viên', resp.data.Message, 'error');
           }
         })
         .catch((error) => {
           console.log('error', error);
-          openNotification('Cập nhật giáo viên', 'Cập nhật giáo viên thất bại');
+          openNotification('Cập nhật giáo viên', 'Cập nhật giáo viên thất bại', 'error');
         })
         .finally(() => {
           setLoading(false);

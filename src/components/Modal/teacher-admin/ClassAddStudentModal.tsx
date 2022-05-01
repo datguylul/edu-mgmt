@@ -86,14 +86,14 @@ const ClassAddStudentModal: React.FC<IModalInfo> = ({
     ClassAddStudent(params)
       .then((resp) => {
         if (resp.data.Success) {
-          openNotification('Thêm học sinh', 'Thêm học sinh thành công');
+          openNotification('Thêm học sinh', 'Thêm học sinh thành công', 'success');
         } else {
-          openNotification('Thêm học sinh', resp.data.Message);
+          openNotification('Thêm học sinh', resp.data.Message, 'error');
         }
       })
       .catch((error) => {
         console.log('error', error);
-        openNotification('Thêm học sinh', 'Thêm học sinh thất bại');
+        openNotification('Thêm học sinh', 'Thêm học sinh thất bại', 'error');
       })
       .finally(() => {
         setLoading(false);
@@ -116,7 +116,7 @@ const ClassAddStudentModal: React.FC<IModalInfo> = ({
       })
       .catch((err: any) => {
         console.error(err);
-        openNotification('Đọc file', 'Đã có lỗi');
+        openNotification('Đọc file', 'Đã có lỗi', 'error');
       })
       .finally(() => {
         setUploading(false);
