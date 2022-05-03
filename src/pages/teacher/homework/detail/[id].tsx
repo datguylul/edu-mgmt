@@ -75,16 +75,31 @@ const index = () => {
   const [answerId, setAnswerId] = useState<string>('');
   const [defaultFileList, setDefaultFileList] = useState<any>(null);
   const [studentSubmitList, setStudentSubmitList] = useState<any>([]);
+  const [classSelect, setClassSelect] = useState<string | null>(null);
 
   useEffect(() => {
     getClassList();
-    getStudentSubmitList();
   }, []);
+  useEffect(() => {
+    getStudentSubmitList();
+  }, [classSelect]);
+
+  const handleSetSelectChange = (value: string) => {
+    if (value === '') {
+      setClassSelect(null);
+    } else {
+      setClassSelect(value);
+    }
+  };
 
   const getStudentSubmitList = () => {
-    AnswerList(homeWorkId as string)
+    AnswerList(homeWorkId as string, classSelect)
       .then((res) => {
-        setStudentSubmitList(res.data?.Data || []);
+        const data = res.data?.Data?.Data;
+        if (data) {
+          const dataMap = data.map((item: any) => ({ ...item, Result: item?.Result?.[0] }));
+          setStudentSubmitList(dataMap);
+        }
       })
       .catch((error) => {
         console.log('error', error);
@@ -268,7 +283,7 @@ const index = () => {
     {
       title: 'Điểm đã chấm',
       dataIndex: 'FinalScore',
-      render: (text: any, record: any) => <Space size="middle">{record?.Result?.[0]?.FinalScore}</Space>,
+      render: (text: any, record: any) => <Space size="middle">{record?.Result?.FinalScore}</Space>,
     },
     {
       title: 'Tùy chọn',
@@ -410,6 +425,14 @@ const index = () => {
           <Tabs.TabPane tab="Học sinh nộp bài" key="2">
             <div>
               <Typography.Title level={4}>Bài học sinh nộp</Typography.Title>
+              {homeWorkData?.class && (
+                <Select defaultValue="0" style={{ width: 120 }} onChange={handleSetSelectChange}>
+                  <Select.Option value={'0'}>{'Tất cả'}</Select.Option>
+                  {homeWorkData?.class?.map((item: any) => (
+                    <Select.Option value={item.ClassId}>{item.ClassName}</Select.Option>
+                  ))}
+                </Select>
+              )}
               <Table rowKey={(r) => r.AnswerId} columns={columns} dataSource={studentSubmitList} pagination={false} />
             </div>
             <Modal

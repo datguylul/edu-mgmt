@@ -111,7 +111,6 @@ const ClassAddStudentModal: React.FC<IModalInfo> = ({
     setUploading(true);
     StudentReadExcel(formData)
       .then((res: any) => {
-        console.log('res', res);
         setStudentData(res.data?.Data || []);
       })
       .catch((err: any) => {
