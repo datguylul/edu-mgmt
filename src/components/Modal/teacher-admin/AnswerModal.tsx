@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Form, Input, Button, Space, Select, Typography, InputNumber } from 'antd';
-import { AnswerDetail, ResultSubmit } from '@core/services/api';
+import { AnswerDetail, ResultSubmit, ResultEdit } from '@core/services/api';
 import moment from 'moment';
 import { openNotification } from '@utils/Noti';
 import { CLASS_STATUS } from '@core/constants';
@@ -32,14 +32,24 @@ const AnswerModal: React.FC<IModalInfo> = ({
   const isSSR = typeof window === 'undefined';
   const [submitted, setSubmitted] = useState<boolean>(false);
   const [scoreNumber, setScoreNumber] = useState<string | number>(0);
+  const [resultId, setResultId] = useState<string>('');
 
   const LoadDetail = () => {
     setLoading(true);
     AnswerDetail(answerId!)
       .then((resp) => {
-        const data = resp.data?.Data?.answer;
-        if (data) {
-          setAnswerData(data);
+        const data = resp.data?.Data;
+        if (data?.answer) {
+          setAnswerData(data?.answer);
+        }
+        if (data?.result) {
+          setResultId(data?.result?.ResultId);
+          setDescribeContent(data?.result?.ResultContent);
+          setScoreNumber(data?.result?.FinalScore);
+          form.setFieldsValue({
+            FinalScore: data?.result?.FinalScore,
+          });
+          setSubmitted(true);
         }
       })
       .catch((error) => {
@@ -51,29 +61,48 @@ const AnswerModal: React.FC<IModalInfo> = ({
   };
 
   const handleSubmit = () => {
-    setLoading(true);
-    const params = {
+    // setLoading(true);
+    const params: any = {
       FinalScore: scoreNumber,
       ResultContent: describeContent,
       AnswerId: answerId,
     };
 
-    ResultSubmit(params)
-      .then((res) => {
-        if (res.data.Success) {
-          openNotification('Chấm điểm', 'Chấm điểm thành công', 'success');
-          setSubmitted(true);
-        } else {
-          openNotification('Chấm điểm', res.data?.Message, 'error');
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-        openNotification('Chấm điểm', 'Đã có lỗi', 'error');
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    if (submitted) {
+      ResultEdit(resultId, params)
+        .then((res) => {
+          if (res.data.Success) {
+            openNotification('Sửa điểm', 'Sửa điểm thành công', 'success');
+          } else {
+            openNotification('Sửa điểm', res.data?.Message, 'error');
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+          openNotification('Sửa điểm', 'Đã có lỗi', 'error');
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    } else {
+      ResultSubmit(params)
+        .then((res) => {
+          if (res.data.Success) {
+            openNotification('Chấm điểm', 'Chấm điểm thành công', 'success');
+            setSubmitted(true);
+            setResultId(res.data?.result?.ResultId);
+          } else {
+            openNotification('Chấm điểm', res.data?.Message, 'error');
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+          openNotification('Chấm điểm', 'Đã có lỗi', 'error');
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
   };
 
   useEffect(() => {
@@ -98,7 +127,7 @@ const AnswerModal: React.FC<IModalInfo> = ({
         <pre>Giới tính: {answerData?.Student?.StudentGender}</pre>
       </Typography>
       <Typography>
-        <pre>Giờ nộp: {moment(answerData?.Student?.SubmitTime).format('LLL')}</pre>
+        <pre>Giờ nộp: {moment(answerData?.Student?.SubmitTime).format('llll')}</pre>
       </Typography>
       {answerData?.answer?.AnswerContent && <div>{Parser(answerData?.answer?.AnswerContent || '')}</div>}
       <br />

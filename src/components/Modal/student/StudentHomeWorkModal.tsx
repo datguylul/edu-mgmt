@@ -6,6 +6,8 @@ import { openNotification } from '@utils/Noti';
 import { FormOutlined, DeleteOutlined, CopyOutlined } from '@ant-design/icons';
 import Router from 'next/router';
 import absoluteUrl from 'next-absolute-url';
+import 'moment/locale/vi';
+moment.locale('vi');
 
 const { Option } = Select;
 
@@ -45,10 +47,12 @@ const StudentHomeWorkModal: React.FC<IModalInfo> = ({
     {
       title: 'Ngày tạo',
       dataIndex: 'CreatedDate',
+      render: (text: any, record: any) => <p>{moment(record?.CreatedDate).format('llll')}</p>,
     },
     {
       title: 'Hạn nộp',
       dataIndex: 'DueDate',
+      render: (text: any, record: any) => <p>{moment(record?.DueDate).format('llll')}</p>,
     },
     {
       title: 'Tùy chọn',

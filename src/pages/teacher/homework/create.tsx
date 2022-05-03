@@ -166,7 +166,12 @@ const create = () => {
           <DatePicker showTime disabledDate={(d) => !d || d.isBefore(Date.now())} />
         </Form.Item>
         <Form.Item label="File bài tập">
-          <Upload multiple={true} beforeUpload={(file) => handleUpload(file)} name="logo" onRemove={handleRemoveFile}>
+          <Upload
+            beforeUpload={(file) => handleUpload(file)}
+            name="logo"
+            onRemove={handleRemoveFile}
+            accept={'.doc,.docx,application/vnd.ms-excel,.pdf,.png,.jpeg,.jpg'}
+          >
             <Button disabled={uploading || loading} loading={uploading || loading} icon={<UploadOutlined />}>
               Chọn File
             </Button>
