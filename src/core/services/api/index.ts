@@ -23,6 +23,7 @@ export const ClassRemoveStudent = (params: object) => put(ENDPOINTS.CLASS_REMOVE
 export const StudentList = (search: string, sort: string, page: number, record: number) =>
   get(ENDPOINTS.STUDENT + `?search=${search}&sort=${sort}&page=${page}&record=${record}`);
 export const StudentDetail = (id: string) => get(ENDPOINTS.STUDENT + `\\detail\\${id}`);
+export const StudentDetailPhone = (phone: string) => get(ENDPOINTS.STUDENT + `\\detail-phone\\${phone}`);
 export const CreateStudent = (params: object) => post(ENDPOINTS.STUDENT, params);
 export const EditStudent = (id: string, params: object) => put(ENDPOINTS.STUDENT + `\\edit\\${id}`, params);
 export const StudentReadExcel = (params: FormData) => post(ENDPOINTS.STUDENT_READ_EXCEL, params);

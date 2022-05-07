@@ -5,15 +5,19 @@ import { useEffect } from 'react';
 import { AuthProvider } from '@contexts/AuthContext';
 import cookie from 'cookie';
 import App from 'next/app';
+import locale from 'antd/lib/locale/vi_VN';
+import { ConfigProvider } from 'antd';
 function MyApp(props: any) {
   useEffect(() => {
     document.body.classList?.remove('loading');
   }, []);
 
   return (
-    <AuthProvider authenticated={props.authenticated}>
-      <props.Component {...props.pageProps} />
-    </AuthProvider>
+    <ConfigProvider locale={locale}>
+      <AuthProvider authenticated={props.authenticated}>
+        <props.Component {...props.pageProps} />
+      </AuthProvider>
+    </ConfigProvider>
   );
 }
 

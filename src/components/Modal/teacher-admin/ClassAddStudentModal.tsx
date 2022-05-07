@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Form, Input, Button, Space, Select, DatePicker, Tabs, Upload, Table } from 'antd';
-import { ClassAddStudent, StudentReadExcel } from '@core/services/api';
+import { ClassAddStudent, StudentReadExcel, StudentDetailPhone } from '@core/services/api';
 import moment from 'moment';
 import { openNotification } from '@utils/Noti';
 import { UploadOutlined, InboxOutlined } from '@ant-design/icons';
@@ -9,6 +9,8 @@ const { TabPane } = Tabs;
 const { Option } = Select;
 
 const { Dragger } = Upload;
+
+const dateFormat = 'DD/MM/YYYY';
 
 interface IModalInfo {
   classId: string;
@@ -56,18 +58,30 @@ const ClassAddStudentModal: React.FC<IModalInfo> = ({
   const [uploading, setUploading] = useState(false);
   const [fileUpload, setFileUpload] = useState<object | null>(null);
   const [studentData, setStudentData] = useState([]);
+  const [phone, setPhone] = useState<string>('');
+
+  const handleFindStudent = () => {
+    setLoading(true);
+    StudentDetailPhone(phone)
+      .then((res) => {
+        if (res.data?.Data?.student) {
+          fillForm(res.data?.Data?.student);
+        }
+      })
+      .catch((error) => {
+        console.log('error');
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
 
   const fillForm = (data: any) => {
     form.setFieldsValue({
-      StudentName: data?.student?.StudentName,
-      ShowStudentId: data?.student?.ShowStudentId,
-      StudentAddress: data?.student?.StudentAddress,
-      StudentDOB: data?.student?.StudentDOB,
-      StudentDescription: data?.student?.StudentDescription,
-      StudentEmail: data?.student?.StudentEmail,
-      StudentGender: data?.student?.StudentGender,
-      StudentImage: data?.student?.StudentImage,
-      StudentPhone: data?.student?.StudentPhone,
+      StudentName: data?.StudentName,
+      StudentDOB: moment(data?.StudentDob, dateFormat),
+      StudentGender: data?.StudentGender,
+      StudentPhone: data?.StudentPhone,
     });
   };
 
@@ -154,6 +168,28 @@ const ClassAddStudentModal: React.FC<IModalInfo> = ({
       <TabPane tab="Thêm thủ công" key="1">
         <Form {...formItemLayout} form={form} name="register" onFinish={handleSubmit} scrollToFirstError>
           <Form.Item
+            name="StudentPhone"
+            label="SĐT"
+            rules={[
+              {
+                required: true,
+                message: 'Số điện thoại học sinh không thể trống',
+              },
+            ]}
+          >
+            <Input.Group compact>
+              <Input
+                style={{ width: 'calc(100% - 200px)' }}
+                value={phone}
+                onChange={({ target: { value } }) => setPhone(value)}
+              />
+              <Button type="primary" loading={loading} disabled={loading} onClick={handleFindStudent}>
+                {' '}
+                {'Tìm học sinh'}
+              </Button>
+            </Input.Group>
+          </Form.Item>
+          <Form.Item
             name="StudentName"
             label="Tên"
             rules={[
@@ -171,20 +207,8 @@ const ClassAddStudentModal: React.FC<IModalInfo> = ({
               <Option value="Nữ">Nữ</Option>
             </Select>
           </Form.Item>
-          <Form.Item
-            name="StudentPhone"
-            label="SĐT"
-            rules={[
-              {
-                required: true,
-                message: 'Số điện thoại học sinh không thể trống',
-              },
-            ]}
-          >
-            <Input />
-          </Form.Item>
           <Form.Item name="StudentDOB" label="Ngày sinh" rules={[{ required: true, message: 'Chọn ngày sinh!' }]}>
-            <DatePicker />
+            <DatePicker format={dateFormat} />
           </Form.Item>
           <Form.Item {...tailFormItemLayout}>
             <Space>

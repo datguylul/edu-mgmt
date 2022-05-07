@@ -8,7 +8,8 @@ import Layout from 'Layouts';
 import ClassAddStudentModal from 'components/Modal/teacher-admin/ClassAddStudentModal';
 import StudentDetailModal from 'components/Modal/teacher-admin/StudentDetailModal';
 import { CLASS_STATUS } from '@core/constants';
-import { InfoOutlined, FormOutlined, DeleteOutlined } from '@ant-design/icons';
+import { InfoOutlined, FormOutlined, DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
+const { confirm } = Modal;
 
 const ClassStatusList = [CLASS_STATUS.active, CLASS_STATUS.finish, CLASS_STATUS.suspended];
 const { Option } = Select;
@@ -128,21 +129,55 @@ const index: React.FC<Props> = ({}) => {
     },
   ];
 
+  function showDeleteConfirm() {
+    confirm({
+      title: 'Are you sure delete this task?',
+      icon: <ExclamationCircleOutlined />,
+      content: 'Some descriptions',
+      okText: 'Yes',
+      okType: 'danger',
+      cancelText: 'No',
+      onOk() {
+        console.log('OK');
+      },
+      onCancel() {
+        console.log('Cancel');
+      },
+    });
+  }
+
   const handleDeleteStudent = (studentId = '') => {
-    const params = {
-      classId: classId,
-      studentList: [studentId],
-    };
-    ClassRemoveStudent(params)
-      .then((res) => {
-        console.log('res', res.data);
-      })
-      .catch((error) => {
-        console.log('error', error);
-      })
-      .finally(() => {
-        LoadDetail();
-      });
+    confirm({
+      title: 'Xóa học sinh khỏi lớp này?',
+      icon: <ExclamationCircleOutlined />,
+      okText: 'Xóa',
+      okType: 'danger',
+      cancelText: 'Hủy',
+      onOk() {
+        const params = {
+          classId: classId,
+          studentList: [studentId],
+        };
+        ClassRemoveStudent(params)
+          .then((res) => {
+            if (res.data.Success) {
+              openNotification('Xóa học sinh', 'Xóa học sinh thành công', 'success');
+            } else {
+              openNotification('Xóa học sinh', res.data.Message, 'error');
+            }
+          })
+          .catch((error) => {
+            console.log('error', error);
+            openNotification('Xóa học sinh', 'Xóa học sinh không thành công', 'error');
+          })
+          .finally(() => {
+            LoadDetail();
+          });
+      },
+      onCancel() {
+        console.log('Cancel');
+      },
+    });
   };
 
   const openStudentDetailModal = (studentId = '') => {
