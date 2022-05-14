@@ -3,7 +3,7 @@ import Layout from 'Layouts';
 import withAuth from '@hocs/withAuth';
 import { Row, Col, Card } from 'antd';
 import Router from 'next/router';
-import { BookOutlined, HighlightOutlined, AuditOutlined, UserOutlined } from '@ant-design/icons';
+import { BookOutlined, UsergroupDeleteOutlined, AuditOutlined, UserOutlined } from '@ant-design/icons';
 
 const TeacherMenu = [
   {
@@ -24,12 +24,12 @@ const TeacherMenu = [
     urlDirect: '/teacher/class',
     icon: <AuditOutlined style={{ fontSize: '150%' }} twoToneColor="#eb2f96" />,
   },
-  // {
-  //   id: 3,
-  //   title: 'Học sinh',
-  //   urlDirect: '/teacher/student',
-  //   icon: <UserOutlined style={{ fontSize: '150%' }} twoToneColor="#eb2f96" />,
-  // },
+  {
+    id: 3,
+    title: 'Học sinh',
+    urlDirect: '/teacher/student',
+    icon: <UsergroupDeleteOutlined style={{ fontSize: '150%' }} twoToneColor="#eb2f96" />,
+  },
   {
     id: 4,
     title: 'Thông tin tài khoản',

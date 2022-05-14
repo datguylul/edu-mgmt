@@ -49,7 +49,7 @@ const ClassHomeWorkModal: React.FC<IModalInfo> = ({
     {
       title: 'Hạn nộp',
       dataIndex: 'DueDate',
-      render: (text: any, record: any) => <p>{moment(record?.DueDate).format('llll')}</p>,
+      render: (text: any, record: any) => <p>{record?.DueDate ? moment(record?.DueDate).format('llll') : ""}</p>,
     },
     {
       title: 'Trạng thái',

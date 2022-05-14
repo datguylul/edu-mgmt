@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Form, Input, Button, Space, Select, DatePicker, Tabs, Upload, Table } from 'antd';
+import { Form, Input, Button, Space, Select, DatePicker, Tabs, Upload, Table, Row, Col } from 'antd';
 import { ClassAddStudent, StudentReadExcel, StudentDetailPhone } from '@core/services/api';
 import moment from 'moment';
 import { openNotification } from '@utils/Noti';
@@ -13,7 +13,7 @@ const { Dragger } = Upload;
 const dateFormat = 'DD/MM/YYYY';
 
 interface IModalInfo {
-  classId: string;
+  classId: string | null;
   onCloseModal?: () => void;
   onSubmitAndReload?: () => void;
 }
@@ -50,8 +50,8 @@ const tailFormItemLayout = {
 
 const ClassAddStudentModal: React.FC<IModalInfo> = ({
   classId = null,
-  onCloseModal = () => {},
-  onSubmitAndReload = () => {},
+  onCloseModal = () => { },
+  onSubmitAndReload = () => { },
 }) => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
@@ -59,6 +59,8 @@ const ClassAddStudentModal: React.FC<IModalInfo> = ({
   const [fileUpload, setFileUpload] = useState<object | null>(null);
   const [studentData, setStudentData] = useState([]);
   const [phone, setPhone] = useState<string>('');
+
+  const isAddToClass = classId !== null;
 
   const handleFindStudent = () => {
     setLoading(true);
@@ -164,7 +166,7 @@ const ClassAddStudentModal: React.FC<IModalInfo> = ({
   ];
 
   return (
-    <Tabs defaultActiveKey="1" onChange={() => {}}>
+    <Tabs defaultActiveKey="1" onChange={() => { }}>
       <TabPane tab="Thêm thủ công" key="1">
         <Form {...formItemLayout} form={form} name="register" onFinish={handleSubmit} scrollToFirstError>
           <Form.Item
@@ -183,10 +185,12 @@ const ClassAddStudentModal: React.FC<IModalInfo> = ({
                 value={phone}
                 onChange={({ target: { value } }) => setPhone(value)}
               />
-              <Button type="primary" loading={loading} disabled={loading} onClick={handleFindStudent}>
-                {' '}
-                {'Tìm học sinh'}
-              </Button>
+              {isAddToClass &&
+                <Button type="primary" loading={loading} disabled={loading} onClick={handleFindStudent}>
+                  {' '}
+                  {'Tìm học sinh'}
+                </Button>
+              }
             </Input.Group>
           </Form.Item>
           <Form.Item
@@ -238,20 +242,28 @@ const ClassAddStudentModal: React.FC<IModalInfo> = ({
             name="logo"
             onRemove={() => setFileUpload(null)}
           >
-            <Button disabled={uploading || loading} loading={uploading || loading} icon={<UploadOutlined />}>
-              Chọn File
-            </Button>
+            {!fileUpload &&
+              <Button disabled={uploading || loading} loading={uploading || loading} icon={<UploadOutlined />}>
+                Chọn File
+              </Button>
+            }
           </Upload>
-          {fileUpload && (
-            <Button type="primary" htmlType="submit" loading={loading} disabled={loading} onClick={handleReadExcel}>
-              {'Đọc file học sinh'}
-            </Button>
-          )}
-          {fileUpload && studentData.length > 0 && (
-            <Button type="primary" htmlType="submit" loading={loading} disabled={loading} onClick={handleImportExcel}>
-              {'Hoàn tấp nhập file'}
-            </Button>
-          )}
+          <Row>
+            <Col span={12}>
+              {fileUpload && (
+                <Button type="primary" htmlType="submit" loading={loading} disabled={loading} onClick={handleReadExcel}>
+                  {'Đọc file học sinh'}
+                </Button>
+              )}
+            </Col>
+            <Col span={12}>
+              {fileUpload && studentData.length > 0 && (
+                <Button type="primary" htmlType="submit" loading={loading} disabled={loading} onClick={handleImportExcel}>
+                  {'Hoàn tấp nhập file'}
+                </Button>
+              )}
+            </Col>
+          </Row>
 
           <Table columns={columns} dataSource={studentData} pagination={false} />
         </div>

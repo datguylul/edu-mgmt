@@ -11,6 +11,8 @@ import { useRouter } from 'next/router';
 import { saveFile } from '@utils/FileUtil';
 import Parser from 'html-react-parser';
 import { USER_ROLE } from '@core/constants/role';
+import 'moment/locale/vi';
+moment.locale('vi');
 const Jodit = React.lazy(() => {
   return import('jodit-react');
 });
@@ -20,10 +22,10 @@ const index = () => {
   const { id: homeWorkId } = router.query;
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
-  const [uploading, setUploading] = useState(false);
-  const [fileList, setFileList] = useState([]);
   const [homeWorkData, setHomeWorkData] = useState<any>(null);
   const [studentInfo, setStudentInfo] = useState<any>(null);
+  const [answerData, setAnswerData] = useState<any>(null);
+  const [resultData, setResultData] = useState<any>(null);
   const [classId, setClassId] = useState<string | null>(null);
   const [studentCheck, setStudentCheck] = useState<boolean>(false);
 
@@ -86,9 +88,15 @@ const index = () => {
 
       HomeWorkCheck(params)
         .then((res) => {
+          const data = res.data?.Data;
           if (res.data.Success) {
-            setStudentInfo(res.data?.Data?.student || values);
-            setClassId(res.data?.Data?.class?.ClassId || null);
+            setStudentInfo(data?.student || values);
+            setClassId(data?.class?.ClassId || null);
+            setAnswerData(data?.answer ? {
+              answer: data?.answer,
+              files: data?.files || [],
+            } : null);
+            setResultData(data?.result || null);
             setStudentCheck(true);
           } else {
             openNotification('Thông báo', res.data.Message, 'error');
@@ -160,7 +168,13 @@ const index = () => {
   return (
     <Layout title="Chi tiết bài tập" backButton backButtonUrl="/">
       {studentCheck ? (
-        <HomeWorkDetailContent homeWorkData={homeWorkData} studentInfo={studentInfo} classId={classId} />
+        <HomeWorkDetailContent
+          homeWorkData={homeWorkData}
+          studentInfo={studentInfo}
+          classId={classId}
+          answer={answerData}
+          result={resultData}
+        />
       ) : (
         StudentInfoContent()
       )}
@@ -170,7 +184,7 @@ const index = () => {
 };
 export default index;
 
-const HomeWorkDetailContent = ({ homeWorkData = null, studentInfo = null, classId = null }: any) => {
+const HomeWorkDetailContent = ({ homeWorkData = null, studentInfo = null, classId = null, answer = null, result = null }: any) => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -179,13 +193,34 @@ const HomeWorkDetailContent = ({ homeWorkData = null, studentInfo = null, classI
   const [describeContent, setDescribeContent] = useState('');
   const isSSR = typeof window === 'undefined';
   const editor = useRef(null);
+  const [defaultFileList, setDefaultFileList] = useState<any>(null);
+
+  useEffect(() => {
+    if (answer != null) {
+      fillForm(answer);
+    }
+
+  }, [answer, result])
+
+  const fillForm = (data: any) => {
+    setFileList(data.files);
+    const defaultFilesList = data?.files?.map((item: any) => ({
+      uid: item.FileUploadId,
+      name: item.FileUploadName,
+      status: 'done',
+      url: item.FileUploadUrl,
+    }));
+
+    setDefaultFileList(defaultFilesList);
+    setDescribeContent(data?.answer?.AnswerContent);
+  };
 
   const handleUpload = (file: any) => {
     setUploading(true);
     handleCloudinaryUpload(file)
       .then((res: any) => {
         file.FileUploadUrl = res.secure_url;
-        file.FileUploadName = res.original_filename;
+        file.FileUploadName = file.name;
         const files = [...fileList, file];
         setFileList(files as any);
       })
@@ -275,21 +310,55 @@ const HomeWorkDetailContent = ({ homeWorkData = null, studentInfo = null, classI
       {homeWorkData?.homeWork?.HomeWorkType && (
         <Typography.Title level={2}>Loại bài tập: {homeWorkData?.homeWork?.HomeWorkType}</Typography.Title>
       )}
-      {/* {homeWorkData?.class && homeWorkData?.class.length > 0 && (
-        <Row>
-          <Col span={6}>
-            <p>Hạn : </p>
-          </Col>
-          <Col span={6}>
-            {homeWorkData?.class?.map((item: any) => {
-              return <Col span={6}>{item?.ClassName}</Col>;
-            })}
-          </Col>
-          <Col span={6}></Col>
-          <Col span={6}></Col>
-        </Row>
-      )} */}
+      {homeWorkData?.homeWork?.DueDate && (
+        <Typography.Title level={2}>Hạn nộp: {moment(homeWorkData?.homeWork?.DueDate).format('lll')}</Typography.Title>
+      )}
+      {moment(homeWorkData?.homeWork?.DueDate) > moment(Date.now()) &&
+        <Typography.Title level={2}>Quá hạn nộp</Typography.Title>
+      }
       <Divider />
+
+      {result &&
+        <div style={{
+          borderWidth: 1,
+          borderStyle: 'ridge',
+          borderColor: '#404040',
+          marginTop: 10,
+          marginBottom: 10,
+        }}>
+          <Row >
+            <Col span={8} >
+              <div style={{
+                padding: 10,
+              }}>
+                <Typography.Title level={4}>Điểm:</Typography.Title>
+                <Typography.Title level={2} type="danger"
+                  style={{
+                    textAlign: 'center',
+                  }}>
+                  {result?.FinalScore}
+                </Typography.Title>
+              </div>
+            </Col>
+            <div style={{
+              borderWidth: 1,
+              borderStyle: 'ridge',
+              borderColor: '#404040',
+            }} />
+            <Col>
+              <div style={{
+                padding: 10,
+              }}>
+                <Typography.Title level={4}>Lời phê:</Typography.Title>
+                <Typography.Title level={2}
+                  style={{
+                    textAlign: 'center',
+                  }}>{Parser(result?.ResultContent)}</Typography.Title>
+              </div>
+            </Col >
+          </Row>
+        </div>
+      }
 
       {homeWorkData?.files && homeWorkData?.files?.length > 0 && (
         <React.Fragment>
@@ -326,10 +395,14 @@ const HomeWorkDetailContent = ({ homeWorkData = null, studentInfo = null, classI
       )}
 
       {homeWorkData?.homeWork?.HomeWorkContent && (
-        <React.Fragment>
+        <div style={{
+          marginTop: 40,
+        }}>
           <Row>
             <Col span={24}>
-              <Typography.Title level={2}>Mô tả: </Typography.Title>
+              <Typography.Title level={2} style={{
+                textAlign: 'center',
+              }}>Đề bài: </Typography.Title>
             </Col>
             <Col span={24}>
               <div
@@ -344,52 +417,59 @@ const HomeWorkDetailContent = ({ homeWorkData = null, studentInfo = null, classI
             </Col>
           </Row>
           <Divider />
-        </React.Fragment>
+        </div>
       )}
 
-      {homeWorkData && (
-        <React.Fragment>
-          <Typography.Title level={2}>Bài nộp: </Typography.Title>
-          <Form form={form} name="register" onFinish={handleSubmit} scrollToFirstError>
-            <Form.Item label="File đáp án">
-              <Upload
-                beforeUpload={(file) => handleUpload(file)}
-                name="logo"
-                onRemove={handleRemoveFile}
-                accept={'.doc,.docx,application/vnd.ms-excel,.pdf,.png,.jpeg,.jpg'}
-              >
-                <Button disabled={uploading || loading} loading={uploading || loading} icon={<UploadOutlined />}>
-                  Chọn File
-                </Button>
-              </Upload>
-            </Form.Item>
-            <Form.Item label="Lời giải">
-              {!isSSR && (
-                <React.Suspense fallback={<div>Đang tải soạn thảo</div>}>
-                  <Jodit
-                    ref={editor}
-                    value={describeContent}
-                    config={{ readonly: false }}
-                    onBlur={(newContent) => setDescribeContent(newContent)}
-                    onChange={(newContent) => {}}
-                  />
-                </React.Suspense>
-              )}
-            </Form.Item>
-
-            {!submitDone && (
-              <Form.Item>
-                <Space>
-                  <Button type="primary" htmlType="submit" loading={loading} disabled={loading}>
-                    {'Nộp bài'}
-                  </Button>
-                  <Button htmlType="button">Hủy</Button>
-                </Space>
+      {result ? (
+        <div></div>
+      )
+        :
+        (
+          <React.Fragment>
+            <Typography.Title level={2}>Bài nộp: </Typography.Title>
+            <Form form={form} name="register" onFinish={handleSubmit} scrollToFirstError>
+              {defaultFileList &&
+                <Form.Item label="File đáp án">
+                  <Upload
+                    beforeUpload={(file) => handleUpload(file)}
+                    name="logo"
+                    onRemove={handleRemoveFile}
+                    defaultFileList={defaultFileList}
+                    accept={'.doc,.docx,application/vnd.ms-excel,.pdf,.png,.jpeg,.jpg'}
+                  >
+                    <Button disabled={uploading || loading} loading={uploading || loading} icon={<UploadOutlined />}>
+                      Chọn File
+                    </Button>
+                  </Upload>
+                </Form.Item>
+              }
+              <Form.Item label="Lời giải">
+                {!isSSR && (
+                  <React.Suspense fallback={<div>Đang tải soạn thảo</div>}>
+                    <Jodit
+                      ref={editor}
+                      value={describeContent}
+                      config={{ readonly: false }}
+                      onBlur={(newContent) => setDescribeContent(newContent)}
+                      onChange={(newContent) => { }}
+                    />
+                  </React.Suspense>
+                )}
               </Form.Item>
-            )}
-          </Form>
-        </React.Fragment>
-      )}
+
+              {!submitDone && (
+                <Form.Item>
+                  <Space>
+                    <Button type="primary" htmlType="submit" loading={loading} disabled={loading}>
+                      {'Nộp bài'}
+                    </Button>
+                    <Button htmlType="button">Hủy</Button>
+                  </Space>
+                </Form.Item>
+              )}
+            </Form>
+          </React.Fragment>
+        )}
     </React.Fragment>
   );
 };

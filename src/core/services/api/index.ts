@@ -52,7 +52,7 @@ export const HomeWorkCheck = (params: object) => post(ENDPOINTS.HOMEWORK_CHECK, 
 
 export const FileDetail = (id: string) => get(ENDPOINTS.FILE + `\\detail\\${id}`);
 
-export const AnswerList = (homeWorkId: string, classId?: string) => {
+export const AnswerList = (homeWorkId: string, classId?: string | number | null) => {
   let url = ENDPOINTS.ANSWER + `/by-homework/${homeWorkId}`;
   if (classId) {
     url = url + `?classId=${classId}`;

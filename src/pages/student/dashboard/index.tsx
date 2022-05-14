@@ -3,7 +3,7 @@ import Layout from 'Layouts';
 import withAuth from '@hocs/withAuth';
 import { Row, Col, Card } from 'antd';
 import Router from 'next/router';
-import { BookOutlined, HighlightOutlined, AuditOutlined, UserOutlined } from '@ant-design/icons';
+import { BookOutlined, AuditOutlined, UserOutlined } from '@ant-design/icons';
 
 const StudentMenu = [
   {
@@ -19,7 +19,7 @@ const StudentMenu = [
     icon: <AuditOutlined style={{ fontSize: '150%' }} twoToneColor="#eb2f96" />,
   },
   {
-    id: 4,
+    id: 3,
     title: 'Thông tin tài khoản',
     urlDirect: '/student/profile',
     icon: <UserOutlined style={{ fontSize: '150%' }} twoToneColor="#eb2f96" />,

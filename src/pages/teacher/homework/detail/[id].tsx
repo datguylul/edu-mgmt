@@ -75,7 +75,7 @@ const index = () => {
   const [answerId, setAnswerId] = useState<string>('');
   const [defaultFileList, setDefaultFileList] = useState<any>(null);
   const [studentSubmitList, setStudentSubmitList] = useState<any>([]);
-  const [classSelect, setClassSelect] = useState<string | null>(null);
+  const [classSelect, setClassSelect] = useState<string | number | null>(null);
 
   useEffect(() => {
     getClassList();
@@ -84,8 +84,8 @@ const index = () => {
     getStudentSubmitList();
   }, [classSelect]);
 
-  const handleSetSelectChange = (value: string) => {
-    if (value === '') {
+  const handleSetSelectChange = (value: string | number) => {
+    if (value === '0') {
       setClassSelect(null);
     } else {
       setClassSelect(value);
@@ -104,7 +104,7 @@ const index = () => {
       .catch((error) => {
         console.log('error', error);
       })
-      .finally(() => {});
+      .finally(() => { });
   };
 
   useEffect(() => {
@@ -229,7 +229,7 @@ const index = () => {
     handleCloudinaryUpload(file)
       .then((res: any) => {
         file.FileUploadUrl = res.secure_url;
-        file.FileUploadName = res.original_filename;
+        file.FileUploadName = file.name;
         const files = [...fileList, file];
         setFileList(files as any);
       })

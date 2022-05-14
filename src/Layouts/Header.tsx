@@ -133,19 +133,19 @@ const Header: React.FC<HeaderProps> = (props) => {
                   onClick: props.toggleSidebar,
                 },
               },
-              {
-                content: (
-                  <SelectStyled
-                    instanceId="react-select-input"
-                    isSearchable={false}
-                    shape="SemiRound"
-                    placeholder="Themes"
-                    value={themeOptions().find((item) => item.value === props.theme.value)}
-                    options={themeOptions()}
-                    onChange={({ value }: { value: DefaultTheme['name'] }) => props.theme.set(value)}
-                  />
-                ),
-              },
+              // {
+              //   content: (
+              //     <SelectStyled
+              //       instanceId="react-select-input"
+              //       isSearchable={false}
+              //       shape="SemiRound"
+              //       placeholder="Themes"
+              //       value={themeOptions().find((item) => item.value === props.theme.value)}
+              //       options={themeOptions()}
+              //       onChange={({ value }: { value: DefaultTheme['name'] }) => props.theme.set(value)}
+              //     />
+              //   ),
+              // },
             ]}
           />
         )}
@@ -169,7 +169,7 @@ const Header: React.FC<HeaderProps> = (props) => {
                   <User
                     image="url('/icons/icon-72x72.png')"
                     name={userInfo.name}
-                    title={userInfo.roleTitle}
+                    title={""}
                     size="Medium"
                   />
                 </ContextMenu>

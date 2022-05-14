@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Form, Input, Button, Space, Select, DatePicker, Tabs, Table } from 'antd';
-import { ClassEditStudent, StudentDetail } from '@core/services/api';
+import { ClassEditStudent, StudentDetail, EditStudent } from '@core/services/api';
 import moment from 'moment';
 import { openNotification } from '@utils/Noti';
 const { Option } = Select;
 
 interface IModalInfo {
-  classId: string;
-  studentId: string;
+  classId: string | null;
+  studentId: string | null;
   onCloseModal?: () => void;
   onSubmitAndReload?: () => void;
 }
@@ -46,8 +46,8 @@ const tailFormItemLayout = {
 const StudentDetailModal: React.FC<IModalInfo> = ({
   classId = null,
   studentId = null,
-  onCloseModal = () => {},
-  onSubmitAndReload = () => {},
+  onCloseModal = () => { },
+  onSubmitAndReload = () => { },
 }) => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
@@ -80,28 +80,52 @@ const StudentDetailModal: React.FC<IModalInfo> = ({
   };
 
   const handleSubmit = (values: any) => {
-    const params = {
-      ...values,
-      StudentId: studentId,
-      StudentDob: values['StudentDob'].format(dateFormat),
-    };
+    if (classId == null) {
+      const params = {
+        ...values,
+        StudentDob: values['StudentDob'].format(dateFormat),
+      };
 
-    ClassEditStudent(classId as string, params)
-      .then((resp) => {
-        console.log('resp', resp.data);
-        if (resp.data.Success) {
-          openNotification('Thêm học sinh', 'Thêm học sinh thành công', 'success');
-        } else {
-          openNotification('Thêm học sinh', resp.data.Message, 'error');
-        }
-      })
-      .catch((error) => {
-        console.log('error', error);
-        openNotification('Thêm học sinh', 'Thêm học sinh thất bại', 'error');
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+      EditStudent(studentId as string, params)
+        .then((resp) => {
+          console.log('resp', resp.data);
+          if (resp.data.Success) {
+            openNotification('Sửa học sinh', 'Sửa học sinh thành công', 'success');
+          } else {
+            openNotification('Sửa học sinh', resp.data.Message, 'error');
+          }
+        })
+        .catch((error) => {
+          console.log('error', error);
+          openNotification('Sửa học sinh', 'Sửa học sinh thất bại', 'error');
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    } else {
+      const params = {
+        ...values,
+        StudentId: studentId,
+        StudentDob: values['StudentDob'].format(dateFormat),
+      };
+
+      ClassEditStudent(classId as string, params)
+        .then((resp) => {
+          console.log('resp', resp.data);
+          if (resp.data.Success) {
+            openNotification('Thêm học sinh', 'Thêm học sinh thành công', 'success');
+          } else {
+            openNotification('Thêm học sinh', resp.data.Message, 'error');
+          }
+        })
+        .catch((error) => {
+          console.log('error', error);
+          openNotification('Thêm học sinh', 'Thêm học sinh thất bại', 'error');
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
   };
 
   return (
