@@ -96,7 +96,7 @@ function index() {
 
         <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
           <Button type="primary" htmlType="submit">
-            Submit
+            Sửa
           </Button>
         </Form.Item>
       </Form>

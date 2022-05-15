@@ -9,7 +9,7 @@ import router from 'next/router';
 import { CLASS_STATUS } from '@core/constants';
 const { Option } = Select;
 
-const ClassStatusList = [CLASS_STATUS.active, CLASS_STATUS.finish, CLASS_STATUS.suspended];
+const ClassStatusList = [CLASS_STATUS.active, CLASS_STATUS.finish];
 
 function index() {
   const [totalRecord, setTotalRecord] = useState<number>(0);

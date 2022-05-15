@@ -8,7 +8,7 @@ import Layout from 'Layouts';
 import ClassAddStudentModal from 'components/Modal/teacher-admin/ClassAddStudentModal';
 import { CLASS_STATUS } from '@core/constants';
 
-const ClassStatusList = [CLASS_STATUS.active, CLASS_STATUS.finish, CLASS_STATUS.suspended];
+const ClassStatusList = [CLASS_STATUS.active, CLASS_STATUS.finish];
 const { Option } = Select;
 
 interface Props {}

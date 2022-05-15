@@ -11,7 +11,7 @@ import { CLASS_STATUS } from '@core/constants';
 import { InfoOutlined, FormOutlined, DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 const { confirm } = Modal;
 
-const ClassStatusList = [CLASS_STATUS.active, CLASS_STATUS.finish, CLASS_STATUS.suspended];
+const ClassStatusList = [CLASS_STATUS.active, CLASS_STATUS.finish];
 const { Option } = Select;
 
 interface Props {}

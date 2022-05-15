@@ -61,11 +61,11 @@ function Login() {
       <Auth title="Đăng Nhập">
         <form onSubmit={handleSubmit(onSubmit)}>
           <InputGroup fullWidth>
-            <input type="text" placeholder="Username" {...register('username')} />
+            <input type="text" placeholder="Số điện thoại" {...register('username')} />
           </InputGroup>
           <p>{errors.username?.message}</p>
           <InputGroup fullWidth>
-            <input type="password" placeholder="Password" {...register('password')} />
+            <input type="password" placeholder="Mật khẩu" {...register('password')} />
           </InputGroup>
           <p>{errors.password?.message}</p>
 
@@ -87,6 +87,7 @@ function Login() {
           </Button>
         </form>
         {/* <Socials /> */}
+        <br />
         <p>
           Đăng ký ngay{' '}
           <Link href="/auth/register">

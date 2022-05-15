@@ -82,7 +82,7 @@ export default function Register() {
           <Tabs defaultActiveKey="1" onChange={tabChange}>
             <TabPane tab="Giáo viên" key={USER_ROLE_ID.teacher}>
               <Input fullWidth>
-                <input type="text" placeholder="Họ Tên giáo viên" {...register('UserName')} />
+                <input type="text" placeholder="Họ tên giáo viên" {...register('UserName')} />
               </Input>
               <p style={styles.errorText}>{errors.UserName?.message}</p>
               <Input fullWidth>
@@ -104,7 +104,7 @@ export default function Register() {
             </TabPane>
             <TabPane tab="Học sinh" key={USER_ROLE_ID.student}>
               <Input fullWidth>
-                <input type="text" placeholder="Họ Tên học sinh" {...register('UserName')} />
+                <input type="text" placeholder="Họ tên học sinh" {...register('UserName')} />
               </Input>
               <p style={styles.errorText}>{errors.UserName?.message}</p>
               <Input fullWidth>
@@ -124,9 +124,10 @@ export default function Register() {
 
           <div>{message && <h4 style={[styles.errorText, styles.centerText]}>{message}</h4>}</div>
           <Button type="submit" shape="SemiRound" fullWidth disabled={loading}>
-            Register
+            Đăng ký
           </Button>
         </form>
+        <br />
         <p>
           Đã có tài khoản?{' '}
           <Link href="/auth/login">
