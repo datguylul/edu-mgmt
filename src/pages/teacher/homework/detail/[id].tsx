@@ -438,7 +438,7 @@ const index = () => {
             <Modal
               width={755}
               bodyStyle={{ height: 'max-content' }}
-              title={'Chi tiết lớp'}
+              title={'Chi tiết bài nộp'}
               visible={showModal}
               onCancel={() => setShowModal(false)}
               destroyOnClose

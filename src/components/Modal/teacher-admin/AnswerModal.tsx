@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Form, Input, Button, Space, Select, Typography, InputNumber } from 'antd';
+import { Form, Input, Button, Space, Select, Typography, InputNumber, Row, Col, Divider } from 'antd';
 import { AnswerDetail, ResultSubmit, ResultEdit } from '@core/services/api';
 import moment from 'moment';
 import { openNotification } from '@utils/Noti';
@@ -10,6 +10,7 @@ moment.locale('vi');
 const Jodit = React.lazy(() => {
   return import('jodit-react');
 });
+import { saveFile } from '@utils/FileUtil';
 
 const { Option } = Select;
 
@@ -21,8 +22,8 @@ interface IModalInfo {
 
 const AnswerModal: React.FC<IModalInfo> = ({
   answerId = null,
-  onCloseModal = () => {},
-  onSubmitAndReload = () => {},
+  onCloseModal = () => { },
+  onSubmitAndReload = () => { },
 }) => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
@@ -39,8 +40,8 @@ const AnswerModal: React.FC<IModalInfo> = ({
     AnswerDetail(answerId!)
       .then((resp) => {
         const data = resp.data?.Data;
-        if (data?.answer) {
-          setAnswerData(data?.answer);
+        if (data) {
+          setAnswerData(data);
         }
         if (data?.result) {
           setResultId(data?.result?.ResultId);
@@ -105,6 +106,10 @@ const AnswerModal: React.FC<IModalInfo> = ({
     }
   };
 
+  const saveManual = (item: any) => {
+    saveFile(item.FileUploadUrl, item.FileUploadName);
+  };
+
   useEffect(() => {
     if (answerId && answerId !== '') {
       LoadDetail();
@@ -115,21 +120,75 @@ const AnswerModal: React.FC<IModalInfo> = ({
     <div>
       <Typography.Title level={3}>{'Thông tin bài làm học sinh'}</Typography.Title>
       <Typography>
-        <pre>Họ tên: {answerData?.Student?.StudentName}</pre>
+        <pre>Họ tên: {answerData?.answer?.answer?.Student?.StudentName}</pre>
       </Typography>
       <Typography>
-        <pre>Sđt: {answerData?.Student?.StudentPhone}</pre>
+        <pre>Sđt: {answerData?.answer?.Student?.StudentPhone}</pre>
       </Typography>
       <Typography>
-        <pre>Ngày sinh: {answerData?.Student?.StudentDob}</pre>
+        <pre>Ngày sinh: {answerData?.answer?.Student?.StudentDob}</pre>
       </Typography>
       <Typography>
-        <pre>Giới tính: {answerData?.Student?.StudentGender}</pre>
+        <pre>Giới tính: {answerData?.answer?.Student?.StudentGender}</pre>
       </Typography>
       <Typography>
-        <pre>Giờ nộp: {moment(answerData?.Student?.SubmitTime).format('llll')}</pre>
+        <pre>Giờ nộp: {moment(answerData?.answer?.Student?.SubmitTime).format('llll')}</pre>
       </Typography>
-      {answerData?.answer?.AnswerContent && <div>{Parser(answerData?.answer?.AnswerContent || '')}</div>}
+      {answerData?.files && answerData?.files?.length > 0 && (
+        <React.Fragment>
+          <Divider />
+          <Row>
+            <Col span={6}>
+              <Typography.Title level={4}>File nộp: </Typography.Title>
+            </Col>
+            <Col span={18}>
+              {answerData?.files?.map((item: any) => {
+                return (
+                  <>
+                    <Row>
+                      <Col span={12}>
+                        <a key={item.FileUploadId}>{item.FileUploadName}</a>
+                      </Col>
+                      <Col span={12}>
+                        <a target="_blank" href={`/file/${item.FileUploadId}`} rel="noopener noreferrer">
+                          <Button type="primary">Xem</Button>
+                        </a>
+                        <Button onClick={() => saveManual(item)}>Tải xuống</Button>
+                      </Col>
+                    </Row>
+                    <br></br>
+                  </>
+                );
+              })}
+            </Col>
+          </Row>
+          <Divider />
+        </React.Fragment>
+      )}
+
+      {answerData?.answer?.AnswerContent && (
+        <div style={{
+          marginTop: 40,
+        }}>
+          <Row>
+            <Col span={24}>
+              <Typography.Title level={4}>Lời giải / Mô tả: </Typography.Title>
+            </Col>
+            <Col span={24}>
+              <div
+                style={{
+                  backgroundColor: 'light-gray',
+                  width: '100%',
+                  height: '100%',
+                }}
+              >
+                {Parser(answerData?.answer?.AnswerContent)}
+              </div>
+            </Col>
+          </Row>
+          <Divider />
+        </div>
+      )}
       <br />
       <Typography.Title level={3}>{'Giáo viên chấm điểm'}</Typography.Title>
       <Form form={form} name="register" onFinish={handleSubmit} scrollToFirstError>
@@ -144,7 +203,7 @@ const AnswerModal: React.FC<IModalInfo> = ({
                 value={describeContent}
                 config={{ readonly: false }}
                 onBlur={(newContent) => setDescribeContent(newContent)}
-                onChange={(newContent) => {}}
+                onChange={(newContent) => { }}
               />
             </React.Suspense>
           )}
