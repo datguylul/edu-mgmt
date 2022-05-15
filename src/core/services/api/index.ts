@@ -39,6 +39,7 @@ export const UserList = (search: string, sort: string, page: number, record: num
 export const UserDetail = (id: string) => get(ENDPOINTS.USER + `\\detail\\${id}`);
 export const UserDetailNonId = () => get(ENDPOINTS.USER + `\\detail`);
 export const CreateUser = (params: object) => post(ENDPOINTS.USER + 'create-user', params);
+export const EditUser = (params: object) => post(ENDPOINTS.USER + '\\edit-profile', params);
 
 export const HomeWorkList = (search: string, sort: string, page: number, record: number) =>
   get(ENDPOINTS.HOME_WORK + `?search=${search}&sort=${sort}&page=${page}&record=${record}`);
