@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Layout from 'Layouts';
 import withAuth from '@hocs/withAuth';
-import { Table, Modal, Card, Pagination, DatePicker, Input, Button, Select, Space, Row, Col } from 'antd';
+import { Table, Modal, Card, Pagination, Typography, Input, Button, Select, Space, Row, Col } from 'antd';
 import { ClassList, ClassEditStatus } from '@core/services/api';
 import ClassModal from 'components/Modal/teacher-admin/ClassModal';
 import { InfoOutlined, FormOutlined, DeleteOutlined } from '@ant-design/icons';
@@ -122,6 +122,9 @@ function index() {
 
   return (
     <Layout title={'Danh sách lớp'} backButton backButtonUrl="/teacher/dashboard">
+      <Typography.Title level={1} style={{
+        textAlign: 'center',
+      }}>Danh sách lớp</Typography.Title>
       <div>
         <Row>
           <Col span={18}>
@@ -133,6 +136,7 @@ function index() {
             </Button>
           </Col>
         </Row>
+        <br />
         <Row>
           <Col span={12}>
             <Button type="primary" onClick={handleAddNew}>
@@ -140,14 +144,20 @@ function index() {
             </Button>
           </Col>
           <Col span={12}>
-            <Select defaultValue={1} style={{ width: 120 }} onChange={handleSelectChange}>
-              {ClassStatusList.map((item: any) => (
-                <Option value={item.value}>{item.label}</Option>
-              ))}
-            </Select>
+            <Row>
+              <Col span={2}><Typography.Title level={4}>Lọc:</Typography.Title></Col>
+              <Col span={22}>
+                <Select defaultValue={1} style={{ width: 120 }} onChange={handleSelectChange}>
+                  {ClassStatusList.map((item: any) => (
+                    <Option value={item.value}>{item.label}</Option>
+                  ))}
+                </Select>
+              </Col>
+            </Row>
           </Col>
         </Row>
       </div>
+      <br />
       <div>
         <Table columns={columns} dataSource={classData} pagination={false} />
         <Pagination

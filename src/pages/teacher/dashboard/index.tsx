@@ -57,7 +57,7 @@ const Home = () => {
                       cursor: 'pointer',
                     }}
                   >
-                    <Card title={item.title} style={{ width: 300 }}>
+                    <Card hoverable title={item.title} style={{ width: 300 }}>
                       {item.icon}
                     </Card>
                   </div>

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Layout from 'Layouts';
 import withAuth from '@hocs/withAuth';
-import { Table, Modal, Form, Pagination, DatePicker, Input, Button, Select, Space, Row, Col } from 'antd';
+import { Table, Modal, Form, Pagination, DatePicker, Input, Button, Select, Typography, Row, Col } from 'antd';
 import { UserDetailNonId, EditUser } from '@core/services/api';
 import ClassModal from 'components/Modal/teacher-admin/ClassModal';
 import { FormOutlined, DeleteOutlined } from '@ant-design/icons';
@@ -68,6 +68,9 @@ function index() {
 
   return (
     <Layout title={'Thông tin tài khoản'} backButton backButtonUrl="/student/dashboard">
+      <Typography.Title level={1} style={{
+        textAlign: 'center',
+      }}>Thông tin tài khoản</Typography.Title>
       <Form
         name="basic"
         form={form}

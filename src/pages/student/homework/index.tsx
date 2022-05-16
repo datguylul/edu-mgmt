@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Layout from 'Layouts';
 import withAuth from '@hocs/withAuth';
-import { Row, Col, Card, Modal } from 'antd';
+import { Row, Col, Card, Modal, Typography } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { ClassListWithHomeWork } from '@core/services/api';
 import StudentHomeWorkModal from 'components/Modal/student/StudentHomeWorkModal';
@@ -44,6 +44,9 @@ const HomeWork = () => {
 
   return (
     <Layout title="Bài tập" backButton backButtonUrl="/student/dashboard">
+      <Typography.Title level={1} style={{
+        textAlign: 'center',
+      }}>Danh sách bài tập</Typography.Title>
       <div>
         <Row>
           <Col span={24}>
@@ -70,7 +73,7 @@ const HomeWork = () => {
                           cursor: 'pointer',
                         }}
                       >
-                        <Card title={item.ClassName} style={{ width: 300 }}>
+                        <Card hoverable title={item.ClassName} style={{ width: 300 }}>
                           {'Đang có'} {item.HomeWorkCount || 0} {'bài tập'}
                         </Card>
                       </div>

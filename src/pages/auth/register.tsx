@@ -133,7 +133,18 @@ export default function Register() {
             </TabPane>
           </Tabs>
 
-          <div>{message && <h4 style={[styles.errorText, styles.centerText]}>{message}</h4>}</div>
+          <div>
+            {message && (
+              <h4
+                style={{
+                  color: 'red',
+                  textAlign: 'center',
+                }}
+              >
+                {message}
+              </h4>
+            )}
+          </div>
           <Button type="submit" shape="SemiRound" fullWidth disabled={loading}>
             Đăng ký
           </Button>

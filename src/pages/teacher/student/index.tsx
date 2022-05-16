@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Layout from 'Layouts';
 import withAuth from '@hocs/withAuth';
-import { Table, Modal, Card, Pagination, DatePicker, Input, Button, Select, Space, Row, Col } from 'antd';
+import { Table, Modal, Card, Pagination, Typography, Input, Button, Select, Space, Row, Col } from 'antd';
 import { StudentList } from '@core/services/api';
 import ClassModal from 'components/Modal/teacher-admin/ClassModal';
 import { InfoOutlined, FormOutlined, DeleteOutlined } from '@ant-design/icons';
@@ -96,6 +96,9 @@ function index() {
 
   return (
     <Layout title={'Danh sách học sinh'} backButton backButtonUrl="/teacher/dashboard">
+      <Typography.Title level={1} style={{
+        textAlign: 'center',
+      }}>Danh sách học sinh</Typography.Title>
       <div>
         <Row>
           <Col span={18}>
@@ -107,6 +110,7 @@ function index() {
             </Button>
           </Col>
         </Row>
+        <br />
         <Row>
           <Col span={12}>
             <Button type="primary" onClick={handleOpenAddStudentModal}>
@@ -115,6 +119,7 @@ function index() {
           </Col>
         </Row>
       </div>
+      <br />
       <div>
         <Table columns={columns} dataSource={studentData} pagination={false} />
         <Pagination

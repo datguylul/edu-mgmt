@@ -7,17 +7,20 @@ import cookie from 'cookie';
 import App from 'next/app';
 import locale from 'antd/lib/locale/vi_VN';
 import { ConfigProvider } from 'antd';
+import ErrorBoundary from '@components/ErrorBoundary';
 function MyApp(props: any) {
   useEffect(() => {
     document.body.classList?.remove('loading');
   }, []);
 
   return (
-    <ConfigProvider locale={locale}>
-      <AuthProvider authenticated={props.authenticated}>
-        <props.Component {...props.pageProps} />
-      </AuthProvider>
-    </ConfigProvider>
+    <ErrorBoundary>
+      <ConfigProvider locale={locale}>
+        <AuthProvider authenticated={props.authenticated}>
+          <props.Component {...props.pageProps} />
+        </AuthProvider>
+      </ConfigProvider>
+    </ErrorBoundary>
   );
 }
 

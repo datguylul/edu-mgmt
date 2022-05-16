@@ -80,11 +80,32 @@ const StudentDetailModal: React.FC<IModalInfo> = ({
   };
 
   const handleSubmit = (values: any) => {
+
+    const params = {
+      ...values,
+      StudentDob: values['StudentDob'].format(dateFormat),
+    };
+
+    EditStudent(studentId as string, params)
+      .then((resp) => {
+        console.log('resp', resp.data);
+        if (resp.data.Success) {
+          openNotification('Sửa học sinh', 'Sửa học sinh thành công', 'success');
+        } else {
+          openNotification('Sửa học sinh', resp.data.Message, 'error');
+        }
+      })
+      .catch((error) => {
+        console.log('error', error);
+        openNotification('Sửa học sinh', 'Sửa học sinh thất bại', 'error');
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+
+    return;
+
     if (classId == null) {
-      const params = {
-        ...values,
-        StudentDob: values['StudentDob'].format(dateFormat),
-      };
 
       EditStudent(studentId as string, params)
         .then((resp) => {
