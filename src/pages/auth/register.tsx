@@ -26,6 +26,7 @@ const schema = yup
     UserName: yup.string().required('Họ tên không thể trống'),
     UserPhone: yup.string().required('Số điện thoại không thể trống'),
     UserPassword: yup.string().required('Mật khẩu không thể trống').min(6, 'Mật khẩu ít nhất 6 kí tự'),
+    UserDOB: yup.string().required('Ngày sinh không thể trống'),
     ConfirmUserPassword: yup
       .string()
       .required('Xác nhận mật khẩu không thể trống')
@@ -101,6 +102,10 @@ export default function Register() {
                 <input type="password" placeholder="Xác nhận mật khẩu" {...register('ConfirmUserPassword')} />
               </Input>
               <p style={styles.errorText}>{errors.ConfirmUserPassword?.message}</p>
+              <Input fullWidth>
+                <input type="text" placeholder="Ngày sinnh" {...register('UserDOB')} />
+              </Input>
+              <p style={styles.errorText}>{errors.UserDOB?.message}</p>
             </TabPane>
             <TabPane tab="Học sinh" key={USER_ROLE_ID.student}>
               <Input fullWidth>
@@ -119,6 +124,10 @@ export default function Register() {
                 <input type="password" placeholder="Xác nhận mật khẩu" {...register('ConfirmUserPassword')} />
               </Input>
               <p style={styles.errorText}>{errors.ConfirmUserPassword?.message}</p>
+              <Input fullWidth>
+                <input type="text" placeholder="Ngày sinnh" {...register('UserDOB')} />
+              </Input>
+              <p style={styles.errorText}>{errors.UserDOB?.message}</p>
             </TabPane>
           </Tabs>
 
