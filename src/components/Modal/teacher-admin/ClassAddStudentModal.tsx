@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Form, Input, Button, Space, Select, DatePicker, Tabs, Upload, Table, Row, Col } from 'antd';
-import { ClassAddStudent, StudentReadExcel, StudentDetailPhone } from '@core/services/api';
+import { ClassAddStudent, StudentReadExcel, StudentDetailPhone, StudentAddStudent } from '@core/services/api';
 import moment from 'moment';
 import { openNotification } from '@utils/Noti';
 import { UploadOutlined, InboxOutlined } from '@ant-design/icons';
@@ -50,8 +50,8 @@ const tailFormItemLayout = {
 
 const ClassAddStudentModal: React.FC<IModalInfo> = ({
   classId = null,
-  onCloseModal = () => {},
-  onSubmitAndReload = () => {},
+  onCloseModal = () => { },
+  onSubmitAndReload = () => { },
 }) => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
@@ -99,21 +99,40 @@ const ClassAddStudentModal: React.FC<IModalInfo> = ({
 
   const addStudents = (params: object) => {
     setLoading(true);
-    ClassAddStudent(params)
-      .then((resp) => {
-        if (resp.data.Success) {
-          openNotification('Thêm học sinh', 'Thêm học sinh thành công', 'success');
-        } else {
-          openNotification('Thêm học sinh', resp.data.Message, 'error');
-        }
-      })
-      .catch((error) => {
-        console.log('error', error);
-        openNotification('Thêm học sinh', 'Thêm học sinh thất bại', 'error');
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    if (isAddToClass) {
+      ClassAddStudent(params)
+        .then((resp) => {
+          if (resp.data.Success) {
+            openNotification('Thêm học sinh', 'Thêm học sinh thành công', 'success');
+          } else {
+            openNotification('Thêm học sinh', resp.data.Message, 'error');
+          }
+        })
+        .catch((error) => {
+          console.log('error', error);
+          openNotification('Thêm học sinh', 'Thêm học sinh thất bại', 'error');
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    } else {
+      StudentAddStudent(params)
+        .then((resp) => {
+          if (resp.data.Success) {
+            openNotification('Thêm học sinh', 'Thêm học sinh thành công', 'success');
+          } else {
+            openNotification('Thêm học sinh', resp.data.Message, 'error');
+          }
+        })
+        .catch((error) => {
+          console.log('error', error);
+          openNotification('Thêm học sinh', 'Thêm học sinh thất bại', 'error');
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
+
   };
 
   const saveManual = () => {
@@ -173,7 +192,7 @@ const ClassAddStudentModal: React.FC<IModalInfo> = ({
   };
 
   return (
-    <Tabs defaultActiveKey="1" onChange={() => {}}>
+    <Tabs defaultActiveKey="1" onChange={() => { }}>
       <TabPane tab="Thêm thủ công" key="1">
         <Form {...formItemLayout} form={form} name="register" onFinish={handleSubmit} scrollToFirstError>
           <Form.Item

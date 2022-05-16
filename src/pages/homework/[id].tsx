@@ -193,7 +193,7 @@ const HomeWorkDetailContent = ({ homeWorkData = null, studentInfo = null, classI
   const [describeContent, setDescribeContent] = useState('');
   const isSSR = typeof window === 'undefined';
   const editor = useRef(null);
-  const [defaultFileList, setDefaultFileList] = useState<any>(null);
+  const [defaultFileList, setDefaultFileList] = useState<any>([]);
 
   useEffect(() => {
     if (answer != null) {
@@ -211,7 +211,7 @@ const HomeWorkDetailContent = ({ homeWorkData = null, studentInfo = null, classI
       url: item.FileUploadUrl,
     }));
 
-    setDefaultFileList(defaultFilesList);
+    setDefaultFileList(defaultFilesList || []);
     setDescribeContent(data?.answer?.AnswerContent);
   };
 

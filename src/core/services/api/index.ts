@@ -27,6 +27,7 @@ export const StudentDetailPhone = (phone: string) => get(ENDPOINTS.STUDENT + `\\
 export const CreateStudent = (params: object) => post(ENDPOINTS.STUDENT, params);
 export const EditStudent = (id: string, params: object) => put(ENDPOINTS.STUDENT + `\\edit\\${id}`, params);
 export const StudentReadExcel = (params: FormData) => post(ENDPOINTS.STUDENT_READ_EXCEL, params);
+export const StudentAddStudent = (params: object) => post(ENDPOINTS.STUDENT_ADD_STUDENT, params);
 
 export const TeacherList = (search: string, sort: string, page: number, record: number) =>
   get(ENDPOINTS.TEACHER + `?search=${search}&sort=${sort}&page=${page}&record=${record}`);
