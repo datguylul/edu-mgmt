@@ -50,8 +50,8 @@ const tailFormItemLayout = {
 
 const ClassAddStudentModal: React.FC<IModalInfo> = ({
   classId = null,
-  onCloseModal = () => { },
-  onSubmitAndReload = () => { },
+  onCloseModal = () => {},
+  onSubmitAndReload = () => {},
 }) => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
@@ -165,8 +165,15 @@ const ClassAddStudentModal: React.FC<IModalInfo> = ({
     },
   ];
 
+  const handleSetPhone = ({ target: { value } }: any) => {
+    setPhone(value);
+    form.setFieldsValue({
+      StudentPhone: value,
+    });
+  };
+
   return (
-    <Tabs defaultActiveKey="1" onChange={() => { }}>
+    <Tabs defaultActiveKey="1" onChange={() => {}}>
       <TabPane tab="Thêm thủ công" key="1">
         <Form {...formItemLayout} form={form} name="register" onFinish={handleSubmit} scrollToFirstError>
           <Form.Item
@@ -180,17 +187,13 @@ const ClassAddStudentModal: React.FC<IModalInfo> = ({
             ]}
           >
             <Input.Group compact>
-              <Input
-                style={{ width: 'calc(100% - 200px)' }}
-                value={phone}
-                onChange={({ target: { value } }) => setPhone(value)}
-              />
-              {isAddToClass &&
+              <Input style={{ width: 'calc(100% - 200px)' }} value={phone} onChange={handleSetPhone} />
+              {isAddToClass && (
                 <Button type="primary" loading={loading} disabled={loading} onClick={handleFindStudent}>
                   {' '}
                   {'Tìm học sinh'}
                 </Button>
-              }
+              )}
             </Input.Group>
           </Form.Item>
           <Form.Item
@@ -242,11 +245,11 @@ const ClassAddStudentModal: React.FC<IModalInfo> = ({
             name="logo"
             onRemove={() => setFileUpload(null)}
           >
-            {!fileUpload &&
+            {!fileUpload && (
               <Button disabled={uploading || loading} loading={uploading || loading} icon={<UploadOutlined />}>
                 Chọn File
               </Button>
-            }
+            )}
           </Upload>
           <Row>
             <Col span={12}>
@@ -258,7 +261,13 @@ const ClassAddStudentModal: React.FC<IModalInfo> = ({
             </Col>
             <Col span={12}>
               {fileUpload && studentData.length > 0 && (
-                <Button type="primary" htmlType="submit" loading={loading} disabled={loading} onClick={handleImportExcel}>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  loading={loading}
+                  disabled={loading}
+                  onClick={handleImportExcel}
+                >
                   {'Hoàn tấp nhập file'}
                 </Button>
               )}

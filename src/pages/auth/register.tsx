@@ -54,6 +54,8 @@ export default function Register() {
       signUpUserType: userLoginType,
     };
 
+    console.log('params', params);
+
     signUp(params)
       .then((res) => {
         const data = res.data;
@@ -95,6 +97,10 @@ export default function Register() {
               </Input>
               <p style={styles.errorText}>{errors.UserEmail?.message}</p>
               <Input fullWidth>
+                <input type="text" placeholder="Ngày sinh" {...register('UserDOB')} />
+              </Input>
+              <p style={styles.errorText}>{errors.UserDOB?.message}</p>
+              <Input fullWidth>
                 <input type="password" placeholder="Mật khẩu" {...register('UserPassword')} />
               </Input>
               <p style={styles.errorText}>{errors.UserPassword?.message}</p>
@@ -102,10 +108,6 @@ export default function Register() {
                 <input type="password" placeholder="Xác nhận mật khẩu" {...register('ConfirmUserPassword')} />
               </Input>
               <p style={styles.errorText}>{errors.ConfirmUserPassword?.message}</p>
-              <Input fullWidth>
-                <input type="text" placeholder="Ngày sinnh" {...register('UserDOB')} />
-              </Input>
-              <p style={styles.errorText}>{errors.UserDOB?.message}</p>
             </TabPane>
             <TabPane tab="Học sinh" key={USER_ROLE_ID.student}>
               <Input fullWidth>
@@ -117,6 +119,10 @@ export default function Register() {
               </Input>
               <p style={styles.errorText}>{errors.UserPhone?.message}</p>
               <Input fullWidth>
+                <input type="text" placeholder="Ngày sinh" {...register('UserDOB')} />
+              </Input>
+              <p style={styles.errorText}>{errors.UserDOB?.message}</p>
+              <Input fullWidth>
                 <input type="password" placeholder="Mật khẩu" {...register('UserPassword')} />
               </Input>
               <p style={styles.errorText}>{errors.UserPassword?.message}</p>
@@ -124,10 +130,6 @@ export default function Register() {
                 <input type="password" placeholder="Xác nhận mật khẩu" {...register('ConfirmUserPassword')} />
               </Input>
               <p style={styles.errorText}>{errors.ConfirmUserPassword?.message}</p>
-              <Input fullWidth>
-                <input type="text" placeholder="Ngày sinnh" {...register('UserDOB')} />
-              </Input>
-              <p style={styles.errorText}>{errors.UserDOB?.message}</p>
             </TabPane>
           </Tabs>
 
