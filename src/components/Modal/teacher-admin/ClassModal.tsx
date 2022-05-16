@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Form, Input, Button, Space, Select, DatePicker } from 'antd';
+import { Form, Input, Button, Space, Select, DatePicker, Typography, Divider } from 'antd';
 import { ClassDetail, CreateClass, EditClass } from '@core/services/api';
 import moment from 'moment';
 import { openNotification } from '@utils/Noti';
@@ -8,6 +8,7 @@ import { CLASS_STATUS } from '@core/constants';
 const { Option } = Select;
 
 interface IModalInfo {
+  studentSide?: boolean,
   classId?: string;
   onCloseModal?: () => void;
   onSubmitAndReload?: () => void;
@@ -40,12 +41,14 @@ const tailFormItemLayout = {
 const ClassStatusList = [CLASS_STATUS.active, CLASS_STATUS.finish];
 
 const ClassModal: React.FC<IModalInfo> = ({
+  studentSide = false,
   classId = null,
-  onCloseModal = () => {},
-  onSubmitAndReload = () => {},
+  onCloseModal = () => { },
+  onSubmitAndReload = () => { },
 }) => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
+  const [classData, setClassData] = useState<any>(null);
 
   const LoadDetail = () => {
     setLoading(true);
@@ -53,6 +56,7 @@ const ClassModal: React.FC<IModalInfo> = ({
       .then((resp) => {
         const data = resp.data?.Data?.class;
         if (data) {
+          setClassData(data);
           fillForm(data);
         }
       })
@@ -123,49 +127,99 @@ const ClassModal: React.FC<IModalInfo> = ({
   }, [classId]);
 
   return (
-    <Form {...formItemLayout} form={form} name="register" onFinish={handleSubmit} scrollToFirstError>
-      <Form.Item
-        name="ClassName"
-        label="Tên lớp"
-        rules={[
-          {
-            required: true,
-            message: 'Tên lớp không thể trống',
-          },
-        ]}
-      >
-        <Input />
-      </Form.Item>
-      <Form.Item
-        name="ClassYear"
-        label="Năm học"
-        rules={[{ type: 'object' as const, required: true, message: 'Chọn năm học!' }]}
-      >
-        <DatePicker picker="year" />
-      </Form.Item>
-      <Form.Item name="ClassStatus" label="Trạng thái">
-        <Select>
-          {ClassStatusList.map((item: any) => (
-            <Option value={item?.value}>{item.label}</Option>
-          ))}
-        </Select>
-      </Form.Item>
-      <Form.Item {...tailFormItemLayout}>
-        <Space>
-          <Button type="primary" htmlType="submit" loading={loading} disabled={loading}>
-            {classId && classId !== '' ? 'Cập nhật' : 'Thêm mới'}
-          </Button>
-          <Button htmlType="button" onClick={onCloseModal}>
-            Hủy
-          </Button>
-          {classId && classId !== '' && (
-            <Button type="ghost" htmlType="button" onClick={onSubmitAndReload}>
-              Xóa
-            </Button>
-          )}
-        </Space>
-      </Form.Item>
-    </Form>
+    <div>
+      <Form {...formItemLayout} form={form} name="register" onFinish={handleSubmit} scrollToFirstError>
+        {studentSide ?
+          <div>
+            <Typography.Title level={4}>Thông tin lớp:</Typography.Title>
+            <Typography>
+              <pre>Tên lớp: {classData?.ClassName}</pre>
+            </Typography>
+            <Typography>
+              <pre>Năm học: {classData?.ClassYear}</pre>
+            </Typography>
+            <Typography>
+              <pre>Trạng thái: {ClassStatusList.find(x => x.value == classData?.ClassStatus)?.label}</pre>
+            </Typography>
+
+            <Divider />
+            <Typography.Title level={4}>Giáo viên:</Typography.Title>
+            <Typography>
+              <pre>Họ tên: {classData?.Teacher?.TeacherName}</pre>
+            </Typography>
+            <Typography>
+              <pre>Sđt: {classData?.Teacher?.TeacherPhone}</pre>
+            </Typography>
+            <Typography>
+              <pre>Ngày sinh: {classData?.Teacher?.TeacherDob}</pre>
+            </Typography>
+            <Typography>
+              <pre>Giới tính: {classData?.Teacher?.TeacherGender}</pre>
+            </Typography>
+            <Typography>
+              <pre>Email: {classData?.Teacher?.TeacherEmail}</pre>
+            </Typography>
+
+            <Form.Item {...tailFormItemLayout}>
+              <Space>
+                <React.Fragment>
+                  <Button htmlType="button" onClick={onCloseModal}>
+                    Hủy
+                  </Button>
+                </React.Fragment>
+              </Space>
+            </Form.Item>
+          </div>
+          :
+          <React.Fragment>
+            <Form.Item
+              name="ClassName"
+              label="Tên lớp"
+              rules={[
+                {
+                  required: true,
+                  message: 'Tên lớp không thể trống',
+                },
+              ]}
+            >
+              <Input />
+            </Form.Item>
+            <Form.Item
+              name="ClassYear"
+              label="Năm học"
+              rules={[{ type: 'object' as const, required: true, message: 'Chọn năm học!' }]}
+            >
+              <DatePicker picker="year" />
+            </Form.Item>
+            <Form.Item name="ClassStatus" label="Trạng thái">
+              <Select >
+                {ClassStatusList.map((item: any) => (
+                  <Option value={item?.value}>{item.label}</Option>
+                ))}
+              </Select>
+            </Form.Item>
+            <Form.Item {...tailFormItemLayout}>
+              <Space>
+                <React.Fragment>
+                  <Button type="primary" htmlType="submit" loading={loading} disabled={loading}>
+                    {classId && classId !== '' ? 'Cập nhật' : 'Thêm mới'}
+                  </Button>
+                  <Button htmlType="button" onClick={onCloseModal}>
+                    Hủy
+                  </Button>
+                  {classId && classId !== '' && (
+                    <Button type="ghost" htmlType="button" onClick={onSubmitAndReload}>
+                      Xóa
+                    </Button>
+                  )}
+                </React.Fragment>
+              </Space>
+            </Form.Item>
+
+          </React.Fragment>
+        }
+      </Form>
+    </div>
   );
 };
 

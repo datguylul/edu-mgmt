@@ -8,6 +8,7 @@ import router from 'next/router';
 import { CLASS_STATUS } from '@core/constants';
 const { Option } = Select;
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
+import ClassModal from 'components/Modal/teacher-admin/ClassModal';
 
 const ClassStatusList = [CLASS_STATUS.active, CLASS_STATUS.finish];
 
@@ -20,6 +21,8 @@ function index() {
   const [classStatus, setClassStatus] = useState<number>(CLASS_STATUS.active.value);
   const [classData, setClassData] = useState([]);
   const [loading, setLoading] = React.useState<boolean>(true);
+  const [classId, setClassId] = useState<string>('');
+  const [showModal, setShowModal] = React.useState<boolean>(false);
 
   useEffect(() => {
     getClassList();
@@ -40,29 +43,17 @@ function index() {
       });
   };
 
-  const columns = [
-    {
-      title: 'Tên lớp',
-      dataIndex: 'ClassName',
-    },
-    {
-      title: 'Năm học',
-      dataIndex: 'ClassYear',
-    },
-    {
-      title: 'Tên giáo viên',
-      dataIndex: 'Teacher',
-      render: (text: any, record: any) => <Space size="middle">{record?.Teacher?.TeacherName}</Space>,
-    },
-    {
-      title: 'SDT giáo viên',
-      dataIndex: 'Teacher',
-      render: (text: any, record: any) => <Space size="middle">{record?.Teacher?.TeacherPhone}</Space>,
-    },
-  ];
   const handleSelectChange = (value: any) => {
     setClassStatus(value);
   };
+
+  const handleOpenModal = (classId: string) => {
+    setClassId(classId);
+    setShowModal(true);
+  }
+  const handleCloseModal = () => {
+    setShowModal(false);
+  }
 
   return (
     <Layout title={'Danh sách lớp'} backButton backButtonUrl="/student/dashboard">
@@ -107,6 +98,7 @@ function index() {
                         }}
                       >
                         <Card
+                          onClick={() => handleOpenModal(item.ClassId)}
                           hoverable
                           title={`${item.ClassName} (${item?.ClassYear})`} style={{ width: 300 }}>
                           <Typography.Title level={5}>Giáo viên:</Typography.Title> <p> {item?.Teacher?.TeacherName}</p>
@@ -122,8 +114,20 @@ function index() {
           </Col>
           <Col span={6}></Col>
         </Row>
-
       </div>
+
+      <Modal
+        width={755}
+        bodyStyle={{ height: 'max-content' }}
+        title={'Chi tiết lớp'}
+        visible={showModal}
+        onCancel={() => setShowModal(false)}
+        destroyOnClose
+        footer={null}
+        className="edit-profile-modal"
+      >
+        <ClassModal classId={classId} studentSide={true} onCloseModal={handleCloseModal}/>
+      </Modal>
     </Layout>
   );
 }
