@@ -76,6 +76,7 @@ const index = () => {
   const [defaultFileList, setDefaultFileList] = useState<any>(null);
   const [studentSubmitList, setStudentSubmitList] = useState<any>([]);
   const [classSelect, setClassSelect] = useState<string | number | null>(null);
+  const [fileListUpload, setFileListUpload] = useState<any>([]);
 
   useEffect(() => {
     getClassList();
@@ -161,6 +162,7 @@ const index = () => {
       url: item.FileUploadUrl,
     }));
     setDefaultFileList(defaultFilesList);
+    setFileListUpload(defaultFilesList);
     setDescribeContent(data?.homeWork?.HomeWorkContent);
   };
 
@@ -193,8 +195,11 @@ const index = () => {
     };
 
     if (values.DueDate) {
-      params.DueDate = moment(values.DueDate).unix();
+      if (!isNaN(moment(values.DueDate).unix())) {
+        params.DueDate = moment(values.DueDate).unix();
+      }
     }
+
     if (fileList.length > 0) {
       const files: any = [];
       fileList.forEach((item: any) => {
@@ -225,6 +230,21 @@ const index = () => {
   };
 
   const handleUpload = (file: any) => {
+    const sizeLimit = 10;
+    const filesLimit = 5;
+    const fileCheck = (file.size / 1024 / 1024) > sizeLimit;
+
+    const fileList = [...fileListUpload, file];
+
+    if (fileCheck) {
+      openNotification('Upload File', `File không được quá ${sizeLimit}mb`, 'error');
+      return;
+    }
+    if (fileList.length > filesLimit) {
+      openNotification('Upload File', `Tối đa ${filesLimit} tệp tin tải lên`, 'error');
+      return;
+    }
+
     setUploading(true);
     handleCloudinaryUpload(file)
       .then((res: any) => {
@@ -232,6 +252,7 @@ const index = () => {
         file.FileUploadName = file.name;
         const files = [...fileList, file];
         setFileList(files as any);
+        setFileListUpload(fileList);
       })
       .catch((err: any) => {
         console.error(err);
@@ -300,6 +321,8 @@ const index = () => {
     setAnswerId(id);
     setShowModal(true);
   };
+  const handleChange = (info: any) => {
+  };
 
   return (
     <Layout title="Chi tiết bài tập" backButton backButtonUrl="/teacher/homework">
@@ -362,6 +385,8 @@ const index = () => {
                     })}
                   </Col> */}
                     <Upload
+                      fileList={fileListUpload}
+                      onChange={handleChange}
                       beforeUpload={(file) => handleUpload(file)}
                       name="logo"
                       onRemove={handleRemoveFile}

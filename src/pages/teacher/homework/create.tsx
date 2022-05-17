@@ -42,6 +42,7 @@ const create = () => {
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [fileList, setFileList] = useState([]);
+  const [fileListUpload, setFileListUpload] = useState<any>([]);
   const editor = useRef(null);
   const [describeContent, setDescribeContent] = useState('');
   const isSSR = typeof window === 'undefined';
@@ -109,6 +110,21 @@ const create = () => {
   };
 
   const handleUpload = (file: any) => {
+    const sizeLimit = 10;
+    const filesLimit = 5;
+    const fileCheck = (file.size / 1024 / 1024) > sizeLimit;
+
+    const fileList = [...fileListUpload, file];
+
+    if (fileCheck) {
+      openNotification('Upload File', `File không được quá ${sizeLimit}mb`, 'error');
+      return;
+    }
+    if (fileList.length > filesLimit) {
+      openNotification('Upload File', `Tối đa ${filesLimit} tệp tin tải lên`, 'error');
+      return;
+    }
+
     setUploading(true);
     handleCloudinaryUpload(file)
       .then((res: any) => {
@@ -116,6 +132,7 @@ const create = () => {
         file.FileUploadName = file.name;
         const files = [...fileList, file];
         setFileList(files as any);
+        setFileListUpload(fileList);
       })
       .catch((err: any) => {
         console.error(err);
@@ -132,6 +149,9 @@ const create = () => {
       return e.uid !== file.uid;
     });
     setFileList(removedFiles);
+  };
+
+  const handleChange = (info: any) => {
   };
 
   return (
@@ -167,6 +187,8 @@ const create = () => {
         </Form.Item>
         <Form.Item label="File bài tập">
           <Upload
+            fileList={fileListUpload}
+            onChange={handleChange}
             beforeUpload={(file) => handleUpload(file)}
             name="logo"
             onRemove={handleRemoveFile}
@@ -185,7 +207,7 @@ const create = () => {
                 value={describeContent}
                 config={{ readonly: false }}
                 onBlur={(newContent) => setDescribeContent(newContent)}
-                onChange={(newContent) => {}}
+                onChange={(newContent) => { }}
               />
             </React.Suspense>
           )}

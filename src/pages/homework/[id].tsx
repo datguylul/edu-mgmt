@@ -194,6 +194,7 @@ const HomeWorkDetailContent = ({ homeWorkData = null, studentInfo = null, classI
   const isSSR = typeof window === 'undefined';
   const editor = useRef(null);
   const [defaultFileList, setDefaultFileList] = useState<any>([]);
+  const [fileListUpload, setFileListUpload] = useState<any>([]);
 
   useEffect(() => {
     if (answer != null) {
@@ -212,10 +213,26 @@ const HomeWorkDetailContent = ({ homeWorkData = null, studentInfo = null, classI
     }));
 
     setDefaultFileList(defaultFilesList || []);
+    setFileListUpload(defaultFilesList || []);
     setDescribeContent(data?.answer?.AnswerContent);
   };
 
   const handleUpload = (file: any) => {
+    const sizeLimit = 10;
+    const filesLimit = 5;
+    const fileCheck = (file.size / 1024 / 1024) > sizeLimit;
+
+    const fileList = [...fileListUpload, file];
+
+    if (fileCheck) {
+      openNotification('Upload File', `File không được quá ${sizeLimit}mb`, 'error');
+      return;
+    }
+    if (fileList.length > filesLimit) {
+      openNotification('Upload File', `Tối đa ${filesLimit} tệp tin tải lên`, 'error');
+      return;
+    }
+
     setUploading(true);
     handleCloudinaryUpload(file)
       .then((res: any) => {
@@ -223,6 +240,7 @@ const HomeWorkDetailContent = ({ homeWorkData = null, studentInfo = null, classI
         file.FileUploadName = file.name;
         const files = [...fileList, file];
         setFileList(files as any);
+        setFileListUpload(fileList);
       })
       .catch((err: any) => {
         console.error(err);
@@ -294,6 +312,9 @@ const HomeWorkDetailContent = ({ homeWorkData = null, studentInfo = null, classI
       .finally(() => {
         setLoading(false);
       });
+  };
+
+  const handleChange = (info: any) => {
   };
 
   return (
@@ -431,10 +452,12 @@ const HomeWorkDetailContent = ({ homeWorkData = null, studentInfo = null, classI
               {defaultFileList &&
                 <Form.Item label="File đáp án">
                   <Upload
+                    onChange={handleChange}
                     beforeUpload={(file) => handleUpload(file)}
                     name="logo"
                     onRemove={handleRemoveFile}
                     defaultFileList={defaultFileList}
+                    fileList={fileListUpload}
                     accept={'.doc,.docx,application/vnd.ms-excel,.pdf,.png,.jpeg,.jpg'}
                   >
                     <Button disabled={uploading || loading} loading={uploading || loading} icon={<UploadOutlined />}>
